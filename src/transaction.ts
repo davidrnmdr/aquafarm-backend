@@ -1,12 +1,12 @@
 import { BusinessPartner } from "./businessPartner";
 import { Produtcs } from "./types/Products";
 
-export class Purchase {
+export class Transaction {
   constructor(
-    public products: Produtcs,
-    public seller: BusinessPartner,
+    public type: "sale" | "purchase",
     public value: number,
+    public partner: BusinessPartner,
     public date: Date,
-    public id?: string
+    public quantity: number | Produtcs
   ) {}
 }

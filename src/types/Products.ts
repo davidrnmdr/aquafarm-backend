@@ -2,6 +2,6 @@ import { Food } from "../food";
 import { Treatment } from "../treatment";
 
 export type Produtcs = {
-  foods: Food[];
-  treatments: Treatment[];
+  food: [{ food: Food; quantity: number }];
+  treatment: [{ treatment: Treatment; quantity: number }];
 };

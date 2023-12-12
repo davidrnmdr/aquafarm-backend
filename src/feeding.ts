@@ -7,6 +7,7 @@ export class Feeding {
     public employee: Employee,
     public tank: Tank,
     public food: Food,
+    public quantity: number,
     public dateTime: Date,
     public id?: string
   ) {}
