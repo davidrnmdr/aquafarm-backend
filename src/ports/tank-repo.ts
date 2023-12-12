@@ -1,4 +1,4 @@
-import { Tank } from "../tank";
+import { Tank } from "../entities/tank";
 
 export interface TankRepo {
   find(id: string): Promise<Tank>;

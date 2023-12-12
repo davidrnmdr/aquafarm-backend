@@ -1,4 +1,4 @@
-import { Equipment } from "../equipment";
+import { Equipment } from "../entities/equipment";
 
 export interface EquipmentRepo {
   add(equipment: Equipment): Promise<string>;

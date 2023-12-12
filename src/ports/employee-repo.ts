@@ -1,4 +1,4 @@
-import { Employee } from "../employee";
+import { Employee } from "../entities/employee";
 
 export interface EmployeeRepo {
   find(id: string): Promise<Employee>;

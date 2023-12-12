@@ -1,4 +1,4 @@
-import { Feeding } from "../feeding";
+import { Feeding } from "../entities/feeding";
 
 export interface FeedingRepo {
   find(id: string): Promise<Feeding>;

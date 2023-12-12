@@ -1,4 +1,4 @@
-import { Food } from "../food";
+import { Food } from "../entities/food";
 
 export interface FoodRepo {
   find(id: string): Promise<Food>;

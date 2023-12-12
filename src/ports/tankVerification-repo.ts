@@ -1,4 +1,4 @@
-import { TankVerification } from "../tankVerification";
+import { TankVerification } from "../entities/tankVerification";
 
 export interface TankVerificationRepo {
   find(id: string): Promise<TankVerification>;

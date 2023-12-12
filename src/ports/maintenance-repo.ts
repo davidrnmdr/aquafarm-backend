@@ -1,4 +1,4 @@
-import { Maintenance } from "../maintenance";
+import { Maintenance } from "../entities/maintenance";
 
 export interface MaintenanceRepo {
   find(id: string): Promise<Maintenance>;
