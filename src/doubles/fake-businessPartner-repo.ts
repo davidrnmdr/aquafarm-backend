@@ -20,24 +20,14 @@ export class FakeBusinessPartnerRepo implements BusinessPartnerRepo {
 
   async updateProducts(
     id: string,
-    foods: Food[],
-    treatments: Treatment[]
+    product: Food | Treatment,
+    type: "foods" | "treatments"
   ): Promise<void> {
     const partnerIndex = this.businessPartners.findIndex(
       (partner) => partner.id === id
     );
 
-    if (partnerIndex != -1) {
-      foods.forEach((food) => {
-        this.businessPartners[partnerIndex].products.foods.push({ food });
-      });
-
-      treatments.forEach((treatment) => {
-        this.businessPartners[partnerIndex].products.treatments.push({
-          treatment,
-        });
-      });
-    }
+    this.businessPartners[partnerIndex][type].push(product as Food & Treatment);
   }
 
   async updateEmail(id: string, email: string): Promise<void> {
@@ -58,20 +48,11 @@ export class FakeBusinessPartnerRepo implements BusinessPartnerRepo {
     );
 
     if (partnerIndex != -1) {
-      const productIndex =
-        type === "food"
-          ? this.businessPartners[partnerIndex].products.foods.findIndex(
-              (foodProduct) => (foodProduct.food.id = productId)
-            )
-          : this.businessPartners[partnerIndex].products.treatments.findIndex(
-              (treatmentProduct) => (treatmentProduct.treatment.id = productId)
-            );
+      const productIndex = this.businessPartners[partnerIndex][
+        `${type}s`
+      ].findIndex((product) => product.id == productId);
 
-      if (productIndex != -1)
-        this.businessPartners[partnerIndex].products[`${type}s`].splice(
-          productIndex,
-          1
-        );
+      this.businessPartners[partnerIndex][`${type}s`].splice(productIndex, 1);
     }
   }
 
