@@ -56,8 +56,8 @@ describe("fake partners repo", () => {
     const foodToBeAdded: Food = new Food(
       "pallets",
       110,
-      new Date("2023-12-14"),
       230.4,
+      new Date("2023-12-14"),
       partner
     );
 
@@ -115,8 +115,8 @@ describe("fake partners repo", () => {
     const foodToBeAdded: Food = new Food(
       "pallets",
       110,
-      new Date("2023-12-14"),
       230.4,
+      new Date("2023-12-14"),
       partner,
       productId
     );

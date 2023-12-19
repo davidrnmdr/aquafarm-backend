@@ -3,9 +3,9 @@ import { BusinessPartner } from "./businessPartner";
 export class Food {
   constructor(
     public type: string,
-    public storage: number = 0,
-    public expirationDate: Date,
+    public quantity: number,
     public cost: number,
+    public expirationDate: Date,
     public seller: BusinessPartner,
     public id?: string
   ) {}

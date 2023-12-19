@@ -1,6 +1,6 @@
 import { FakeEmployeeRepo } from "../../doubles/fake-employee-repo";
 import { Employee } from "../../entities/employee";
-import { EmployeeRepo } from "../../ports/employee-repo";
+
 
 let fakeEmployeeRepo: FakeEmployeeRepo;
 

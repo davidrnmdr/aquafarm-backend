@@ -1,12 +1,28 @@
 import { BusinessPartner } from "./businessPartner";
-import { Produtcs } from "../types/Products";
+import { Food } from "./food";
+import { Treatment } from "./treatment";
 
-export class Transaction {
+interface Transaction {
+  value: number;
+  partner: BusinessPartner;
+  date: Date;
+}
+
+export class Sale implements Transaction {
   constructor(
-    public type: "sale" | "purchase",
     public value: number,
     public partner: BusinessPartner,
     public date: Date,
-    public quantity: number | Produtcs
+    public quantity: number
+  ) {}
+}
+
+export class Purchase implements Transaction {
+  constructor(
+    public value: number,
+    public partner: BusinessPartner,
+    public date: Date,
+    public food: Food | null,
+    public treatment: Treatment | null
   ) {}
 }

@@ -6,8 +6,8 @@ export class Equipment {
     public status: string,
     public location: string,
     public seller: BusinessPartner,
+    public totalMaintenanceCost: number = 0,
     public price: number,
-    public maintenanceCost: number = 0,
     public id?: string
   ) {}
 }
