@@ -1,7 +1,6 @@
 import { FakeEmployeeRepo } from "../../doubles/fake-employee-repo";
 import { Employee } from "../../entities/employee";
 
-
 let fakeEmployeeRepo: FakeEmployeeRepo;
 
 describe("fake employee repo", () => {
@@ -33,8 +32,8 @@ describe("fake employee repo", () => {
 
     const employeeRetrieved = await fakeEmployeeRepo.find(newId);
 
-    expect(employeeToBeAdded.id).toEqual(employeeRetrieved.id);
-    expect(employeeToBeAdded.email).toEqual(employeeRetrieved.email);
+    expect(employeeToBeAdded.id).toEqual(employeeRetrieved?.id);
+    expect(employeeToBeAdded.email).toEqual(employeeRetrieved?.email);
   });
 
   it("deletes an employee from the repository", async () => {
