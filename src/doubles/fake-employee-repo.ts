@@ -7,7 +7,7 @@ export class FakeEmployeeRepo implements EmployeeRepo {
 
   async find(id: string): Promise<Employee> {
     const employeeIndex = this.employees.findIndex(
-      (employee) => employee.id == id
+      (employee) => employee.id === id
     );
 
     return this.employees[employeeIndex];
@@ -23,10 +23,10 @@ export class FakeEmployeeRepo implements EmployeeRepo {
 
   async delete(id: string): Promise<void> {
     const employeeIndex = this.employees.findIndex(
-      (employee) => employee.id == id
+      (employee) => employee.id === id
     );
 
-    this.employees.splice(employeeIndex, 1);
+    if (employeeIndex != -1) this.employees.splice(employeeIndex, 1);
   }
 
   async list(): Promise<Employee[]> {

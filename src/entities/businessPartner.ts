@@ -7,7 +7,7 @@ export class BusinessPartner {
     public ein: number,
     public email: string,
     public name: string,
-    public adress: string,
+    public address: string,
     public foods: Food[] = [],
     public treatments: Treatment[] = [],
     public id?: string

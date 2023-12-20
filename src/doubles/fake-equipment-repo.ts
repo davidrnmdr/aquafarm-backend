@@ -18,7 +18,7 @@ export class FakeEquipmentRepo implements EquipmentRepo {
 
   async updateStatus(id: string, status: string): Promise<void> {
     const equipmentIndex = this.equipments.findIndex(
-      (equipment) => (equipment.id = id)
+      (equipment) => equipment.id === id
     );
 
     this.equipments[equipmentIndex].status = status;
@@ -26,7 +26,7 @@ export class FakeEquipmentRepo implements EquipmentRepo {
 
   async updateMaintenanceCost(id: string, cost: number): Promise<void> {
     const equipmentIndex = this.equipments.findIndex(
-      (equipment) => (equipment.id = id)
+      (equipment) => equipment.id === id
     );
 
     this.equipments[equipmentIndex].totalMaintenanceCost += cost;
@@ -34,10 +34,10 @@ export class FakeEquipmentRepo implements EquipmentRepo {
 
   async delete(id: string): Promise<void> {
     const equipmentIndex = this.equipments.findIndex(
-      (equipment) => (equipment.id = id)
+      (equipment) => equipment.id === id
     );
 
-    this.equipments.splice(equipmentIndex, 1);
+    if (equipmentIndex != -1) this.equipments.splice(equipmentIndex, 1);
   }
 
   async list(): Promise<Equipment[]> {
