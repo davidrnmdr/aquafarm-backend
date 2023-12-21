@@ -1,4 +1,3 @@
-import { Produtcs } from "../types/Products";
 import { Food } from "./food";
 import { Treatment } from "./treatment";
 

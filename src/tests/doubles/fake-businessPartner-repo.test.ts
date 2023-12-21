@@ -2,7 +2,6 @@ import { FakeBusinessPartnerRepo } from "../../doubles/fake-businessPartner-repo
 import { BusinessPartner } from "../../entities/businessPartner";
 import { Food } from "../../entities/food";
 import { Treatment } from "../../entities/treatment";
-import { Produtcs } from "../../types/Products";
 
 let fakeBusinessPartnerRepo: FakeBusinessPartnerRepo;
 
