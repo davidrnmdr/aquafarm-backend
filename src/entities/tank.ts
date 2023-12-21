@@ -1,6 +1,3 @@
-import { Feeding } from "./feeding";
-import { TankVerification } from "./tankVerification";
-
 export class Tank {
   constructor(
     public type: string,
