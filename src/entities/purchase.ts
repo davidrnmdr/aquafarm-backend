@@ -8,6 +8,7 @@ export class Purchase {
     public partner: BusinessPartner,
     public date: Date,
     public food: Food | null,
-    public treatment: Treatment | null
+    public treatment: Treatment | null,
+    public id?: string
   ) {}
 }
