@@ -17,6 +17,13 @@ export class FakeTankRepo implements TankRepo {
     return this.tanks.find((tank) => tank.id === id);
   }
 
+  async findBy(
+    attribute: "type" | "capacity" | "location" | "status",
+    attributeValue: string | number
+  ): Promise<Tank[]> {
+    return this.tanks.filter((tank) => tank[attribute] === attributeValue);
+  }
+
   async updateStatus(id: string, status: number): Promise<void> {
     const tankIndex = this.tanks.findIndex((tank) => tank.id === id);
 

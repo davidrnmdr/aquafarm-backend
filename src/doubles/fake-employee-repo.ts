@@ -5,12 +5,8 @@ import crypto from "crypto";
 export class FakeEmployeeRepo implements EmployeeRepo {
   employees: Employee[] = [];
 
-  async find(id: string): Promise<Employee | undefined> {
-    const employeeIndex = this.employees.findIndex(
-      (employee) => employee.id === id
-    );
-
-    return this.employees[employeeIndex];
+  async find(email: string): Promise<Employee | undefined> {
+    return this.employees.find((employee) => employee.email === email);
   }
 
   async add(employee: Employee): Promise<string> {
