@@ -14,6 +14,7 @@ import { Employee } from "../../src/entities/employee";
 import { Tank } from "../../src/entities/tank";
 import { DuplicatedEmployeeError } from "../../src/errors/duplicate-employee-error";
 import { EmployeeNotFoundError } from "../../src/errors/employee-not-found-error";
+import { WrongTypeError } from "../../src/errors/wrong-type-error";
 
 let app: App;
 
@@ -85,8 +86,49 @@ describe("app using fake repositories", () => {
   });
 
   describe("register tank", () => {
-    const tankToBeAdded = new Tank("L-B2", "room 6", 98, 2000);
+    const tank = new Tank("L-B2", "room 6", 98, 2000);
+    const tank1 = new Tank("L-B2", "room 7", 70, 2500);
+    const tank2 = new Tank("S-C2", "room 7", 91, 100);
+    const tank3 = new Tank("M-A1", "room 1", 91, 3000);
+    const tank4 = new Tank("S-C2", "room 9", 37, 3000);
 
-    it("registers a given tank", async () => {});
+    it("registers a given tank", async () => {
+      const newId = await app.registerTank(tank);
+
+      expect(newId).toBeTruthy();
+      await expect(app.findTank(newId)).resolves.toMatchObject(tank);
+    });
+
+    it("retrieves a list of tanks that matches some given property", async () => {
+      await app.registerTank(tank);
+      await app.registerTank(tank1);
+      await app.registerTank(tank2);
+      await app.registerTank(tank3);
+      await app.registerTank(tank4);
+
+      const list = await app.findTanksBy("type", "L-B2");
+      const list1 = await app.findTanksBy("location", "room 7");
+      const list2 = await app.findTanksBy("status", 91);
+      const list3 = await app.findTanksBy("capacity", 3000);
+      const list4 = await app.findTanksBy("capacity", 999);
+
+      expect(list.includes(tank) && list.includes(tank1)).toBeTruthy();
+      expect(list1.includes(tank1) && list1.includes(tank2)).toBeTruthy();
+      expect(list2.includes(tank2) && list2.includes(tank3)).toBeTruthy();
+      expect(list3.includes(tank3) && list3.includes(tank4)).toBeTruthy();
+      expect(list4.length).toEqual(0);
+    });
+
+    it("throws WrongTypeError when passing a string when a number is expected and vice versa", async () => {
+      await expect(app.findTanksBy("capacity", 10)).resolves.toHaveLength(0);
+
+      await expect(app.findTanksBy("location", 10)).rejects.toThrow(
+        WrongTypeError
+      );
+
+      await expect(app.findTanksBy("status", "10")).rejects.toThrow(
+        WrongTypeError
+      );
+    });
   });
 });

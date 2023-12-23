@@ -1,5 +1,6 @@
 import { FakeTransactionRepo } from "../../src/doubles/fake-transaction-repo";
 import { BusinessPartner } from "../../src/entities/businessPartner";
+import { Employee } from "../../src/entities/employee";
 import { Food } from "../../src/entities/food";
 import { Purchase } from "../../src/entities/purchase";
 import { Sale } from "../../src/entities/sale";
@@ -21,6 +22,8 @@ describe("fake transaction repository", () => {
     []
   );
 
+  const employee = new Employee("david", "david@mail.com", "president", "123");
+
   const food = new Food("flakes", 120, 250, new Date("2024-10-12"), partner);
   const treatment = new Treatment(
     "skin med",
@@ -31,13 +34,20 @@ describe("fake transaction repository", () => {
   );
 
   it("adds a transaction to the repository", async () => {
-    const saleToBeAdded = new Sale(989.9, partner, new Date("2023-08-20"), 100);
+    const saleToBeAdded = new Sale(
+      989.9,
+      partner,
+      new Date("2023-08-20"),
+      100,
+      employee
+    );
     const purchaseToBeAdded = new Purchase(
       500.95,
       partner,
       new Date("2023-12-20"),
       food,
-      treatment
+      treatment,
+      employee
     );
 
     const saleId = await fakeTransactionRepo.add(saleToBeAdded);
@@ -49,13 +59,20 @@ describe("fake transaction repository", () => {
   });
 
   it("finds a transaction by id and type", async () => {
-    const saleToBeAdded = new Sale(989.9, partner, new Date("2023-08-20"), 100);
+    const saleToBeAdded = new Sale(
+      989.9,
+      partner,
+      new Date("2023-08-20"),
+      100,
+      employee
+    );
     const purchaseToBeAdded = new Purchase(
       500.95,
       partner,
       new Date("2023-12-20"),
       food,
-      treatment
+      treatment,
+      employee
     );
 
     const saleId = await fakeTransactionRepo.add(saleToBeAdded);

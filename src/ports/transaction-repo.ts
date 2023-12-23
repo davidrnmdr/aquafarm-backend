@@ -7,6 +7,5 @@ export interface TransactionRepo {
     type: "sale" | "purchase",
     id: string
   ): Promise<Sale | Purchase | undefined>;
-  delete(type: "sale" | "purchase", id: string): Promise<void>;
   list(type?: "sale" | "purchase"): Promise<Sale[] | Purchase[]>;
 }

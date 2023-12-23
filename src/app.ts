@@ -2,6 +2,8 @@ import { Employee } from "./entities/employee";
 import { Tank } from "./entities/tank";
 import { DuplicatedEmployeeError } from "./errors/duplicate-employee-error";
 import { EmployeeNotFoundError } from "./errors/employee-not-found-error";
+import { TankNotFoundError } from "./errors/tank-not-found-error";
+import { WrongTypeError } from "./errors/wrong-type-error";
 import { BusinessPartnerRepo } from "./ports/businessPartner-repo";
 import { EmployeeRepo } from "./ports/employee-repo";
 import { EquipmentRepo } from "./ports/equipments-repo";
@@ -49,10 +51,31 @@ export class App {
     return retrievedEmployee;
   }
 
-  // async registerTank(tank: Tank): Promise<string> {}
+  async registerTank(tank: Tank): Promise<string> {
+    return await this.tankRepo.add(tank);
+  }
 
-  // async findTanksBy(
-  //   attribute: string,
-  //   attributeValue: string | number
-  // ): Promise<Tank[]> {}
+  async findTank(id: string): Promise<Tank> {
+    const retrievedTank = await this.tankRepo.find(id);
+
+    if (!retrievedTank) throw new TankNotFoundError();
+
+    return retrievedTank;
+  }
+
+  async findTanksBy(
+    attribute: "type" | "capacity" | "status" | "location",
+    attributeValue: string | number
+  ): Promise<Tank[]> {
+    if (
+      (["type", "location"].includes(attribute) &&
+        typeof attributeValue === "number") ||
+      (["status", "capacity"].includes(attribute) &&
+        typeof attributeValue === "string")
+    ) {
+      throw new WrongTypeError();
+    }
+
+    return await this.tankRepo.findBy(attribute, attributeValue);
+  }
 }

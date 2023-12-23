@@ -28,8 +28,6 @@ export class FakeTransactionRepo implements TransactionRepo {
     } else return this.purchases.find((purchase) => purchase.id === id);
   }
 
-  async delete(type: "sale" | "purchase", id: string): Promise<void> {}
-
   async list(
     type?: "sale" | "purchase" | undefined
   ): Promise<Sale[] | Purchase[]> {

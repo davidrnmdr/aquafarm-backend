@@ -1,0 +1,100 @@
+import { FakeMedicationRepo } from "../../src/doubles/fake-medication-repo";
+import { BusinessPartner } from "../../src/entities/businessPartner";
+import { Employee } from "../../src/entities/employee";
+import { Medication } from "../../src/entities/medication";
+import { Treatment } from "../../src/entities/treatment";
+import { Tank } from "../../src/entities/tank";
+
+let fakeMedicationRepo: FakeMedicationRepo;
+
+/* 
+Adding a medication to the repository means that the used treatment
+must have it's storage decreased, but since this is a higher level
+behavior we will let it to be tested at ./src/app.ts.
+*/
+
+describe("fake medication repository", () => {
+  beforeEach(() => {
+    fakeMedicationRepo = new FakeMedicationRepo();
+  });
+
+  const employee = new Employee("david", "david@mail.com", "president", "123");
+  const tank = new Tank("LB-2", "room 3", 60, 1200);
+  const seller = new BusinessPartner(
+    9982,
+    "company@mail.com",
+    "company llc",
+    "street 5",
+    [],
+    []
+  );
+  const treatment = new Treatment(
+    "skin med",
+    200,
+    1200.99,
+    new Date("2024-12-12"),
+    seller
+  );
+
+  it("adds a medication to the repository", async () => {
+    const medicationToBeAdded = new Medication(
+      employee,
+      tank,
+      treatment,
+      2,
+      new Date("2023-10-11")
+    );
+
+    const newId = await fakeMedicationRepo.add(medicationToBeAdded);
+
+    expect(newId).toBeTruthy();
+    expect(fakeMedicationRepo.medications[0].id).toEqual(newId);
+  });
+
+  it("finds a medication by id", async () => {
+    const medicationToBeAdded = new Medication(
+      employee,
+      tank,
+      treatment,
+      2,
+      new Date("2023-10-11")
+    );
+
+    const newId = await fakeMedicationRepo.add(medicationToBeAdded);
+
+    const retrievedMedication = await fakeMedicationRepo.find(newId);
+
+    expect(retrievedMedication).toBeDefined();
+    expect(retrievedMedication?.id).toEqual(medicationToBeAdded.id);
+  });
+
+  it("removes a given medication from the repository", async () => {
+    const medicationToBeAdded1 = new Medication(
+      employee,
+      tank,
+      treatment,
+      2,
+      new Date("2023-10-11")
+    );
+
+    const newId1 = await fakeMedicationRepo.add(medicationToBeAdded1);
+
+    const medicationToBeAdded2 = new Medication(
+      employee,
+      tank,
+      treatment,
+      4,
+      new Date("2024-10-11")
+    );
+
+    const newId2 = await fakeMedicationRepo.add(medicationToBeAdded2);
+
+    await fakeMedicationRepo.delete(newId1);
+
+    expect(
+      fakeMedicationRepo.medications.includes(medicationToBeAdded1)
+    ).toBeFalsy();
+    expect(fakeMedicationRepo.medications.includes(medicationToBeAdded2))
+      .toBeTruthy;
+  });
+});
