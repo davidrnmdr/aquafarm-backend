@@ -18,6 +18,15 @@ export class FakeTankVerificationRepo implements TankVerificationRepo {
     return this.verifications.find((verification) => verification.id === id);
   }
 
+  async findByEmployee(
+    attribute: "email" | "name" | "role",
+    value: string
+  ): Promise<TankVerification[]> {
+    return this.verifications.filter(
+      (verification) => verification.employee[attribute] === value
+    );
+  }
+
   async delete(id: string): Promise<void> {
     const verificationIndex = this.verifications.findIndex(
       (verification) => verification.id === id

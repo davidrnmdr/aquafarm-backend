@@ -34,6 +34,7 @@ describe("fake maintenance repository", () => {
     299.9
   );
   const employee = new Employee("david", "david@mail.com", "president", "123");
+  const employee2 = new Employee("aaron", "aaron@mail.com", "president", "123");
 
   it("adds a maintenance to the repository", async () => {
     const maintenanceToBeAdded = new Maintenance(
@@ -63,6 +64,49 @@ describe("fake maintenance repository", () => {
 
     expect(retrievedMaintenance).toBeDefined();
     expect(retrievedMaintenance?.id).toEqual(maintenanceToBeAdded.id);
+  });
+
+  it("finds maintenances by some given employee attribute", async () => {
+    const maintenanceToBeAdded = new Maintenance(
+      equipment,
+      employee,
+      new Date("2023-12-20"),
+      982.9
+    );
+    const newId = await fakeMaintenanceRepo.add(maintenanceToBeAdded);
+
+    const maintenanceToBeAdded2 = new Maintenance(
+      equipment,
+      employee2,
+      new Date("2023-12-20"),
+      982.9
+    );
+    const newId2 = await fakeMaintenanceRepo.add(maintenanceToBeAdded2);
+
+    const maintenancesByEmail = await fakeMaintenanceRepo.findByEmployee(
+      "email",
+      "david@mail.com"
+    );
+
+    const maintenancesByName = await fakeMaintenanceRepo.findByEmployee(
+      "name",
+      "aaron"
+    );
+
+    const maintenancesByRole = await fakeMaintenanceRepo.findByEmployee(
+      "role",
+      "president"
+    );
+
+    expect(maintenancesByEmail.includes(maintenanceToBeAdded)).toBeTruthy();
+    expect(maintenancesByEmail).toHaveLength(1);
+
+    expect(maintenancesByName.includes(maintenanceToBeAdded2)).toBeTruthy();
+    expect(maintenancesByName).toHaveLength(1);
+
+    expect(maintenancesByRole.includes(maintenanceToBeAdded)).toBeTruthy();
+    expect(maintenancesByRole.includes(maintenanceToBeAdded2)).toBeTruthy();
+    expect(maintenancesByRole).toHaveLength(2);
   });
 
   it("removes a given maintenance from the repository", async () => {

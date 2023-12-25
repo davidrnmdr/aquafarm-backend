@@ -28,6 +28,19 @@ export class FakeTransactionRepo implements TransactionRepo {
     } else return this.purchases.find((purchase) => purchase.id === id);
   }
 
+  async findByEmployee(
+    type: "sale" | "purchase",
+    attribute: "name" | "email" | "role",
+    value: string
+  ): Promise<Sale[] | Purchase[]> {
+    if (type === "sale") {
+      return this.sales.filter((sale) => sale.employee[attribute] === value);
+    }
+    return this.purchases.filter(
+      (purchase) => purchase.employee[attribute] === value
+    );
+  }
+
   async list(
     type?: "sale" | "purchase" | undefined
   ): Promise<Sale[] | Purchase[]> {

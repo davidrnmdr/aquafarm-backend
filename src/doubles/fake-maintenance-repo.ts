@@ -18,6 +18,15 @@ export class FakeMaintenanceRepo implements MaintenanceRepo {
     return this.maintenances.find((maintenance) => maintenance.id === id);
   }
 
+  async findByEmployee(
+    attribute: "email" | "name" | "role",
+    value: string
+  ): Promise<Maintenance[]> {
+    return this.maintenances.filter(
+      (maintenance) => maintenance.employee[attribute] === value
+    );
+  }
+
   async delete(id: string): Promise<void> {
     const maintenanceIndex = this.maintenances.findIndex(
       (maintenance) => maintenance.id === id

@@ -18,6 +18,15 @@ export class FakeMedicationRepo implements MedicationRepo {
     return this.medications.find((medication) => medication.id === id);
   }
 
+  async findByEmployee(
+    attribute: "email" | "name" | "role",
+    value: string
+  ): Promise<Medication[]> {
+    return this.medications.filter(
+      (medication) => medication.employee[attribute] === value
+    );
+  }
+
   async delete(id: string): Promise<void> {
     const medicationIndex = this.medications.findIndex(
       (medication) => medication.id === id

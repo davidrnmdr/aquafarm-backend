@@ -23,6 +23,7 @@ describe("fake transaction repository", () => {
   );
 
   const employee = new Employee("david", "david@mail.com", "president", "123");
+  const employee2 = new Employee("aaron", "aaron@mail.com", "president", "123");
 
   const food = new Food("flakes", 120, 250, new Date("2024-10-12"), partner);
   const treatment = new Treatment(
@@ -89,5 +90,101 @@ describe("fake transaction repository", () => {
     ).toBeTruthy();
     expect(retrievedSale?.id).toEqual(saleToBeAdded.id);
     expect(retrievedPurchase?.id).toEqual(purchaseToBeAdded.id);
+  });
+
+  it("finds transactions by type and some given employee attribute", async () => {
+    const saleToBeAdded = new Sale(
+      989.9,
+      partner,
+      new Date("2023-08-20"),
+      100,
+      employee
+    );
+    const saleId = await fakeTransactionRepo.add(saleToBeAdded);
+
+    const purchaseToBeAdded = new Purchase(
+      500.95,
+      partner,
+      new Date("2023-12-20"),
+      food,
+      treatment,
+      employee
+    );
+    const purchaseId = await fakeTransactionRepo.add(purchaseToBeAdded);
+
+    const saleToBeAdded2 = new Sale(
+      989.9,
+      partner,
+      new Date("2023-08-20"),
+      100,
+      employee2
+    );
+    const saleId2 = await fakeTransactionRepo.add(saleToBeAdded2);
+
+    const purchaseToBeAdded2 = new Purchase(
+      500.95,
+      partner,
+      new Date("2023-12-20"),
+      food,
+      treatment,
+      employee2
+    );
+    const purchaseId2 = await fakeTransactionRepo.add(purchaseToBeAdded2);
+
+    const salesByName = await fakeTransactionRepo.findByEmployee(
+      "sale",
+      "name",
+      "david"
+    );
+
+    const salesByEmail = await fakeTransactionRepo.findByEmployee(
+      "sale",
+      "email",
+      "david@mail.com"
+    );
+
+    const salesByRole = await fakeTransactionRepo.findByEmployee(
+      "sale",
+      "role",
+      "president"
+    );
+
+    expect(salesByName).toHaveLength(1);
+    expect(salesByName[0].id).toEqual(saleId);
+
+    expect(salesByEmail).toHaveLength(1);
+    expect(salesByEmail[0].id).toEqual(saleId);
+
+    expect(salesByRole).toHaveLength(2);
+    expect(salesByRole[0].id).toEqual(saleId);
+    expect(salesByRole[1].id).toEqual(saleId2);
+
+    const purchasesByName = await fakeTransactionRepo.findByEmployee(
+      "purchase",
+      "name",
+      "david"
+    );
+
+    const purchasesByEmail = await fakeTransactionRepo.findByEmployee(
+      "purchase",
+      "email",
+      "david@mail.com"
+    );
+
+    const purchasesByRole = await fakeTransactionRepo.findByEmployee(
+      "purchase",
+      "role",
+      "president"
+    );
+
+    expect(purchasesByName).toHaveLength(1);
+    expect(purchasesByName[0].id).toEqual(purchaseId);
+
+    expect(purchasesByEmail).toHaveLength(1);
+    expect(purchasesByEmail[0].id).toEqual(purchaseId);
+
+    expect(purchasesByRole).toHaveLength(2);
+    expect(purchasesByRole[0].id).toEqual(purchaseId);
+    expect(purchasesByRole[1].id).toEqual(purchaseId2);
   });
 });

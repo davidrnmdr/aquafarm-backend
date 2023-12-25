@@ -20,6 +20,7 @@ describe("fake feeding repository", () => {
   });
 
   const employee = new Employee("david", "david@mail.com", "president", "123");
+  const employee2 = new Employee("aaron", "aaron@mail.com", "president", "123");
   const tank = new Tank("LB-2", "room 3", 60, 1200);
   const seller = new BusinessPartner(
     9982,
@@ -61,6 +62,51 @@ describe("fake feeding repository", () => {
 
     expect(retrievedFeeding).toBeDefined();
     expect(retrievedFeeding?.id).toEqual(feedingToBeAdded.id);
+  });
+
+  it("finds feedings by some given employee attribute", async () => {
+    const feedingToBeAdded = new Feeding(
+      employee,
+      tank,
+      food,
+      2,
+      new Date("2023-10-11")
+    );
+    const newId = await fakeFeedingRepo.add(feedingToBeAdded);
+
+    const feedingToBeAdded2 = new Feeding(
+      employee2,
+      tank,
+      food,
+      2,
+      new Date("2023-10-11")
+    );
+    const newId2 = await fakeFeedingRepo.add(feedingToBeAdded2);
+
+    const feedingsByEmail = await fakeFeedingRepo.findByEmployee(
+      "email",
+      "david@mail.com"
+    );
+
+    const feedingsByName = await fakeFeedingRepo.findByEmployee(
+      "name",
+      "aaron"
+    );
+
+    const feedingsByRole = await fakeFeedingRepo.findByEmployee(
+      "role",
+      "president"
+    );
+
+    expect(feedingsByEmail.includes(feedingToBeAdded)).toBeTruthy();
+    expect(feedingsByEmail).toHaveLength(1);
+
+    expect(feedingsByName.includes(feedingToBeAdded2)).toBeTruthy();
+    expect(feedingsByName).toHaveLength(1);
+
+    expect(feedingsByRole.includes(feedingToBeAdded)).toBeTruthy();
+    expect(feedingsByRole.includes(feedingToBeAdded2)).toBeTruthy();
+    expect(feedingsByRole).toHaveLength(2);
   });
 
   it("removes a given feeding from the repository", async () => {

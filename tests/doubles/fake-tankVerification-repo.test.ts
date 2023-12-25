@@ -12,6 +12,7 @@ describe("fake tank verification repository", () => {
 
   const tank = new Tank("M-B1", "room 2", 23.1, 1300);
   const employee = new Employee("david", "david@mail.com", "president", "123");
+  const employee2 = new Employee("aaron", "aaron@mail.com", "president", "123");
 
   it("adds a verification to the repository", async () => {
     const verificationToBeAdded = new TankVerification(
@@ -45,6 +46,53 @@ describe("fake tank verification repository", () => {
 
     expect(retrievedVerification).toBeDefined();
     expect(retrievedVerification?.id).toEqual(verificationToBeAdded.id);
+  });
+
+  it("finds verifications by some employee attribute passed", async () => {
+    const verificationToBeAdded = new TankVerification(
+      tank,
+      employee,
+      23.45,
+      20.2,
+      7,
+      new Date("2023-11-10")
+    );
+    const newId = await fakeTankVerificationRepo.add(verificationToBeAdded);
+
+    const verificationToBeAdded2 = new TankVerification(
+      tank,
+      employee2,
+      23.45,
+      20.2,
+      7,
+      new Date("2023-11-10")
+    );
+    const newId2 = await fakeTankVerificationRepo.add(verificationToBeAdded2);
+
+    const verificationsByEmail = await fakeTankVerificationRepo.findByEmployee(
+      "email",
+      "david@mail.com"
+    );
+
+    const verificationsByName = await fakeTankVerificationRepo.findByEmployee(
+      "name",
+      "aaron"
+    );
+
+    const verificationsByRole = await fakeTankVerificationRepo.findByEmployee(
+      "role",
+      "president"
+    );
+
+    expect(verificationsByEmail.includes(verificationToBeAdded)).toBeTruthy();
+    expect(verificationsByEmail).toHaveLength(1);
+
+    expect(verificationsByName.includes(verificationToBeAdded2)).toBeTruthy();
+    expect(verificationsByName).toHaveLength(1);
+
+    expect(verificationsByRole.includes(verificationToBeAdded)).toBeTruthy();
+    expect(verificationsByRole.includes(verificationToBeAdded2)).toBeTruthy();
+    expect(verificationsByRole).toHaveLength(2);
   });
 
   it("removes a verification from the repository", async () => {

@@ -18,6 +18,15 @@ export class FakeFeedingRepo implements FeedingRepo {
     return this.feedings.find((feeding) => feeding.id === id);
   }
 
+  async findByEmployee(
+    attribute: "email" | "name" | "role",
+    value: string
+  ): Promise<Feeding[]> {
+    return this.feedings.filter(
+      (feeding) => feeding.employee[attribute] === value
+    );
+  }
+
   async delete(id: string): Promise<void> {
     const feedingIndex = this.feedings.findIndex(
       (feeding) => feeding.id === id

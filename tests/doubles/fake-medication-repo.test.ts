@@ -19,6 +19,7 @@ describe("fake medication repository", () => {
   });
 
   const employee = new Employee("david", "david@mail.com", "president", "123");
+  const employee2 = new Employee("aaron", "aaron@mail.com", "president", "123");
   const tank = new Tank("LB-2", "room 3", 60, 1200);
   const seller = new BusinessPartner(
     9982,
@@ -66,6 +67,51 @@ describe("fake medication repository", () => {
 
     expect(retrievedMedication).toBeDefined();
     expect(retrievedMedication?.id).toEqual(medicationToBeAdded.id);
+  });
+
+  it("finds medications by some given employee attribute", async () => {
+    const medicationToBeAdded = new Medication(
+      employee,
+      tank,
+      treatment,
+      2,
+      new Date("2023-10-11")
+    );
+    const newId = await fakeMedicationRepo.add(medicationToBeAdded);
+
+    const medicationToBeAdded2 = new Medication(
+      employee2,
+      tank,
+      treatment,
+      2,
+      new Date("2023-10-11")
+    );
+    const newId2 = await fakeMedicationRepo.add(medicationToBeAdded2);
+
+    const medicationsByEmail = await fakeMedicationRepo.findByEmployee(
+      "email",
+      "david@mail.com"
+    );
+
+    const medicationsByName = await fakeMedicationRepo.findByEmployee(
+      "name",
+      "aaron"
+    );
+
+    const medicationsByRole = await fakeMedicationRepo.findByEmployee(
+      "role",
+      "president"
+    );
+
+    expect(medicationsByEmail.includes(medicationToBeAdded)).toBeTruthy();
+    expect(medicationsByEmail).toHaveLength(1);
+
+    expect(medicationsByName.includes(medicationToBeAdded2)).toBeTruthy();
+    expect(medicationsByName).toHaveLength(1);
+
+    expect(medicationsByRole.includes(medicationToBeAdded)).toBeTruthy();
+    expect(medicationsByRole.includes(medicationToBeAdded2)).toBeTruthy();
+    expect(medicationsByRole).toHaveLength(2);
   });
 
   it("removes a given medication from the repository", async () => {
