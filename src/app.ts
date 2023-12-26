@@ -2,8 +2,12 @@ import { BusinessPartner } from "./entities/businessPartner";
 import { Employee } from "./entities/employee";
 import { Feeding } from "./entities/feeding";
 import { Food } from "./entities/food";
+import { Medication } from "./entities/medication";
+import { Purchase } from "./entities/purchase";
+import { Sale } from "./entities/sale";
 import { Tank } from "./entities/tank";
 import { TankVerification } from "./entities/tankVerification";
+import { Treatment } from "./entities/treatment";
 import { DuplicatedEmployeeError } from "./errors/duplicate-employee-error";
 import { DuplicatePartnerError } from "./errors/duplicate-partner-error";
 import { EmployeeNotFoundError } from "./errors/employee-not-found-error";
@@ -21,6 +25,7 @@ import { EquipmentRepo } from "./ports/equipments-repo";
 import { FeedingRepo } from "./ports/feeding-repo";
 import { FoodRepo } from "./ports/food-repo";
 import { MaintenanceRepo } from "./ports/maintenance-repo";
+import { MedicationRepo } from "./ports/medication-repo";
 import { TankRepo } from "./ports/tank-repo";
 import { TankVerificationRepo } from "./ports/tankVerification-repo";
 import { TransactionRepo } from "./ports/transaction-repo";
@@ -40,7 +45,8 @@ export class App {
     readonly tankRepo: TankRepo,
     readonly tankVerificationRepo: TankVerificationRepo,
     readonly transactionRepo: TransactionRepo,
-    readonly treatmentRepo: TreatmentRepo
+    readonly treatmentRepo: TreatmentRepo,
+    readonly medicationRepo: MedicationRepo
   ) {}
 
   async registerEmployee(employee: Employee): Promise<string> {
@@ -107,9 +113,31 @@ export class App {
   }
 
   async removeFood(id: string): Promise<void> {
-    const retrievedFood = await this.findFood(id);
+    await this.findFood(id);
 
     await this.foodRepo.delete(id);
+  }
+
+  async registerTreatment(treatment: Treatment): Promise<string> {
+    const seller = await this.businessPartnerRepo.find(treatment.seller.ein);
+
+    if (!seller) throw new PartnerNotFoundError();
+
+    return this.treatmentRepo.add(treatment);
+  }
+
+  async findTreatment(id: string): Promise<Treatment> {
+    const retrievedTreatment = await this.treatmentRepo.find(id);
+
+    if (!retrievedTreatment) throw new FoodNotFoundError();
+
+    return retrievedTreatment;
+  }
+
+  async removeTreatment(id: string): Promise<void> {
+    await this.findTreatment(id);
+
+    await this.treatmentRepo.delete(id);
   }
 
   async findBusinessPartner(ein: number): Promise<BusinessPartner> {
@@ -173,7 +201,7 @@ export class App {
 
     food.quantity - quantity === 0
       ? await this.removeFood(foodId)
-      : await this.foodRepo.updateQuantity(foodId, food.quantity - quantity);
+      : await this.foodRepo.updateStorage(foodId, food.quantity - quantity);
 
     return this.feedingRepo.add(
       new Feeding(employee, tank, food, quantity, today)
@@ -186,5 +214,129 @@ export class App {
     if (!retrievedFeeding) throw new FeedingNotFoundError();
 
     return retrievedFeeding;
+  }
+
+  async findFeedingsByEmployee(
+    attribute: "email" | "name" | "role",
+    value: string
+  ): Promise<Feeding[]> {
+    const retrievedFeedings = await this.feedingRepo.findByEmployee(
+      attribute,
+      value
+    );
+
+    if (retrievedFeedings.length === 0) throw new UnableToFindError();
+
+    return retrievedFeedings;
+  }
+
+  async registerSale(
+    value: number,
+    partnerEin: number,
+    quantity: number,
+    employeeEmail: string
+  ) {
+    const partner = await this.findBusinessPartner(partnerEin);
+    const employee = await this.findEmployee(employeeEmail);
+
+    const today = new Date();
+
+    return await this.transactionRepo.add(
+      new Sale(value, partner, today, quantity, employee)
+    );
+  }
+
+  async findSalesByEmployee(
+    attribute: "email" | "name" | "role",
+    value: string
+  ): Promise<Sale[]> {
+    const retrievedSales = await this.transactionRepo.findByEmployee(
+      "sale",
+      attribute,
+      value
+    );
+
+    if (retrievedSales.length === 0) throw new UnableToFindError();
+
+    return retrievedSales as Sale[];
+  }
+
+  // need to register both the food and the treatment
+  // before registering a purchase
+  async registerPurchase(
+    value: number,
+    partnerEin: number,
+    foodId: string | null,
+    treatmentId: string | null,
+    employeeEmail: string
+  ): Promise<string> {
+    const food = foodId ? await this.findFood(foodId) : null;
+    const treatment = treatmentId
+      ? await this.findTreatment(treatmentId)
+      : null;
+    const partner = await this.findBusinessPartner(partnerEin);
+    const employee = await this.findEmployee(employeeEmail);
+
+    const today = new Date();
+
+    return await this.transactionRepo.add(
+      new Purchase(value, partner, today, food, treatment, employee)
+    );
+  }
+
+  async findPurchasesByEmployee(
+    attribute: "email" | "name" | "role",
+    value: string
+  ): Promise<Purchase[]> {
+    const retrievedPurchases = await this.transactionRepo.findByEmployee(
+      "purchase",
+      attribute,
+      value
+    );
+
+    if (retrievedPurchases.length === 0) throw new UnableToFindError();
+
+    return retrievedPurchases as Purchase[];
+  }
+
+  async registerMedication(
+    tankId: string,
+    employeeEmail: string,
+    treatmentId: string,
+    quantity: number
+  ): Promise<string> {
+    const tank = await this.findTank(tankId);
+    const employee = await this.findEmployee(employeeEmail);
+    const treatment = await this.findTreatment(treatmentId);
+
+    const today = new Date();
+
+    if (treatment.quantity < quantity) throw new InsuficientFoodError();
+    if (treatment.expirationDate < today) throw new ExpiredFoodError();
+
+    treatment.quantity - quantity === 0
+      ? await this.removeTreatment(treatmentId)
+      : await this.treatmentRepo.updateStorage(
+          treatmentId,
+          treatment.quantity - quantity
+        );
+
+    return this.medicationRepo.add(
+      new Medication(employee, tank, treatment, quantity, today)
+    );
+  }
+
+  async findMedicationsByEmployee(
+    attribute: "email" | "name" | "role",
+    value: string
+  ): Promise<Medication[]> {
+    const retrievedMedications = await this.medicationRepo.findByEmployee(
+      attribute,
+      value
+    );
+
+    if (retrievedMedications.length === 0) throw new UnableToFindError();
+
+    return retrievedMedications;
   }
 }

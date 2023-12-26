@@ -1,7 +1,7 @@
 import { Medication } from "../entities/medication";
 
 export interface MedicationRepo {
-  add(feeding: Medication): Promise<string>;
+  add(medication: Medication): Promise<string>;
   find(id: string): Promise<Medication | undefined>;
   findByEmployee(
     attribute: "email" | "name" | "role",
