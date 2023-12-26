@@ -3,7 +3,7 @@ import { Food } from "../entities/food";
 import { Treatment } from "../entities/treatment";
 
 export interface BusinessPartnerRepo {
-  find(id: string): Promise<BusinessPartner | undefined>;
+  find(ein: number): Promise<BusinessPartner | undefined>;
   add(businessPartner: BusinessPartner): Promise<string>;
   updateProducts(
     id: string,

@@ -76,4 +76,22 @@ describe("fake food repository", () => {
     expect(fakeFoodRepo.foods.includes(foodToBeAdded1)).toBeFalsy();
     expect(fakeFoodRepo.foods.includes(foodToBeAdded2)).toBeTruthy();
   });
+
+  it("updates the storage of a given food", async () => {
+    const foodToBeAdded = new Food(
+      "flakes",
+      200,
+      100.99,
+      new Date("2000-01-01"),
+      seller
+    );
+
+    const newId = await fakeFoodRepo.add(foodToBeAdded);
+
+    const quantity = 123;
+
+    await fakeFoodRepo.updateQuantity(newId, quantity);
+
+    expect(fakeFoodRepo.foods[0].quantity).toEqual(quantity);
+  });
 });

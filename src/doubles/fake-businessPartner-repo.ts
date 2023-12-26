@@ -7,8 +7,8 @@ import crypto from "crypto";
 export class FakeBusinessPartnerRepo implements BusinessPartnerRepo {
   businessPartners: BusinessPartner[] = [];
 
-  async find(id: string): Promise<BusinessPartner | undefined> {
-    return this.businessPartners.find((partner) => partner.id === id);
+  async find(ein: number): Promise<BusinessPartner | undefined> {
+    return this.businessPartners.find((partner) => partner.ein === ein);
   }
 
   async add(businessPartner: BusinessPartner): Promise<string> {
@@ -58,7 +58,7 @@ export class FakeBusinessPartnerRepo implements BusinessPartnerRepo {
 
   async delete(id: string): Promise<void> {
     const partnerIndex = this.businessPartners.findIndex(
-      (partner) => (partner.id = id)
+      (partner) => partner.id === id
     );
 
     if (partnerIndex != -1) this.businessPartners.splice(partnerIndex, 1);

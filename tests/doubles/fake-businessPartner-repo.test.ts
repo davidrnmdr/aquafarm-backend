@@ -36,7 +36,7 @@ describe("fake partners repo", () => {
 
     const newId = await fakeBusinessPartnerRepo.add(partner);
 
-    const retrievedPartner = await fakeBusinessPartnerRepo.find(newId);
+    const retrievedPartner = await fakeBusinessPartnerRepo.find(partner.ein);
 
     expect(retrievedPartner?.id).toEqual(partner.id);
     expect(retrievedPartner?.ein).toEqual(partner.ein);
@@ -156,7 +156,7 @@ describe("fake partners repo", () => {
     const partner1Id = await fakeBusinessPartnerRepo.add(partner1);
 
     const partner2: BusinessPartner = new BusinessPartner(
-      123,
+      124,
       "mall@sales.com",
       "mall",
       "street 1"
@@ -166,8 +166,11 @@ describe("fake partners repo", () => {
 
     await fakeBusinessPartnerRepo.delete(partner1Id);
 
-    expect(await fakeBusinessPartnerRepo.find(partner1Id)).toBeFalsy();
-    expect(await fakeBusinessPartnerRepo.find(partner2Id)).toBeTruthy();
+    const retrievedPartner1 = await fakeBusinessPartnerRepo.find(partner1.ein);
+    const retrievedPartner2 = await fakeBusinessPartnerRepo.find(partner2.ein);
+
+    expect(retrievedPartner1).toBeUndefined();
+    expect(retrievedPartner2).toBeTruthy();
   });
 
   it("lists the partners", async () => {

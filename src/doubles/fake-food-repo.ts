@@ -23,6 +23,12 @@ export class FakeFoodRepo implements FoodRepo {
     if (foodIndex != -1) this.foods.splice(foodIndex, 1);
   }
 
+  async updateQuantity(id: string, quantity: number): Promise<void> {
+    const foodIndex = this.foods.findIndex((food) => food.id === id);
+
+    if (foodIndex != -1) this.foods[foodIndex].quantity = quantity;
+  }
+
   async list(): Promise<Food[]> {
     return this.foods;
   }
