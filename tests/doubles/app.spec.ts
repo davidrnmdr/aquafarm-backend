@@ -24,8 +24,11 @@ import { ExpiredFoodError } from "../../src/errors/expired-food-error";
 import { ExpiredTreatmentError } from "../../src/errors/expired-treatment-error";
 import { FoodNotFoundError } from "../../src/errors/food-not-found-error";
 import { InsuficientFoodError } from "../../src/errors/insuficient-food-error";
+import { InsuficientPermissionError } from "../../src/errors/insuficient-permission-error";
 import { InsuficientTreatmentError } from "../../src/errors/insuficient-treatment-error";
+import { InvalidInputError } from "../../src/errors/invalid-input-error";
 import { PartnerNotFoundError } from "../../src/errors/partner-not-found-error";
+import { TankNotFoundError } from "../../src/errors/tank-not-found-error";
 import { UnableToFindError } from "../../src/errors/unable-to-find-error";
 import { WrongTypeError } from "../../src/errors/wrong-type-error";
 
@@ -143,6 +146,12 @@ describe("app using fake repositories", () => {
       await expect(app.findTanksBy("status", "10")).rejects.toThrow(
         WrongTypeError
       );
+    });
+
+    it("throws TankNotFound when trying to retrieve a non-registered tank", async () => {
+      const tankId = await app.registerTank(tank);
+
+      await expect(app.findTank("987")).rejects.toThrow(TankNotFoundError);
     });
   });
 
@@ -417,6 +426,23 @@ describe("app using fake repositories", () => {
 
     const tank = new Tank("L-A1", "room 2", 76, 2300);
 
+    it("throws InvalidInputError when trying to register a verification with oxygen < 0 or ph < 0 or ph > 14", async () => {
+      const employeeId = await app.registerEmployee(employee);
+      const tankId = await app.registerTank(tank);
+
+      await expect(
+        app.registerVerification(tankId, employee.email, 12, 2, 20)
+      ).rejects.toThrow(InvalidInputError);
+
+      await expect(
+        app.registerVerification(tankId, employee.email, 12, -4, 7)
+      ).rejects.toThrow(InvalidInputError);
+
+      await expect(
+        app.registerVerification(tankId, employee.email, 12, -4, 15)
+      ).rejects.toThrow(InvalidInputError);
+    });
+
     it("returns a list of verifications", async () => {
       const employeeId = await app.registerEmployee(employee);
       const employeeId2 = await app.registerEmployee(employee2);
@@ -537,6 +563,17 @@ describe("app using fake repositories", () => {
       seller
     );
 
+    it("throws InvalidInputError when trying to register a feeding with negative quantity", async () => {
+      const employeeId = await app.registerEmployee(employee);
+      const tankId = await app.registerTank(tank);
+      const sellerId = await app.registerBusinessPartner(seller);
+      const foodId = await app.registerFood(food);
+
+      await expect(
+        app.registerFeeding(tankId, employee.email, foodId, -10)
+      ).rejects.toThrow(InvalidInputError);
+    });
+
     it("returns a list of feedings", async () => {
       const employeeId = await app.registerEmployee(employee);
       const employeeId2 = await app.registerEmployee(employee2);
@@ -644,6 +681,23 @@ describe("app using fake repositories", () => {
       []
     );
 
+    it("throws InvalidInputError when trying to register a sale with value < 0 or quantity < 0", async () => {
+      const employeeId = await app.registerEmployee(employee);
+      const partnerId = await app.registerBusinessPartner(partner);
+
+      await expect(
+        app.registerSale(-10, partner.ein, 100, employee.email)
+      ).rejects.toThrow(InvalidInputError);
+
+      await expect(
+        app.registerSale(-10, partner.ein, -100, employee.email)
+      ).rejects.toThrow(InvalidInputError);
+
+      await expect(
+        app.registerSale(10, partner.ein, -100, employee.email)
+      ).rejects.toThrow(InvalidInputError);
+    });
+
     it("returns a list of sales", async () => {
       const employeeId = await app.registerEmployee(employee);
       const employeeId2 = await app.registerEmployee(employee2);
@@ -735,6 +789,13 @@ describe("app using fake repositories", () => {
       "123"
     );
 
+    const employee3 = new Employee(
+      "medeiro",
+      "medeiro@mail.com",
+      "technician",
+      "123"
+    );
+
     const partner = new BusinessPartner(
       987,
       "company@mail.com",
@@ -752,6 +813,14 @@ describe("app using fake repositories", () => {
       partner
     );
 
+    const food2 = new Food(
+      "flakes",
+      -20,
+      2998.65,
+      new Date("2024-1010"),
+      partner
+    );
+
     const treatment = new Treatment(
       "skin med",
       100,
@@ -759,6 +828,73 @@ describe("app using fake repositories", () => {
       new Date("2025-1010"),
       partner
     );
+
+    const treatment2 = new Treatment(
+      "skin med",
+      -45,
+      3499.75,
+      new Date("2025-1010"),
+      partner
+    );
+
+    it("throws InvalidInputError when trying to register a purchase with quantities < 0", async () => {
+      const employeeId = await app.registerEmployee(employee);
+      const partnerId = await app.registerBusinessPartner(partner);
+      const foodId = await app.registerFood(food);
+      const foodId2 = await app.registerFood(food2);
+      const treatmentId2 = await app.registerTreatment(treatment2);
+
+      await expect(
+        app.registerPurchase(
+          6500,
+          partner.ein,
+          foodId2,
+          treatmentId2,
+          employee.email
+        )
+      ).rejects.toThrow(InvalidInputError);
+
+      await expect(
+        app.registerPurchase(
+          6500,
+          partner.ein,
+          foodId,
+          treatmentId2,
+          employee.email
+        )
+      ).rejects.toThrow(InvalidInputError);
+    });
+
+    it("throws InsuficientPermissionError when a non-manager tries to register a purchase with divergent values", async () => {
+      const employeeId3 = await app.registerEmployee(employee3);
+      const partnerId = await app.registerBusinessPartner(partner);
+      const foodId = await app.registerFood(food);
+      const treatmentId = await app.registerTreatment(treatment);
+
+      await expect(
+        app.registerPurchase(
+          3500,
+          partner.ein,
+          null,
+          treatmentId,
+          employee3.email
+        )
+      ).rejects.toThrow(InsuficientPermissionError);
+
+      await expect(
+        app.registerPurchase(3000, partner.ein, foodId, null, employee3.email)
+      ).rejects.toThrow(InsuficientPermissionError);
+
+      await expect(
+        app.registerPurchase(
+          6500.0,
+          partner.ein,
+          foodId,
+          treatmentId,
+          employee3.email
+        )
+      ).rejects.toThrow(InsuficientPermissionError);
+    });
 
     it("returns a list of purchases", async () => {
       const employeeId = await app.registerEmployee(employee);
@@ -884,6 +1020,17 @@ describe("app using fake repositories", () => {
       seller
     );
 
+    it("throws InvalidInputError when trying to register a medication with negative quantity", async () => {
+      const employeeId = await app.registerEmployee(employee);
+      const tankId = await app.registerTank(tank);
+      const sellerId = await app.registerBusinessPartner(seller);
+      const treatmentId = await app.registerTreatment(treatment);
+
+      await expect(
+        app.registerMedication(tankId, employee.email, treatmentId, -9)
+      ).rejects.toThrow(InvalidInputError);
+    });
+
     it("returns a list of medications", async () => {
       const employeeId = await app.registerEmployee(employee);
       const employeeId2 = await app.registerEmployee(employee2);
@@ -1002,6 +1149,16 @@ describe("app using fake repositories", () => {
       0,
       14000
     );
+
+    it("throws InvalidInputError when trying to register a maintenance with negative cost", async () => {
+      const employeeId = await app.registerEmployee(employee);
+      const sellerId = await app.registerBusinessPartner(seller);
+      const equipmentId = await app.registerEquipment(equipment);
+
+      await expect(
+        app.registerMaintenance(equipmentId, employee.email, -988.9)
+      ).rejects.toThrow(InvalidInputError);
+    });
 
     it("returns a list of maintenances", async () => {
       const employeeId = await app.registerEmployee(employee);

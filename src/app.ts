@@ -19,7 +19,9 @@ import { ExpiredTreatmentError } from "./errors/expired-treatment-error";
 import { FeedingNotFoundError } from "./errors/feeding-not-found-error";
 import { FoodNotFoundError } from "./errors/food-not-found-error";
 import { InsuficientFoodError } from "./errors/insuficient-food-error";
+import { InsuficientPermissionError } from "./errors/insuficient-permission-error";
 import { InsuficientTreatmentError } from "./errors/insuficient-treatment-error";
+import { InvalidInputError } from "./errors/invalid-input-error";
 import { PartnerNotFoundError } from "./errors/partner-not-found-error";
 import { TankNotFoundError } from "./errors/tank-not-found-error";
 import { UnableToFindError } from "./errors/unable-to-find-error";
@@ -36,6 +38,8 @@ import { TankVerificationRepo } from "./ports/tankVerification-repo";
 import { TransactionRepo } from "./ports/transaction-repo";
 import { TreatmentRepo } from "./ports/treatment-repo";
 import { Crypt } from "./services/crypt";
+
+const superRoles = new Set(["president", "manager"]);
 
 export class App {
   crypt: Crypt = new Crypt();
@@ -180,6 +184,8 @@ export class App {
     oxygen: number,
     ph: number
   ): Promise<string> {
+    if (!(oxygen > 0 && isInRange(ph, 0, 14))) throw new InvalidInputError();
+
     const today = new Date();
     const tank = await this.findTank(tankId);
     const employee = await this.findEmployee(employeeEmail);
@@ -207,6 +213,8 @@ export class App {
     foodId: string,
     quantity: number
   ): Promise<string> {
+    if (quantity < 0) throw new InvalidInputError();
+
     const tank = await this.findTank(tankId);
     const employee = await this.findEmployee(employeeEmail);
     const food = await this.findFood(foodId);
@@ -253,6 +261,8 @@ export class App {
     quantity: number,
     employeeEmail: string
   ) {
+    if (value < 0 || quantity < 0) throw new InvalidInputError();
+
     const partner = await this.findBusinessPartner(partnerEin);
     const employee = await this.findEmployee(employeeEmail);
 
@@ -278,8 +288,6 @@ export class App {
     return retrievedSales as Sale[];
   }
 
-  // need to register both the food and the treatment
-  // before registering a purchase
   async registerPurchase(
     value: number,
     partnerEin: number,
@@ -287,12 +295,41 @@ export class App {
     treatmentId: string | null,
     employeeEmail: string
   ): Promise<string> {
-    const food = foodId ? await this.findFood(foodId) : null;
-    const treatment = treatmentId
-      ? await this.findTreatment(treatmentId)
-      : null;
+    let totalValue = 0;
+
+    let food = null;
+    let foodQuantity: number = 0;
+
+    let treatment = null;
+    let treatmentQuantity: number = 0;
+
+    totalValue =
+      foodId &&
+      (foodQuantity = (food = await this.findFood(foodId)).quantity) > 0
+        ? totalValue + food.cost
+        : totalValue;
+
+    totalValue =
+      treatmentId &&
+      (treatmentQuantity = (treatment = await this.findTreatment(treatmentId))
+        .quantity) > 0
+        ? totalValue + treatment.cost
+        : totalValue;
+
+    if (
+      value < 0 ||
+      foodQuantity < 0 ||
+      treatmentQuantity < 0 ||
+      (foodQuantity === 0 && treatmentQuantity === 0)
+    )
+      throw new InvalidInputError();
+
     const partner = await this.findBusinessPartner(partnerEin);
     const employee = await this.findEmployee(employeeEmail);
+
+    if (totalValue != value && !superRoles.has(employee.role)) {
+      throw new InsuficientPermissionError();
+    }
 
     const today = new Date();
 
@@ -322,6 +359,8 @@ export class App {
     treatmentId: string,
     quantity: number
   ): Promise<string> {
+    if (quantity < 0) throw new InvalidInputError();
+
     const tank = await this.findTank(tankId);
     const employee = await this.findEmployee(employeeEmail);
     const treatment = await this.findTreatment(treatmentId);
@@ -370,6 +409,8 @@ export class App {
     employeeEmail: string,
     cost: number
   ): Promise<string> {
+    if (cost < 0) throw new InvalidInputError();
+
     const equipment = await this.findEquipment(equipmentId);
     const employee = await this.findEmployee(employeeEmail);
 
@@ -398,4 +439,12 @@ export class App {
 
     return retrievedMaintenances;
   }
+}
+
+function isInRange(
+  value: number,
+  min: number,
+  max: number = Infinity
+): boolean {
+  return value <= max && value >= min;
 }
