@@ -13,6 +13,7 @@ import { FakeTransactionRepo } from "../../src/doubles/fake-transaction-repo";
 import { FakeTreatmentRepo } from "../../src/doubles/fake-treatment-repo";
 import { BusinessPartner } from "../../src/entities/businessPartner";
 import { Employee } from "../../src/entities/employee";
+import { Equipment } from "../../src/entities/equipment";
 import { Food } from "../../src/entities/food";
 import { Tank } from "../../src/entities/tank";
 import { Treatment } from "../../src/entities/treatment";
@@ -20,8 +21,10 @@ import { DuplicatedEmployeeError } from "../../src/errors/duplicate-employee-err
 import { DuplicatePartnerError } from "../../src/errors/duplicate-partner-error";
 import { EmployeeNotFoundError } from "../../src/errors/employee-not-found-error";
 import { ExpiredFoodError } from "../../src/errors/expired-food-error";
+import { ExpiredTreatmentError } from "../../src/errors/expired-treatment-error";
 import { FoodNotFoundError } from "../../src/errors/food-not-found-error";
 import { InsuficientFoodError } from "../../src/errors/insuficient-food-error";
+import { InsuficientTreatmentError } from "../../src/errors/insuficient-treatment-error";
 import { PartnerNotFoundError } from "../../src/errors/partner-not-found-error";
 import { UnableToFindError } from "../../src/errors/unable-to-find-error";
 import { WrongTypeError } from "../../src/errors/wrong-type-error";
@@ -288,6 +291,112 @@ describe("app using fake repositories", () => {
       );
 
       await expect(app.findFood(foodId)).rejects.toThrow(FoodNotFoundError);
+    });
+  });
+
+  describe("register medication", () => {
+    const tank = new Tank("M-C2", "room 3", 34.5, 1200);
+    const employee = new Employee(
+      "david",
+      "david@mail.com",
+      "president",
+      "123"
+    );
+    const partner = new BusinessPartner(
+      987,
+      "company@mail.com",
+      "company llc",
+      "street 6, 223",
+      [],
+      []
+    );
+    const treatment = new Treatment(
+      "skin med",
+      300,
+      15200.9,
+      new Date("2024-10-10"),
+      partner
+    );
+    it("registers a medication", async () => {
+      const tankId = await app.registerTank(tank);
+      const employeeId = await app.registerEmployee(employee);
+      const partnerId = await app.registerBusinessPartner(partner);
+      const treatmentId = await app.registerTreatment(treatment);
+
+      const newId = await app.registerMedication(
+        tankId,
+        employee.email,
+        treatmentId,
+        10
+      );
+
+      expect(newId).toBeDefined();
+      expect(await app.findMedication(newId)).resolves;
+    });
+
+    it("successfully updates the storage of the used treatment", async () => {
+      const tankId = await app.registerTank(tank);
+      const employeeId = await app.registerEmployee(employee);
+      const partnerId = await app.registerBusinessPartner(partner);
+      const treatmentId = await app.registerTreatment(treatment);
+
+      const newId = await app.registerMedication(
+        tankId,
+        employee.email,
+        treatmentId,
+        10
+      );
+
+      const retrievedTreatment = await app.findTreatment(treatmentId);
+
+      expect(retrievedTreatment.quantity).toEqual(280);
+    });
+
+    it("throws InsuficientTreatmentError when trying to register a medication with a quantity greater than storage", async () => {
+      const tankId = await app.registerTank(tank);
+      const employeeId = await app.registerEmployee(employee);
+      const partnerId = await app.registerBusinessPartner(partner);
+      const treatmentId = await app.registerTreatment(treatment);
+
+      await expect(
+        app.registerMedication(tankId, employee.email, treatmentId, 300)
+      ).rejects.toThrow(InsuficientTreatmentError);
+    });
+
+    it("throws ExpiredTreatmentError when trying to register a medication with a expired treatment", async () => {
+      const expiredTreatment = new Treatment(
+        "skin med",
+        500,
+        20000.9,
+        new Date("2022-10-10"),
+        partner
+      );
+      const tankId = await app.registerTank(tank);
+      const employeeId = await app.registerEmployee(employee);
+      const partnerId = await app.registerBusinessPartner(partner);
+      const TreatmentId = await app.registerTreatment(expiredTreatment);
+
+      await expect(
+        app.registerMedication(tankId, employee.email, TreatmentId, 100)
+      ).rejects.toThrow(ExpiredTreatmentError);
+    });
+
+    it("deletes the treatment if the quantity hits 0", async () => {
+      const tankId = await app.registerTank(tank);
+      const employeeId = await app.registerEmployee(employee);
+      const partnerId = await app.registerBusinessPartner(partner);
+      const treatmentId = await app.registerTreatment(treatment);
+
+      const newId = await app.registerMedication(
+        tankId,
+        employee.email,
+        treatmentId,
+        280
+      );
+
+      await expect(app.findTreatment(treatmentId)).rejects.toThrow(
+        FoodNotFoundError
+      );
     });
   });
 
@@ -857,6 +966,119 @@ describe("app using fake repositories", () => {
 
       await expect(
         app.findMedicationsByEmployee("email", "aaron@mail.com")
+      ).rejects.toThrow(UnableToFindError);
+    });
+  });
+
+  describe("retrieves a list of maintenances by some employee property", () => {
+    const employee = new Employee(
+      "david",
+      "david@mail.com",
+      "president",
+      "123"
+    );
+
+    const employee2 = new Employee(
+      "aaron",
+      "aaron@mail.com",
+      "president",
+      "123"
+    );
+
+    const seller = new BusinessPartner(
+      987,
+      "company@mail.com",
+      "company llc",
+      "street 4, 873",
+      [],
+      []
+    );
+
+    const equipment = new Equipment(
+      "oxygen bomb",
+      "ok",
+      "room 4",
+      seller,
+      0,
+      14000
+    );
+
+    it("returns a list of maintenances", async () => {
+      const employeeId = await app.registerEmployee(employee);
+      const employeeId2 = await app.registerEmployee(employee2);
+      const sellerId = await app.registerBusinessPartner(seller);
+      const equipmentId = await app.registerEquipment(equipment);
+
+      const maintenanceId = await app.registerMaintenance(
+        equipmentId,
+        employee.email,
+        1000
+      );
+
+      const maintenanceId2 = await app.registerMaintenance(
+        equipmentId,
+        employee2.email,
+        1000
+      );
+
+      const maintenancesByRole = await app.findMaintenancesByEmployee(
+        "role",
+        "president"
+      );
+
+      const maintenancesByName = await app.findMaintenancesByEmployee(
+        "name",
+        "david"
+      );
+
+      const maintenancesByEmail = await app.findMaintenancesByEmployee(
+        "email",
+        "aaron@mail.com"
+      );
+
+      expect(maintenancesByRole).toHaveLength(2);
+      expect(maintenancesByRole[0].id).toEqual(maintenanceId);
+      expect(maintenancesByRole[1].id).toEqual(maintenanceId2);
+
+      expect(maintenancesByName).toHaveLength(1);
+      expect(maintenancesByName[0].id).toEqual(maintenanceId);
+
+      expect(maintenancesByEmail).toHaveLength(1);
+      expect(maintenancesByEmail[0].id).toEqual(maintenanceId2);
+    });
+
+    it("throws UnableToFindError when trying to search by a non-existent employee property or that search is empty", async () => {
+      const employeeId = await app.registerEmployee(employee);
+      const employeeId2 = await app.registerEmployee(employee2);
+      const sellerId = await app.registerBusinessPartner(seller);
+      const equipmentId = await app.registerEquipment(equipment);
+
+      const maintenanceId = await app.registerMaintenance(
+        equipmentId,
+        employee.email,
+        1000
+      );
+
+      const maintenanceId2 = await app.registerMaintenance(
+        equipmentId,
+        employee.email,
+        1000
+      );
+
+      await expect(
+        app.findMaintenancesByEmployee("email", "medeiro@mail.com")
+      ).rejects.toThrow(UnableToFindError);
+
+      await expect(
+        app.findMaintenancesByEmployee("name", "john")
+      ).rejects.toThrow(UnableToFindError);
+
+      await expect(
+        app.findMaintenancesByEmployee("role", "accountant")
+      ).rejects.toThrow(UnableToFindError);
+
+      await expect(
+        app.findMaintenancesByEmployee("email", "aaron@mail.com")
       ).rejects.toThrow(UnableToFindError);
     });
   });
