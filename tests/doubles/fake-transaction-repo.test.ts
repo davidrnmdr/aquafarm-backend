@@ -48,6 +48,7 @@ describe("fake transaction repository", () => {
       new Date("2023-12-20"),
       food,
       treatment,
+      null,
       employee
     );
 
@@ -73,6 +74,7 @@ describe("fake transaction repository", () => {
       new Date("2023-12-20"),
       food,
       treatment,
+      null,
       employee
     );
 
@@ -108,6 +110,7 @@ describe("fake transaction repository", () => {
       new Date("2023-12-20"),
       food,
       treatment,
+      null,
       employee
     );
     const purchaseId = await fakeTransactionRepo.add(purchaseToBeAdded);
@@ -127,6 +130,7 @@ describe("fake transaction repository", () => {
       new Date("2023-12-20"),
       food,
       treatment,
+      null,
       employee2
     );
     const purchaseId2 = await fakeTransactionRepo.add(purchaseToBeAdded2);

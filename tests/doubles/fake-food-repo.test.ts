@@ -90,7 +90,7 @@ describe("fake food repository", () => {
 
     const quantity = 123;
 
-    await fakeFoodRepo.updateQuantity(newId, quantity);
+    await fakeFoodRepo.updateStorage(newId, quantity);
 
     expect(fakeFoodRepo.foods[0].quantity).toEqual(quantity);
   });

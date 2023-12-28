@@ -7,7 +7,8 @@ export class Equipment {
     public location: string,
     public seller: BusinessPartner,
     public totalMaintenanceCost: number = 0,
-    public price: number,
+    public cost: number,
+    public quantity: number,
     public id?: string
   ) {}
 }

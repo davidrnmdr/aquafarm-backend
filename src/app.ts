@@ -293,6 +293,7 @@ export class App {
     partnerEin: number,
     foodId: string | null,
     treatmentId: string | null,
+    equipmentId: string | null,
     employeeEmail: string
   ): Promise<string> {
     let totalValue = 0;
@@ -302,6 +303,16 @@ export class App {
 
     let treatment = null;
     let treatmentQuantity: number = 0;
+
+    let equipment = null;
+    let equipmentQuantity: number = 0;
+
+    totalValue =
+      equipmentId &&
+      (equipmentQuantity = (equipment = await this.findEquipment(equipmentId))
+        .quantity) > 0
+        ? totalValue + equipment.cost
+        : totalValue;
 
     totalValue =
       foodId &&
@@ -320,7 +331,8 @@ export class App {
       value < 0 ||
       foodQuantity < 0 ||
       treatmentQuantity < 0 ||
-      (foodQuantity === 0 && treatmentQuantity === 0)
+      equipmentQuantity < 0 ||
+      (foodQuantity === 0 && treatmentQuantity === 0 && equipmentQuantity == 0)
     )
       throw new InvalidInputError();
 
@@ -334,7 +346,7 @@ export class App {
     const today = new Date();
 
     return await this.transactionRepo.add(
-      new Purchase(value, partner, today, food, treatment, employee)
+      new Purchase(value, partner, today, food, treatment, equipment, employee)
     );
   }
 

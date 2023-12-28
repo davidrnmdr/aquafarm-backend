@@ -31,7 +31,8 @@ describe("fake maintenance repository", () => {
     "room 2",
     partner,
     0,
-    299.9
+    299.9,
+    1
   );
   const employee = new Employee("david", "david@mail.com", "president", "123");
   const employee2 = new Employee("aaron", "aaron@mail.com", "president", "123");

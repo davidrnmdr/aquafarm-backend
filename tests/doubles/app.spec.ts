@@ -805,6 +805,26 @@ describe("app using fake repositories", () => {
       []
     );
 
+    const equipment = new Equipment(
+      "hammer",
+      "new",
+      "tools room",
+      partner,
+      0,
+      14.2,
+      2
+    );
+
+    const equipment2 = new Equipment(
+      "hammer",
+      "new",
+      "tools room",
+      partner,
+      0,
+      14.2,
+      -22
+    );
+
     const food = new Food(
       "flakes",
       300,
@@ -840,6 +860,8 @@ describe("app using fake repositories", () => {
     it("throws InvalidInputError when trying to register a purchase with quantities < 0", async () => {
       const employeeId = await app.registerEmployee(employee);
       const partnerId = await app.registerBusinessPartner(partner);
+      const equipmentId = await app.registerEquipment(equipment);
+      const equipmentId2 = await app.registerEquipment(equipment2);
       const foodId = await app.registerFood(food);
       const foodId2 = await app.registerFood(food2);
       const treatmentId2 = await app.registerTreatment(treatment2);
@@ -850,6 +872,7 @@ describe("app using fake repositories", () => {
           partner.ein,
           foodId2,
           treatmentId2,
+          equipmentId,
           employee.email
         )
       ).rejects.toThrow(InvalidInputError);
@@ -860,6 +883,7 @@ describe("app using fake repositories", () => {
           partner.ein,
           foodId,
           treatmentId2,
+          equipmentId2,
           employee.email
         )
       ).rejects.toThrow(InvalidInputError);
@@ -868,6 +892,8 @@ describe("app using fake repositories", () => {
     it("throws InsuficientPermissionError when a non-manager tries to register a purchase with divergent values", async () => {
       const employeeId3 = await app.registerEmployee(employee3);
       const partnerId = await app.registerBusinessPartner(partner);
+      const equipmentId = await app.registerEquipment(equipment);
+
       const foodId = await app.registerFood(food);
       const treatmentId = await app.registerTreatment(treatment);
 
@@ -877,12 +903,20 @@ describe("app using fake repositories", () => {
           partner.ein,
           null,
           treatmentId,
+          equipmentId,
           employee3.email
         )
       ).rejects.toThrow(InsuficientPermissionError);
 
       await expect(
-        app.registerPurchase(3000, partner.ein, foodId, null, employee3.email)
+        app.registerPurchase(
+          3000,
+          partner.ein,
+          foodId,
+          null,
+          null,
+          employee3.email
+        )
       ).rejects.toThrow(InsuficientPermissionError);
 
       await expect(
@@ -891,6 +925,7 @@ describe("app using fake repositories", () => {
           partner.ein,
           foodId,
           treatmentId,
+          equipmentId,
           employee3.email
         )
       ).rejects.toThrow(InsuficientPermissionError);
@@ -900,6 +935,7 @@ describe("app using fake repositories", () => {
       const employeeId = await app.registerEmployee(employee);
       const employeeId2 = await app.registerEmployee(employee2);
       const partnerId = await app.registerBusinessPartner(partner);
+      const equipmentId = await app.registerEquipment(equipment);
       const foodId = await app.registerFood(food);
       const treatmentId = await app.registerTreatment(treatment);
 
@@ -908,6 +944,7 @@ describe("app using fake repositories", () => {
         partner.ein,
         foodId,
         treatmentId,
+        equipmentId,
         employee.email
       );
 
@@ -916,6 +953,7 @@ describe("app using fake repositories", () => {
         partner.ein,
         foodId,
         treatmentId,
+        equipmentId,
         employee2.email
       );
 
@@ -949,6 +987,7 @@ describe("app using fake repositories", () => {
       const employeeId = await app.registerEmployee(employee);
       const employeeId2 = await app.registerEmployee(employee2);
       const partnerId = await app.registerBusinessPartner(partner);
+      const equipmentId = await app.registerEquipment(equipment);
       const foodId = await app.registerFood(food);
       const treatmentId = await app.registerTreatment(treatment);
 
@@ -957,6 +996,7 @@ describe("app using fake repositories", () => {
         partner.ein,
         foodId,
         treatmentId,
+        employeeId,
         employee.email
       );
 
@@ -965,6 +1005,7 @@ describe("app using fake repositories", () => {
         partner.ein,
         foodId,
         treatmentId,
+        equipmentId,
         employee.email
       );
 
@@ -1147,7 +1188,8 @@ describe("app using fake repositories", () => {
       "room 4",
       seller,
       0,
-      14000
+      14000,
+      1
     );
 
     it("throws InvalidInputError when trying to register a maintenance with negative cost", async () => {

@@ -25,7 +25,8 @@ describe("fake equipment repo", () => {
       "room 2",
       seller,
       0,
-      9888.9
+      9888.9,
+      1
     );
 
     const newId = await fakeEquipmentRepo.add(equipmentToBeAdded);
@@ -41,7 +42,8 @@ describe("fake equipment repo", () => {
       "room 2",
       seller,
       0,
-      9888.9
+      9888.9,
+      1
     );
 
     const newId = await fakeEquipmentRepo.add(equipmentToBeAdded);
@@ -59,7 +61,8 @@ describe("fake equipment repo", () => {
       "room 2",
       seller,
       0,
-      9888.9
+      9888.9,
+      1
     );
 
     const newId = await fakeEquipmentRepo.add(equipmentToBeAdded);
@@ -78,7 +81,8 @@ describe("fake equipment repo", () => {
       "room 2",
       seller,
       0,
-      9888.9
+      9888.9,
+      1
     );
 
     const newId = await fakeEquipmentRepo.add(equipmentToBeAdded);
@@ -104,7 +108,8 @@ describe("fake equipment repo", () => {
       "room 2",
       seller,
       0,
-      9888.9
+      9888.9,
+      1
     );
 
     const newId1 = await fakeEquipmentRepo.add(equipmentToBeAdded1);
@@ -115,7 +120,8 @@ describe("fake equipment repo", () => {
       "room 3",
       seller,
       0,
-      19888.9
+      19888.9,
+      1
     );
 
     const newId2 = await fakeEquipmentRepo.add(equipmentToBeAdded2);
