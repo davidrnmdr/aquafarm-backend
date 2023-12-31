@@ -14,8 +14,7 @@ describe("fake food repository", () => {
     "company@mail.com",
     "company",
     "street 2",
-    [],
-    []
+    
   );
 
   it("adds a food to the repository", async () => {

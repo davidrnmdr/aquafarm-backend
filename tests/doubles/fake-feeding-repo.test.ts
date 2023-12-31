@@ -27,8 +27,7 @@ describe("fake feeding repository", () => {
     "company@mail.com",
     "company llc",
     "street 5",
-    [],
-    []
+ 
   );
   const food = new Food("flakes", 200, 1200.99, new Date("2024-12-12"), seller);
 

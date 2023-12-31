@@ -22,8 +22,7 @@ describe("fake maintenance repository", () => {
     "company@mail.com",
     "company llc",
     "street 8",
-    [],
-    []
+ 
   );
   const equipment = new Equipment(
     "machine",

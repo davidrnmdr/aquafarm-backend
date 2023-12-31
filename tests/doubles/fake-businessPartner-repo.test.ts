@@ -42,47 +42,6 @@ describe("fake partners repo", () => {
     expect(retrievedPartner?.ein).toEqual(partner.ein);
   });
 
-  it("updates products of a given partner", async () => {
-    const partner: BusinessPartner = new BusinessPartner(
-      123,
-      "mall@sales.com",
-      "mall",
-      "street 1"
-    );
-
-    const newId = await fakeBusinessPartnerRepo.add(partner);
-
-    const foodToBeAdded: Food = new Food(
-      "pallets",
-      110,
-      230.4,
-      new Date("2023-12-14"),
-      partner
-    );
-
-    const treatmentToBeAdded: Treatment = new Treatment(
-      "skin med",
-      13.65,
-      4,
-      new Date("2023-08-08"),
-      partner
-    );
-
-    await fakeBusinessPartnerRepo.updateProducts(newId, foodToBeAdded, "foods");
-
-    expect(partner.foods.includes(foodToBeAdded)).toBeTruthy();
-    expect(partner.foods[0].type).toEqual("pallets");
-
-    await fakeBusinessPartnerRepo.updateProducts(
-      newId,
-      treatmentToBeAdded,
-      "treatments"
-    );
-
-    expect(partner.treatments.includes(treatmentToBeAdded)).toBeTruthy();
-    expect(partner.treatments[0].name).toEqual("skin med");
-  });
-
   it("changes the email of a given partner", async () => {
     const partner: BusinessPartner = new BusinessPartner(
       123,
@@ -97,52 +56,6 @@ describe("fake partners repo", () => {
     await fakeBusinessPartnerRepo.updateEmail(partnerId, newEmail);
 
     expect(partner.email).toEqual(newEmail);
-  });
-
-  it("removes a specific product of a given partner", async () => {
-    const partner: BusinessPartner = new BusinessPartner(
-      123,
-      "mall@sales.com",
-      "mall",
-      "street 1"
-    );
-
-    const partnerId = await fakeBusinessPartnerRepo.add(partner);
-
-    const productId = "thisWillLaterBeAnRandomUUID";
-
-    const foodToBeAdded: Food = new Food(
-      "pallets",
-      110,
-      230.4,
-      new Date("2023-12-14"),
-      partner,
-      productId
-    );
-
-    const treatmentToBeAdded: Treatment = new Treatment(
-      "skin med",
-      13.65,
-      4,
-      new Date("2023-08-08"),
-      partner,
-      productId
-    );
-
-    await fakeBusinessPartnerRepo.updateProducts(
-      partnerId,
-      foodToBeAdded,
-      "foods"
-    );
-    await fakeBusinessPartnerRepo.updateProducts(
-      partnerId,
-      treatmentToBeAdded,
-      "treatments"
-    );
-
-    await fakeBusinessPartnerRepo.deleteProduct(partnerId, "food", productId);
-    expect(partner.foods.includes(foodToBeAdded)).toBeFalsy();
-    expect(partner.treatments.includes(treatmentToBeAdded)).toBeTruthy();
   });
 
   it("removes a partner from the repository", async () => {

@@ -26,8 +26,7 @@ describe("fake medication repository", () => {
     "company@mail.com",
     "company llc",
     "street 5",
-    [],
-    []
+ 
   );
   const treatment = new Treatment(
     "skin med",

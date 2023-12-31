@@ -18,8 +18,7 @@ describe("fake transaction repository", () => {
     "company@mail.com",
     "company llc",
     "street 8",
-    [],
-    []
+   
   );
 
   const employee = new Employee("david", "david@mail.com", "president", "123");

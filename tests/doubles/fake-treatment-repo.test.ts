@@ -13,9 +13,7 @@ describe("fake treatment repository", () => {
     2828,
     "company@mail.com",
     "company llc",
-    "street 9",
-    [],
-    []
+    "street 9"
   );
 
   it("adds a treatment to the repository", async () => {

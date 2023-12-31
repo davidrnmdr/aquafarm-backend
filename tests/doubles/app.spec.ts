@@ -160,9 +160,7 @@ describe("app using fake repositories", () => {
       123,
       "company@mail.com",
       "company llc",
-      "street 4, 982",
-      [],
-      []
+      "street 4, 982"
     );
 
     it("registers a business partner", async () => {
@@ -211,9 +209,7 @@ describe("app using fake repositories", () => {
       987,
       "company@mail.com",
       "company llc",
-      "street 6, 223",
-      [],
-      []
+      "street 6, 223"
     );
     const food = new Food(
       "flakes",
@@ -315,9 +311,7 @@ describe("app using fake repositories", () => {
       987,
       "company@mail.com",
       "company llc",
-      "street 6, 223",
-      [],
-      []
+      "street 6, 223"
     );
     const treatment = new Treatment(
       "skin med",
@@ -550,9 +544,7 @@ describe("app using fake repositories", () => {
       987,
       "company@mail.com",
       "company llc",
-      "street 4, 873",
-      [],
-      []
+      "street 4, 873"
     );
 
     const food = new Food(
@@ -676,9 +668,7 @@ describe("app using fake repositories", () => {
       987,
       "company@mail.com",
       "company llc",
-      "street 4, 873",
-      [],
-      []
+      "street 4, 873"
     );
 
     it("throws InvalidInputError when trying to register a sale with value < 0 or quantity < 0", async () => {
@@ -800,9 +790,7 @@ describe("app using fake repositories", () => {
       987,
       "company@mail.com",
       "company llc",
-      "street 4, 873",
-      [],
-      []
+      "street 4, 873"
     );
 
     const equipment = new Equipment(
@@ -1048,9 +1036,7 @@ describe("app using fake repositories", () => {
       987,
       "company@mail.com",
       "company llc",
-      "street 4, 873",
-      [],
-      []
+      "street 4, 873"
     );
 
     const treatment = new Treatment(
@@ -1177,9 +1163,7 @@ describe("app using fake repositories", () => {
       987,
       "company@mail.com",
       "company llc",
-      "street 4, 873",
-      [],
-      []
+      "street 4, 873"
     );
 
     const equipment = new Equipment(

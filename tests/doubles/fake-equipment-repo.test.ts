@@ -14,8 +14,7 @@ describe("fake equipment repo", () => {
     "company@mail.com",
     "company llc",
     "street 2, 877",
-    [],
-    []
+   
   );
 
   it("adds an equipment to the repository", async () => {

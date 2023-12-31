@@ -5,17 +5,7 @@ import { Treatment } from "../entities/treatment";
 export interface BusinessPartnerRepo {
   find(ein: number): Promise<BusinessPartner | undefined>;
   add(businessPartner: BusinessPartner): Promise<string>;
-  updateProducts(
-    id: string,
-    product: Food | Treatment,
-    type: "foods" | "treatments"
-  ): Promise<void>;
   updateEmail(id: string, email: string): Promise<void>;
-  deleteProduct(
-    id: string,
-    type: "food" | "treatment",
-    productId: string
-  ): Promise<void>;
   delete(id: string): Promise<void>;
   list(): Promise<BusinessPartner[]>;
 }
