@@ -69,7 +69,7 @@ describe("app using fake repositories", () => {
     });
 
     it("throws DuplicateEmployeeError when trying to register an already registered employee", async () => {
-      const newId = await app.registerEmployee(employee);
+      await app.registerEmployee(employee);
 
       await expect(app.registerEmployee(employee)).rejects.toThrow(
         DuplicatedEmployeeError
@@ -108,12 +108,19 @@ describe("app using fake repositories", () => {
     const tank2 = new Tank("S-C2", "room 7", 91, 100);
     const tank3 = new Tank("M-A1", "room 1", 91, 3000);
     const tank4 = new Tank("S-C2", "room 9", 37, 3000);
+    const tank5 = new Tank("S-C2", "room 9", -9, 3000);
+    const tank6 = new Tank("S-C2", "room 9", 90, -2000);
 
     it("registers a given tank", async () => {
       const newId = await app.registerTank(tank);
 
       expect(newId).toBeTruthy();
       await expect(app.findTank(newId)).resolves.toMatchObject(tank);
+    });
+
+    it("throws InvalidInputError when trying to register a tank with negative or 0 capacity/status", async () => {
+      await expect(app.registerTank(tank5)).rejects.toThrow(InvalidInputError);
+      await expect(app.registerTank(tank6)).rejects.toThrow(InvalidInputError);
     });
 
     it("retrieves a list of tanks that matches some given property", async () => {
@@ -149,7 +156,7 @@ describe("app using fake repositories", () => {
     });
 
     it("throws TankNotFound when trying to retrieve a non-registered tank", async () => {
-      const tankId = await app.registerTank(tank);
+      await app.registerTank(tank);
 
       await expect(app.findTank("987")).rejects.toThrow(TankNotFoundError);
     });
@@ -181,7 +188,7 @@ describe("app using fake repositories", () => {
     });
 
     it("throws PartnerNotFoundError when trying to retrieve a partner that is not registered", async () => {
-      const newId = await app.registerBusinessPartner(partner);
+      await app.registerBusinessPartner(partner);
 
       await expect(app.findBusinessPartner(456)).rejects.toThrow(
         PartnerNotFoundError
@@ -189,7 +196,7 @@ describe("app using fake repositories", () => {
     });
 
     it("throws DuplicatedPartnerError when trying to register an already registered partner", async () => {
-      const newId = await app.registerBusinessPartner(partner);
+      await app.registerBusinessPartner(partner);
 
       await expect(app.registerBusinessPartner(partner)).rejects.toThrow(
         DuplicatePartnerError
@@ -220,8 +227,8 @@ describe("app using fake repositories", () => {
     );
     it("registers a feeding", async () => {
       const tankId = await app.registerTank(tank);
-      const employeeId = await app.registerEmployee(employee);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerBusinessPartner(partner);
       const foodId = await app.registerFood(food);
 
       const newId = await app.registerFeeding(
@@ -237,8 +244,8 @@ describe("app using fake repositories", () => {
 
     it("successfully updates the storage of the used food", async () => {
       const tankId = await app.registerTank(tank);
-      const employeeId = await app.registerEmployee(employee);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerBusinessPartner(partner);
       const foodId = await app.registerFood(food);
 
       const newId = await app.registerFeeding(
@@ -255,8 +262,8 @@ describe("app using fake repositories", () => {
 
     it("throws InsuficientFoodError when trying to register a feeding with a quantity greater than storage", async () => {
       const tankId = await app.registerTank(tank);
-      const employeeId = await app.registerEmployee(employee);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerBusinessPartner(partner);
       const foodId = await app.registerFood(food);
 
       await expect(
@@ -273,8 +280,8 @@ describe("app using fake repositories", () => {
         partner
       );
       const tankId = await app.registerTank(tank);
-      const employeeId = await app.registerEmployee(employee);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerBusinessPartner(partner);
       const foodId = await app.registerFood(expiredFood);
 
       await expect(
@@ -284,16 +291,11 @@ describe("app using fake repositories", () => {
 
     it("deletes the food if the quantity hits 0", async () => {
       const tankId = await app.registerTank(tank);
-      const employeeId = await app.registerEmployee(employee);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerBusinessPartner(partner);
       const foodId = await app.registerFood(food);
 
-      const newId = await app.registerFeeding(
-        tankId,
-        employee.email,
-        foodId,
-        100
-      );
+      await app.registerFeeding(tankId, employee.email, foodId, 100);
 
       await expect(app.findFood(foodId)).rejects.toThrow(FoodNotFoundError);
     });
@@ -322,8 +324,8 @@ describe("app using fake repositories", () => {
     );
     it("registers a medication", async () => {
       const tankId = await app.registerTank(tank);
-      const employeeId = await app.registerEmployee(employee);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerBusinessPartner(partner);
       const treatmentId = await app.registerTreatment(treatment);
 
       const newId = await app.registerMedication(
@@ -339,16 +341,11 @@ describe("app using fake repositories", () => {
 
     it("successfully updates the storage of the used treatment", async () => {
       const tankId = await app.registerTank(tank);
-      const employeeId = await app.registerEmployee(employee);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerBusinessPartner(partner);
       const treatmentId = await app.registerTreatment(treatment);
 
-      const newId = await app.registerMedication(
-        tankId,
-        employee.email,
-        treatmentId,
-        10
-      );
+      await app.registerMedication(tankId, employee.email, treatmentId, 10);
 
       const retrievedTreatment = await app.findTreatment(treatmentId);
 
@@ -357,8 +354,8 @@ describe("app using fake repositories", () => {
 
     it("throws InsuficientTreatmentError when trying to register a medication with a quantity greater than storage", async () => {
       const tankId = await app.registerTank(tank);
-      const employeeId = await app.registerEmployee(employee);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerBusinessPartner(partner);
       const treatmentId = await app.registerTreatment(treatment);
 
       await expect(
@@ -375,8 +372,8 @@ describe("app using fake repositories", () => {
         partner
       );
       const tankId = await app.registerTank(tank);
-      const employeeId = await app.registerEmployee(employee);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerBusinessPartner(partner);
       const TreatmentId = await app.registerTreatment(expiredTreatment);
 
       await expect(
@@ -386,16 +383,11 @@ describe("app using fake repositories", () => {
 
     it("deletes the treatment if the quantity hits 0", async () => {
       const tankId = await app.registerTank(tank);
-      const employeeId = await app.registerEmployee(employee);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerBusinessPartner(partner);
       const treatmentId = await app.registerTreatment(treatment);
 
-      const newId = await app.registerMedication(
-        tankId,
-        employee.email,
-        treatmentId,
-        280
-      );
+      await app.registerMedication(tankId, employee.email, treatmentId, 280);
 
       await expect(app.findTreatment(treatmentId)).rejects.toThrow(
         FoodNotFoundError
@@ -421,7 +413,7 @@ describe("app using fake repositories", () => {
     const tank = new Tank("L-A1", "room 2", 76, 2300);
 
     it("throws InvalidInputError when trying to register a verification with oxygen < 0 or ph < 0 or ph > 14", async () => {
-      const employeeId = await app.registerEmployee(employee);
+      await app.registerEmployee(employee);
       const tankId = await app.registerTank(tank);
 
       await expect(
@@ -438,8 +430,8 @@ describe("app using fake repositories", () => {
     });
 
     it("returns a list of verifications", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const employeeId2 = await app.registerEmployee(employee2);
+      await app.registerEmployee(employee);
+      await app.registerEmployee(employee2);
       const tankId = await app.registerTank(tank);
 
       const verificationId = await app.registerVerification(
@@ -485,25 +477,13 @@ describe("app using fake repositories", () => {
     });
 
     it("throws UnableToFindError when trying to search by a non-existent employee property or that search is empty", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const employeeId2 = await app.registerEmployee(employee2);
+      await app.registerEmployee(employee);
+      await app.registerEmployee(employee2);
       const tankId = await app.registerTank(tank);
 
-      const verificationId = await app.registerVerification(
-        tankId,
-        employee.email,
-        23.2,
-        12.3,
-        7.19
-      );
+      await app.registerVerification(tankId, employee.email, 23.2, 12.3, 7.19);
 
-      const verificationId2 = await app.registerVerification(
-        tankId,
-        employee.email,
-        23.2,
-        12.3,
-        6.19
-      );
+      await app.registerVerification(tankId, employee.email, 23.2, 12.3, 6.19);
 
       await expect(
         app.findVerificationsByEmployee("email", "medeiro@mail.com")
@@ -556,9 +536,9 @@ describe("app using fake repositories", () => {
     );
 
     it("throws InvalidInputError when trying to register a feeding with negative quantity", async () => {
-      const employeeId = await app.registerEmployee(employee);
+      await app.registerEmployee(employee);
       const tankId = await app.registerTank(tank);
-      const sellerId = await app.registerBusinessPartner(seller);
+      await app.registerBusinessPartner(seller);
       const foodId = await app.registerFood(food);
 
       await expect(
@@ -567,10 +547,10 @@ describe("app using fake repositories", () => {
     });
 
     it("returns a list of feedings", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const employeeId2 = await app.registerEmployee(employee2);
+      await app.registerEmployee(employee);
+      await app.registerEmployee(employee2);
       const tankId = await app.registerTank(tank);
-      const sellerId = await app.registerBusinessPartner(seller);
+      await app.registerBusinessPartner(seller);
       const foodId = await app.registerFood(food);
 
       const feedingId = await app.registerFeeding(
@@ -611,25 +591,15 @@ describe("app using fake repositories", () => {
     });
 
     it("throws UnableToFindError when trying to search by a non-existent employee property or that search is empty", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const employeeId2 = await app.registerEmployee(employee2);
+      await app.registerEmployee(employee);
+      await app.registerEmployee(employee2);
       const tankId = await app.registerTank(tank);
-      const sellerId = await app.registerBusinessPartner(seller);
+      await app.registerBusinessPartner(seller);
       const foodId = await app.registerFood(food);
 
-      const feedingId = await app.registerFeeding(
-        tankId,
-        employee.email,
-        foodId,
-        50
-      );
+      await app.registerFeeding(tankId, employee.email, foodId, 50);
 
-      const feedingId2 = await app.registerFeeding(
-        tankId,
-        employee.email,
-        foodId,
-        50
-      );
+      await app.registerFeeding(tankId, employee.email, foodId, 50);
 
       await expect(
         app.findFeedingsByEmployee("email", "medeiro@mail.com")
@@ -672,8 +642,8 @@ describe("app using fake repositories", () => {
     );
 
     it("throws InvalidInputError when trying to register a sale with value < 0 or quantity < 0", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerBusinessPartner(partner);
 
       await expect(
         app.registerSale(-10, partner.ein, 100, employee.email)
@@ -689,9 +659,9 @@ describe("app using fake repositories", () => {
     });
 
     it("returns a list of sales", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const employeeId2 = await app.registerEmployee(employee2);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerEmployee(employee2);
+      await app.registerBusinessPartner(partner);
 
       const saleId = await app.registerSale(
         2300.99,
@@ -728,23 +698,13 @@ describe("app using fake repositories", () => {
     });
 
     it("throws UnableToFindError when trying to search by a non-existent employee property or that search is empty", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const employeeId2 = await app.registerEmployee(employee2);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerEmployee(employee2);
+      await app.registerBusinessPartner(partner);
 
-      const saleId = await app.registerSale(
-        2300.99,
-        partner.ein,
-        500,
-        employee.email
-      );
+      await app.registerSale(2300.99, partner.ein, 500, employee.email);
 
-      const saleId2 = await app.registerSale(
-        2300.99,
-        partner.ein,
-        500,
-        employee.email
-      );
+      await app.registerSale(2300.99, partner.ein, 500, employee.email);
 
       await expect(
         app.findSalesByEmployee("email", "medeiro@mail.com")
@@ -803,15 +763,7 @@ describe("app using fake repositories", () => {
       2
     );
 
-    const equipment2 = new Equipment(
-      "hammer",
-      "new",
-      "tools room",
-      partner,
-      0,
-      14.2,
-      -22
-    );
+    new Equipment("hammer", "new", "tools room", partner, 0, 14.2, -22);
 
     const food = new Food(
       "flakes",
@@ -821,13 +773,7 @@ describe("app using fake repositories", () => {
       partner
     );
 
-    const food2 = new Food(
-      "flakes",
-      -20,
-      2998.65,
-      new Date("2024-1010"),
-      partner
-    );
+    new Food("flakes", -20, 2998.65, new Date("2024-1010"), partner);
 
     const treatment = new Treatment(
       "skin med",
@@ -837,49 +783,11 @@ describe("app using fake repositories", () => {
       partner
     );
 
-    const treatment2 = new Treatment(
-      "skin med",
-      -45,
-      3499.75,
-      new Date("2025-1010"),
-      partner
-    );
-
-    it("throws InvalidInputError when trying to register a purchase with quantities < 0", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const partnerId = await app.registerBusinessPartner(partner);
-      const equipmentId = await app.registerEquipment(equipment);
-      const equipmentId2 = await app.registerEquipment(equipment2);
-      const foodId = await app.registerFood(food);
-      const foodId2 = await app.registerFood(food2);
-      const treatmentId2 = await app.registerTreatment(treatment2);
-
-      await expect(
-        app.registerPurchase(
-          6500,
-          partner.ein,
-          foodId2,
-          treatmentId2,
-          equipmentId,
-          employee.email
-        )
-      ).rejects.toThrow(InvalidInputError);
-
-      await expect(
-        app.registerPurchase(
-          6500,
-          partner.ein,
-          foodId,
-          treatmentId2,
-          equipmentId2,
-          employee.email
-        )
-      ).rejects.toThrow(InvalidInputError);
-    });
+    new Treatment("skin med", -45, 3499.75, new Date("2025-1010"), partner);
 
     it("throws InsuficientPermissionError when a non-manager tries to register a purchase with divergent values", async () => {
-      const employeeId3 = await app.registerEmployee(employee3);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee3);
+      await app.registerBusinessPartner(partner);
       const equipmentId = await app.registerEquipment(equipment);
 
       const foodId = await app.registerFood(food);
@@ -920,9 +828,9 @@ describe("app using fake repositories", () => {
     });
 
     it("returns a list of purchases", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const employeeId2 = await app.registerEmployee(employee2);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee);
+      await app.registerEmployee(employee2);
+      await app.registerBusinessPartner(partner);
       const equipmentId = await app.registerEquipment(equipment);
       const foodId = await app.registerFood(food);
       const treatmentId = await app.registerTreatment(treatment);
@@ -973,13 +881,13 @@ describe("app using fake repositories", () => {
 
     it("throws UnableToFindError when trying to search by a non-existent employee property or that search is empty", async () => {
       const employeeId = await app.registerEmployee(employee);
-      const employeeId2 = await app.registerEmployee(employee2);
-      const partnerId = await app.registerBusinessPartner(partner);
+      await app.registerEmployee(employee2);
+      await app.registerBusinessPartner(partner);
       const equipmentId = await app.registerEquipment(equipment);
       const foodId = await app.registerFood(food);
       const treatmentId = await app.registerTreatment(treatment);
 
-      const purchaseId = await app.registerPurchase(
+      await app.registerPurchase(
         6498.4,
         partner.ein,
         foodId,
@@ -988,7 +896,7 @@ describe("app using fake repositories", () => {
         employee.email
       );
 
-      const purchaseId2 = await app.registerPurchase(
+      await app.registerPurchase(
         6498.4,
         partner.ein,
         foodId,
@@ -1048,9 +956,9 @@ describe("app using fake repositories", () => {
     );
 
     it("throws InvalidInputError when trying to register a medication with negative quantity", async () => {
-      const employeeId = await app.registerEmployee(employee);
+      await app.registerEmployee(employee);
       const tankId = await app.registerTank(tank);
-      const sellerId = await app.registerBusinessPartner(seller);
+      await app.registerBusinessPartner(seller);
       const treatmentId = await app.registerTreatment(treatment);
 
       await expect(
@@ -1059,10 +967,10 @@ describe("app using fake repositories", () => {
     });
 
     it("returns a list of medications", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const employeeId2 = await app.registerEmployee(employee2);
+      await app.registerEmployee(employee);
+      await app.registerEmployee(employee2);
       const tankId = await app.registerTank(tank);
-      const sellerId = await app.registerBusinessPartner(seller);
+      await app.registerBusinessPartner(seller);
       const treatmentId = await app.registerTreatment(treatment);
 
       const medicationId = await app.registerMedication(
@@ -1106,25 +1014,15 @@ describe("app using fake repositories", () => {
     });
 
     it("throws UnableToFindError when trying to search by a non-existent employee property or that search is empty", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const employeeId2 = await app.registerEmployee(employee2);
+      await app.registerEmployee(employee);
+      await app.registerEmployee(employee2);
       const tankId = await app.registerTank(tank);
-      const sellerId = await app.registerBusinessPartner(seller);
+      await app.registerBusinessPartner(seller);
       const treatmentId = await app.registerTreatment(treatment);
 
-      const medicationId = await app.registerMedication(
-        tankId,
-        employee.email,
-        treatmentId,
-        10
-      );
+      await app.registerMedication(tankId, employee.email, treatmentId, 10);
 
-      const medicationId2 = await app.registerMedication(
-        tankId,
-        employee.email,
-        treatmentId,
-        10
-      );
+      await app.registerMedication(tankId, employee.email, treatmentId, 10);
 
       await expect(
         app.findMedicationsByEmployee("email", "medeiro@mail.com")
@@ -1177,8 +1075,8 @@ describe("app using fake repositories", () => {
     );
 
     it("throws InvalidInputError when trying to register a maintenance with negative cost", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const sellerId = await app.registerBusinessPartner(seller);
+      await app.registerEmployee(employee);
+      await app.registerBusinessPartner(seller);
       const equipmentId = await app.registerEquipment(equipment);
 
       await expect(
@@ -1187,9 +1085,9 @@ describe("app using fake repositories", () => {
     });
 
     it("returns a list of maintenances", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const employeeId2 = await app.registerEmployee(employee2);
-      const sellerId = await app.registerBusinessPartner(seller);
+      await app.registerEmployee(employee);
+      await app.registerEmployee(employee2);
+      await app.registerBusinessPartner(seller);
       const equipmentId = await app.registerEquipment(equipment);
 
       const maintenanceId = await app.registerMaintenance(
@@ -1231,22 +1129,13 @@ describe("app using fake repositories", () => {
     });
 
     it("throws UnableToFindError when trying to search by a non-existent employee property or that search is empty", async () => {
-      const employeeId = await app.registerEmployee(employee);
-      const employeeId2 = await app.registerEmployee(employee2);
-      const sellerId = await app.registerBusinessPartner(seller);
+      await app.registerEmployee(employee);
+      await app.registerEmployee(employee2);
+      await app.registerBusinessPartner(seller);
       const equipmentId = await app.registerEquipment(equipment);
+      await app.registerMaintenance(equipmentId, employee.email, 1000);
 
-      const maintenanceId = await app.registerMaintenance(
-        equipmentId,
-        employee.email,
-        1000
-      );
-
-      const maintenanceId2 = await app.registerMaintenance(
-        equipmentId,
-        employee.email,
-        1000
-      );
+      await app.registerMaintenance(equipmentId, employee.email, 1000);
 
       await expect(
         app.findMaintenancesByEmployee("email", "medeiro@mail.com")

@@ -78,6 +78,8 @@ export class App {
   }
 
   async registerTank(tank: Tank): Promise<string> {
+    if (tank.capacity <= 0 || tank.status <= 0) throw new InvalidInputError();
+
     return await this.tankRepo.add(tank);
   }
 
@@ -106,6 +108,12 @@ export class App {
   }
 
   async registerEquipment(equipment: Equipment): Promise<string> {
+    const seller = await this.businessPartnerRepo.find(equipment.seller.ein);
+
+    if (!seller) throw new PartnerNotFoundError();
+    if (equipment.quantity <= 0 || equipment.cost <= 0)
+      throw new InvalidInputError();
+
     return await this.equipmentRepo.add(equipment);
   }
 
@@ -121,6 +129,7 @@ export class App {
     const seller = await this.businessPartnerRepo.find(food.seller.ein);
 
     if (!seller) throw new PartnerNotFoundError();
+    if (food.quantity <= 0 || food.cost <= 0) throw new InvalidInputError();
 
     return this.foodRepo.add(food);
   }
@@ -143,6 +152,8 @@ export class App {
     const seller = await this.businessPartnerRepo.find(treatment.seller.ein);
 
     if (!seller) throw new PartnerNotFoundError();
+    if (treatment.quantity <= 0 || treatment.cost <= 0)
+      throw new InvalidInputError();
 
     return this.treatmentRepo.add(treatment);
   }
