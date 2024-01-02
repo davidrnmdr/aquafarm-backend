@@ -102,6 +102,130 @@ describe("app using fake repositories", () => {
     });
   });
 
+  describe("register food", () => {
+    const partner = new BusinessPartner(
+      123,
+      "company@mail.com",
+      "company llc",
+      "street 6, 878"
+    );
+
+    const food = new Food(
+      "flakes",
+      110,
+      1450.99,
+      new Date("2024-11-11"),
+      partner
+    );
+
+    const food2 = new Food(
+      "flakes",
+      11,
+      1450.99,
+      new Date("2023-11-11"),
+      partner
+    );
+
+    it("registers a given food", async () => {
+      await app.registerBusinessPartner(partner);
+      const newId = await app.registerFood(food);
+
+      expect(newId).toBeTruthy();
+      await expect(app.findFood(newId)).resolves.toMatchObject(food);
+    });
+
+    it("throws InvalidInputError when trying to register a food with wrong parameters", async () => {
+      await app.registerBusinessPartner(partner);
+
+      await expect(app.registerFood(food2)).rejects.toThrow(InvalidInputError);
+    });
+  });
+
+  describe("register treatment", () => {
+    const partner = new BusinessPartner(
+      123,
+      "company@mail.com",
+      "company llc",
+      "street 6, 878"
+    );
+
+    const treatment = new Treatment(
+      "skin med",
+      12,
+      998.1,
+      new Date("2024-11-11"),
+      partner
+    );
+
+    const treatment2 = new Treatment(
+      "skin med",
+      0,
+      998.1,
+      new Date("2024-11-11"),
+      partner
+    );
+
+    it("registers a given treatment", async () => {
+      await app.registerBusinessPartner(partner);
+      const newId = await app.registerTreatment(treatment);
+
+      expect(newId).toBeTruthy();
+      await expect(app.findTreatment(newId)).resolves.toMatchObject(treatment);
+    });
+
+    it("throws InvalidInputError when trying to register a treatment with wrong parameters", async () => {
+      await app.registerBusinessPartner(partner);
+      await expect(app.registerTreatment(treatment2)).rejects.toThrow(
+        InvalidInputError
+      );
+    });
+  });
+
+  describe("register equipment", () => {
+    const partner = new BusinessPartner(
+      123,
+      "company@mail.com",
+      "company llc",
+      "street 6, 878"
+    );
+
+    const equipment1 = new Equipment(
+      "oxygen bomb",
+      "ok",
+      "room 4",
+      partner,
+      0,
+      1229,
+      1
+    );
+
+    const equipment2 = new Equipment(
+      "oxygen bomb",
+      "ok",
+      "room 4",
+      partner,
+      10,
+      1229,
+      1
+    );
+
+    it("registers a given equipment", async () => {
+      await app.registerBusinessPartner(partner);
+      const newId = await app.registerEquipment(equipment1);
+
+      expect(newId).toBeTruthy();
+      await expect(app.findEquipment(newId)).resolves.toMatchObject(equipment1);
+    });
+
+    it("throws InvalidInputError when trying to register a equipment with wrong parameters", async () => {
+      await app.registerBusinessPartner(partner);
+
+      await expect(app.registerEquipment(equipment2)).rejects.toThrow(
+        InvalidInputError
+      );
+    });
+  });
+
   describe("register tank", () => {
     const tank = new Tank("L-B2", "room 6", 98, 2000);
     const tank1 = new Tank("L-B2", "room 7", 70, 2500);
@@ -276,13 +400,14 @@ describe("app using fake repositories", () => {
         "pallets",
         200,
         1200.9,
-        new Date("2022-10-10"),
+        new Date("2024-11-11"),
         partner
       );
       const tankId = await app.registerTank(tank);
       await app.registerEmployee(employee);
       await app.registerBusinessPartner(partner);
       const foodId = await app.registerFood(expiredFood);
+      expiredFood.expirationDate = new Date("2022-11-11");
 
       await expect(
         app.registerFeeding(tankId, employee.email, foodId, 100)
@@ -1074,6 +1199,16 @@ describe("app using fake repositories", () => {
       1
     );
 
+    const equipment2 = new Equipment(
+      "oxygen bomb",
+      "ok",
+      "room 5",
+      seller,
+      0,
+      14500,
+      1
+    );
+
     it("throws InvalidInputError when trying to register a maintenance with negative cost", async () => {
       await app.registerEmployee(employee);
       await app.registerBusinessPartner(seller);
@@ -1132,7 +1267,7 @@ describe("app using fake repositories", () => {
       await app.registerEmployee(employee);
       await app.registerEmployee(employee2);
       await app.registerBusinessPartner(seller);
-      const equipmentId = await app.registerEquipment(equipment);
+      const equipmentId = await app.registerEquipment(equipment2);
       await app.registerMaintenance(equipmentId, employee.email, 1000);
 
       await app.registerMaintenance(equipmentId, employee.email, 1000);

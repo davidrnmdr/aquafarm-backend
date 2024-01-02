@@ -111,7 +111,11 @@ export class App {
     const seller = await this.businessPartnerRepo.find(equipment.seller.ein);
 
     if (!seller) throw new PartnerNotFoundError();
-    if (equipment.quantity <= 0 || equipment.cost <= 0)
+    if (
+      equipment.quantity <= 0 ||
+      equipment.cost <= 0 ||
+      equipment.totalMaintenanceCost != 0
+    )
       throw new InvalidInputError();
 
     return await this.equipmentRepo.add(equipment);
@@ -129,7 +133,11 @@ export class App {
     const seller = await this.businessPartnerRepo.find(food.seller.ein);
 
     if (!seller) throw new PartnerNotFoundError();
-    if (food.quantity <= 0 || food.cost <= 0) throw new InvalidInputError();
+
+    const today = new Date();
+
+    if (food.quantity <= 0 || food.cost <= 0 || food.expirationDate < today)
+      throw new InvalidInputError();
 
     return this.foodRepo.add(food);
   }
