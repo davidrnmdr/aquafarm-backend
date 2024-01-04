@@ -41,11 +41,9 @@ export class FakeTransactionRepo implements TransactionRepo {
     );
   }
 
-  async list(
-    type?: "sale" | "purchase" | undefined
-  ): Promise<Sale[] | Purchase[]> {
+  async list(type: "sale" | "purchase"): Promise<Sale[] | Purchase[]> {
     if (type === "sale") {
-      return this.sales;
-    } else return this.purchases;
+      return this.sales as Sale[];
+    } else return this.purchases as Purchase[];
   }
 }

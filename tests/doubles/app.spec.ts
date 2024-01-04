@@ -1,5 +1,8 @@
 import { App } from "../../src/app";
 
+import { SaleFilter } from "../../src/types/transactionFilters";
+import { PurchaseFilter } from "../../src/types/transactionFilters";
+
 import { FakeBusinessPartnerRepo } from "../../src/doubles/fake-businessPartner-repo";
 import { FakeEmployeeRepo } from "../../src/doubles/fake-employee-repo";
 import { FakeEquipmentRepo } from "../../src/doubles/fake-equipment-repo";
@@ -31,6 +34,9 @@ import { PartnerNotFoundError } from "../../src/errors/partner-not-found-error";
 import { TankNotFoundError } from "../../src/errors/tank-not-found-error";
 import { UnableToFindError } from "../../src/errors/unable-to-find-error";
 import { WrongTypeError } from "../../src/errors/wrong-type-error";
+
+import sinon from "sinon";
+import { Sale } from "../../src/entities/sale";
 
 let app: App;
 
@@ -1287,6 +1293,85 @@ describe("app using fake repositories", () => {
       await expect(
         app.findMaintenancesByEmployee("email", "aaron@mail.com")
       ).rejects.toThrow(UnableToFindError);
+    });
+  });
+
+  describe("filter transactions", () => {
+    const employee = new Employee(
+      "david",
+      "david@mail.com",
+      "president",
+      "123"
+    );
+
+    const partner = new BusinessPartner(
+      987,
+      "company@mail.com",
+      "company llc",
+      "street 2, 922"
+    );
+
+    const partner2 = new BusinessPartner(
+      876,
+      "company2@mail.com",
+      "company2 llc",
+      "street 4, 944"
+    );
+
+    const valueSaleFilter: SaleFilter = {
+      value: { min: 200, max: 500 },
+    };
+
+    const partnerSaleFilter: SaleFilter = {
+      partner: { ein: 987 },
+    };
+
+    const dateSaleFilter: SaleFilter = {
+      date: { min: new Date("2023-11-12"), max: new Date("2025-01-04") },
+    };
+
+    const quantitySaleFilter: SaleFilter = {
+      quantity: { min: 100, max: 100 },
+    };
+
+    const completeSaleFilter: SaleFilter = {
+      ...valueSaleFilter,
+      ...partnerSaleFilter,
+      ...dateSaleFilter,
+      ...quantitySaleFilter,
+    };
+
+    it("filters sales acconding to the passed filter", async () => {
+      await app.registerBusinessPartner(partner);
+      await app.registerBusinessPartner(partner2);
+      await app.registerEmployee(employee);
+
+      await app.registerSale(202, partner.ein, 100, employee.email); // all
+      await app.registerSale(501, partner.ein, 100, employee.email); // all except value
+      await app.registerSale(501, partner2.ein, 100, employee.email); // all except value and partner
+      await app.registerSale(501, partner2.ein, 101, employee.email); // all except value, partner and quantity
+      sinon.useFakeTimers(new Date("2023-11-11"));
+      console.log(new Date());
+
+      await app.registerSale(501, partner2.ein, 101, employee.email); // none
+
+      const filteredByValue: Sale[] = await app.filterSales(valueSaleFilter);
+      const filteredByPartner: Sale[] = await app.filterSales(
+        partnerSaleFilter
+      );
+      const filteredByQuantity: Sale[] = await app.filterSales(
+        quantitySaleFilter
+      );
+      const filteredByDate: Sale[] = await app.filterSales(dateSaleFilter);
+      const filteredComplete: Sale[] = await app.filterSales(
+        completeSaleFilter
+      );
+
+      expect(filteredByValue).toHaveLength(1);
+      expect(filteredByPartner).toHaveLength(2);
+      expect(filteredByDate).toHaveLength(4);
+      expect(filteredByQuantity).toHaveLength(3);
+      expect(filteredComplete).toHaveLength(1);
     });
   });
 });

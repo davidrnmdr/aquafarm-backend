@@ -1,3 +1,6 @@
+import { SaleFilter } from "./types/transactionFilters";
+import { PurchaseFilter } from "./types/transactionFilters";
+
 import { BusinessPartner } from "./entities/businessPartner";
 import { Employee } from "./entities/employee";
 import { Equipment } from "./entities/equipment";
@@ -10,6 +13,7 @@ import { Sale } from "./entities/sale";
 import { Tank } from "./entities/tank";
 import { TankVerification } from "./entities/tankVerification";
 import { Treatment } from "./entities/treatment";
+
 import { DuplicatedEmployeeError } from "./errors/duplicate-employee-error";
 import { DuplicatePartnerError } from "./errors/duplicate-partner-error";
 import { EmployeeNotFoundError } from "./errors/employee-not-found-error";
@@ -26,6 +30,7 @@ import { PartnerNotFoundError } from "./errors/partner-not-found-error";
 import { TankNotFoundError } from "./errors/tank-not-found-error";
 import { UnableToFindError } from "./errors/unable-to-find-error";
 import { WrongTypeError } from "./errors/wrong-type-error";
+
 import { BusinessPartnerRepo } from "./ports/businessPartner-repo";
 import { EmployeeRepo } from "./ports/employee-repo";
 import { EquipmentRepo } from "./ports/equipments-repo";
@@ -37,6 +42,7 @@ import { TankRepo } from "./ports/tank-repo";
 import { TankVerificationRepo } from "./ports/tankVerification-repo";
 import { TransactionRepo } from "./ports/transaction-repo";
 import { TreatmentRepo } from "./ports/treatment-repo";
+
 import { Crypt } from "./services/crypt";
 
 const superRoles = new Set(["president", "manager"]);
@@ -470,12 +476,43 @@ export class App {
 
     return retrievedMaintenances;
   }
+
+  async filterSales(filter: SaleFilter): Promise<Sale[]> {
+    const allSales = (await this.transactionRepo.list("sale")) as Sale[];
+
+    const filteredSales = allSales.filter((sale) => {
+      if (
+        filter.value &&
+        !isInRange(sale.value, filter.value.min, filter.value.max)
+      )
+        return false;
+
+      if (
+        filter.date &&
+        !isInRange(sale.date, filter.date.min, filter.date.max)
+      )
+        return false;
+
+      if (
+        filter.quantity &&
+        !isInRange(sale.quantity, filter.quantity.min, filter.quantity.max)
+      )
+        return false;
+
+      if (filter.partner && sale.partner.ein !== filter.partner.ein)
+        return false;
+
+      return true;
+    });
+
+    return filteredSales;
+  }
 }
 
 function isInRange(
-  value: number,
-  min: number,
-  max: number = Infinity
+  value: number | Date,
+  min: number | Date,
+  max: number | Date = Infinity
 ): boolean {
   return value <= max && value >= min;
 }
