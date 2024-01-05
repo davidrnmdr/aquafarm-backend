@@ -507,6 +507,48 @@ export class App {
 
     return filteredSales;
   }
+
+  async filterPurchases(filter: PurchaseFilter): Promise<Purchase[]> {
+    const allPurchases = (await this.transactionRepo.list(
+      "purchase"
+    )) as Purchase[];
+
+    const filteredPurchases = allPurchases.filter((purchase) => {
+      if (
+        filter.value &&
+        !isInRange(purchase.value, filter.value.min, filter.value.max)
+      )
+        return false;
+
+      if (
+        filter.date &&
+        !isInRange(purchase.date, filter.date.min, filter.date.max)
+      )
+        return false;
+
+      if (filter.partner && purchase.partner.ein !== filter.partner.ein)
+        return false;
+
+      if ((!filter.food && purchase.food) || (filter.food && !purchase.food))
+        return false;
+
+      if (
+        (!filter.treatment && purchase.treatment) ||
+        (filter.treatment && !purchase.treatment)
+      )
+        return false;
+
+      if (
+        (!filter.equipment && purchase.equipment) ||
+        (filter.equipment && !purchase.equipment)
+      )
+        return false;
+
+      return true;
+    });
+
+    return filteredPurchases;
+  }
 }
 
 function isInRange(

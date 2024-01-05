@@ -37,8 +37,10 @@ import { WrongTypeError } from "../../src/errors/wrong-type-error";
 
 import sinon from "sinon";
 import { Sale } from "../../src/entities/sale";
+import { Purchase } from "../../src/entities/purchase";
 
 let app: App;
+var clock = sinon.useFakeTimers(new Date());
 
 describe("app using fake repositories", () => {
   beforeEach(() => {
@@ -55,6 +57,8 @@ describe("app using fake repositories", () => {
       new FakeTreatmentRepo(),
       new FakeMedicationRepo()
     );
+
+    clock.restore();
   });
 
   describe("register employee", () => {
@@ -1318,30 +1322,50 @@ describe("app using fake repositories", () => {
       "street 4, 944"
     );
 
-    const valueSaleFilter: SaleFilter = {
-      value: { min: 200, max: 500 },
-    };
+    const food = new Food("flakes", 200, 100, new Date("2025-11-11"), partner);
 
-    const partnerSaleFilter: SaleFilter = {
-      partner: { ein: 987 },
-    };
+    const treatment = new Treatment(
+      "skin med",
+      40,
+      100,
+      new Date("2025-11-11"),
+      partner
+    );
 
-    const dateSaleFilter: SaleFilter = {
-      date: { min: new Date("2023-11-12"), max: new Date("2025-01-04") },
-    };
-
-    const quantitySaleFilter: SaleFilter = {
-      quantity: { min: 100, max: 100 },
-    };
-
-    const completeSaleFilter: SaleFilter = {
-      ...valueSaleFilter,
-      ...partnerSaleFilter,
-      ...dateSaleFilter,
-      ...quantitySaleFilter,
-    };
+    const equipment = new Equipment(
+      "computer",
+      "new",
+      "office 1",
+      partner,
+      0,
+      100,
+      1
+    );
 
     it("filters sales acconding to the passed filter", async () => {
+      const valueSaleFilter: SaleFilter = {
+        value: { min: 200, max: 500 },
+      };
+
+      const partnerSaleFilter: SaleFilter = {
+        partner: { ein: 987 },
+      };
+
+      const dateSaleFilter: SaleFilter = {
+        date: { min: new Date("2023-11-12"), max: new Date("2025-01-04") },
+      };
+
+      const quantitySaleFilter: SaleFilter = {
+        quantity: { min: 100, max: 100 },
+      };
+
+      const completeSaleFilter: SaleFilter = {
+        ...valueSaleFilter,
+        ...partnerSaleFilter,
+        ...dateSaleFilter,
+        ...quantitySaleFilter,
+      };
+
       await app.registerBusinessPartner(partner);
       await app.registerBusinessPartner(partner2);
       await app.registerEmployee(employee);
@@ -1350,8 +1374,7 @@ describe("app using fake repositories", () => {
       await app.registerSale(501, partner.ein, 100, employee.email); // all except value
       await app.registerSale(501, partner2.ein, 100, employee.email); // all except value and partner
       await app.registerSale(501, partner2.ein, 101, employee.email); // all except value, partner and quantity
-      sinon.useFakeTimers(new Date("2023-11-11"));
-      console.log(new Date());
+      clock = sinon.useFakeTimers(new Date("2023-11-11"));
 
       await app.registerSale(501, partner2.ein, 101, employee.email); // none
 
@@ -1372,6 +1395,150 @@ describe("app using fake repositories", () => {
       expect(filteredByDate).toHaveLength(4);
       expect(filteredByQuantity).toHaveLength(3);
       expect(filteredComplete).toHaveLength(1);
+    });
+
+    it("filters purchases according to the passed filter", async () => {
+      const valuePurchaseFilter: PurchaseFilter = {
+        value: { min: 100, max: 200 },
+        food: true,
+        treatment: true,
+        equipment: true,
+      };
+
+      const datePurchaseFilter: PurchaseFilter = {
+        date: { min: new Date("2024-01-03"), max: new Date("2024-01-10") },
+        food: true,
+        treatment: true,
+        equipment: true,
+      };
+
+      const partnerPurchaseFilter: PurchaseFilter = {
+        partner: { ein: 987 },
+        food: true,
+        treatment: true,
+        equipment: true,
+      };
+
+      const noFoodPurchaseFilter: PurchaseFilter = {
+        food: false,
+        treatment: true,
+        equipment: true,
+      };
+
+      const noTreatmentPurchaseFilter: PurchaseFilter = {
+        food: true,
+        treatment: false,
+        equipment: true,
+      };
+
+      const noEquipmentPurchaseFilter: PurchaseFilter = {
+        food: true,
+        treatment: true,
+        equipment: false,
+      };
+
+      await app.registerBusinessPartner(partner);
+      await app.registerBusinessPartner(partner2);
+      await app.registerEmployee(employee);
+      const foodId = await app.registerFood(food);
+      const treatmentId = await app.registerTreatment(treatment);
+      const equipmentId = await app.registerEquipment(equipment);
+
+      await app.registerPurchase(
+        300,
+        partner.ein,
+        foodId,
+        treatmentId,
+        equipmentId,
+        employee.email
+      );
+
+      await app.registerPurchase(
+        300,
+        partner2.ein,
+        foodId,
+        treatmentId,
+        equipmentId,
+        employee.email
+      );
+
+      await app.registerPurchase(
+        200,
+        partner.ein,
+        foodId,
+        treatmentId,
+        equipmentId,
+        employee.email
+      );
+
+      await app.registerPurchase(
+        300,
+        partner.ein,
+        null,
+        treatmentId,
+        equipmentId,
+        employee.email
+      );
+
+      await app.registerPurchase(
+        300,
+        partner.ein,
+        foodId,
+        null,
+        equipmentId,
+        employee.email
+      );
+
+      await app.registerPurchase(
+        300,
+        partner.ein,
+        foodId,
+        treatmentId,
+        null,
+        employee.email
+      );
+
+      clock = sinon.useFakeTimers(new Date("2023-11-11"));
+
+      await app.registerPurchase(
+        300,
+        partner.ein,
+        foodId,
+        treatmentId,
+        equipmentId,
+        employee.email
+      );
+
+      const filteredByValue: Purchase[] = await app.filterPurchases(
+        valuePurchaseFilter
+      );
+
+      const filteredByDate: Purchase[] = await app.filterPurchases(
+        datePurchaseFilter
+      );
+
+      const filteredBypartner: Purchase[] = await app.filterPurchases(
+        partnerPurchaseFilter
+      );
+
+      const filteredNoFood: Purchase[] = await app.filterPurchases(
+        noFoodPurchaseFilter
+      );
+
+      const filteredNoTreatment: Purchase[] = await app.filterPurchases(
+        noTreatmentPurchaseFilter
+      );
+
+      const filteredNoEquipment: Purchase[] = await app.filterPurchases(
+        noEquipmentPurchaseFilter
+      );
+
+      expect(filteredByValue).toHaveLength(1);
+      expect(filteredByDate).toHaveLength(3);
+      expect(filteredBypartner).toHaveLength(3);
+      expect(filteredNoFood).toHaveLength(1);
+      expect(filteredNoTreatment).toHaveLength(1);
+      expect(filteredNoEquipment).toHaveLength(1);
     });
   });
 });
