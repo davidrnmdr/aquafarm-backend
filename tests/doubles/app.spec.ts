@@ -40,7 +40,7 @@ import { Sale } from "../../src/entities/sale";
 import { Purchase } from "../../src/entities/purchase";
 
 let app: App;
-var clock = sinon.useFakeTimers(new Date());
+var clock = sinon.useFakeTimers(new Date("2024-01-03"));
 
 describe("app using fake repositories", () => {
   beforeEach(() => {
@@ -1343,6 +1343,8 @@ describe("app using fake repositories", () => {
     );
 
     it("filters sales acconding to the passed filter", async () => {
+      clock = sinon.useFakeTimers(new Date("2024-01-03"));
+
       const valueSaleFilter: SaleFilter = {
         value: { min: 200, max: 500 },
       };
@@ -1374,6 +1376,8 @@ describe("app using fake repositories", () => {
       await app.registerSale(501, partner.ein, 100, employee.email); // all except value
       await app.registerSale(501, partner2.ein, 100, employee.email); // all except value and partner
       await app.registerSale(501, partner2.ein, 101, employee.email); // all except value, partner and quantity
+
+      clock.restore();
       clock = sinon.useFakeTimers(new Date("2023-11-11"));
 
       await app.registerSale(501, partner2.ein, 101, employee.email); // none
@@ -1398,6 +1402,8 @@ describe("app using fake repositories", () => {
     });
 
     it("filters purchases according to the passed filter", async () => {
+      clock = sinon.useFakeTimers(new Date("2024-01-03"));
+
       const valuePurchaseFilter: PurchaseFilter = {
         value: { min: 100, max: 200 },
         food: true,
@@ -1498,6 +1504,7 @@ describe("app using fake repositories", () => {
         employee.email
       );
 
+      clock.restore();
       clock = sinon.useFakeTimers(new Date("2023-11-11"));
 
       await app.registerPurchase(
