@@ -38,6 +38,8 @@ import { WrongTypeError } from "../../src/errors/wrong-type-error";
 import sinon from "sinon";
 import { Sale } from "../../src/entities/sale";
 import { Purchase } from "../../src/entities/purchase";
+import { FishSpecie } from "../../src/entities/fishSpecie";
+import { FakeWarningRepo } from "../../src/doubles/fake-warning-repo";
 
 let app: App;
 var clock = sinon.useFakeTimers(new Date("2024-01-03"));
@@ -55,7 +57,8 @@ describe("app using fake repositories", () => {
       new FakeTankVerificationRepo(),
       new FakeTransactionRepo(),
       new FakeTreatmentRepo(),
-      new FakeMedicationRepo()
+      new FakeMedicationRepo(),
+      new FakeWarningRepo()
     );
 
     clock.restore();
@@ -237,13 +240,21 @@ describe("app using fake repositories", () => {
   });
 
   describe("register tank", () => {
-    const tank = new Tank("L-B2", "room 6", 98, 2000);
-    const tank1 = new Tank("L-B2", "room 7", 70, 2500);
-    const tank2 = new Tank("S-C2", "room 7", 91, 100);
-    const tank3 = new Tank("M-A1", "room 1", 91, 3000);
-    const tank4 = new Tank("S-C2", "room 9", 37, 3000);
-    const tank5 = new Tank("S-C2", "room 9", -9, 3000);
-    const tank6 = new Tank("S-C2", "room 9", 90, -2000);
+    const specie = new FishSpecie(
+      "tilapia",
+      "flakes",
+      { min: 16.5, max: 30 },
+      { min: 10, max: 15 },
+      { min: 5, max: 8 }
+    );
+
+    const tank = new Tank(specie, "L-B2", "room 6", 98, 2000);
+    const tank1 = new Tank(specie, "L-B2", "room 7", 70, 2500);
+    const tank2 = new Tank(specie, "S-C2", "room 7", 91, 100);
+    const tank3 = new Tank(specie, "M-A1", "room 1", 91, 3000);
+    const tank4 = new Tank(specie, "S-C2", "room 9", 37, 3000);
+    const tank5 = new Tank(specie, "S-C2", "room 9", -9, 3000);
+    const tank6 = new Tank(specie, "S-C2", "room 9", 90, -2000);
 
     it("registers a given tank", async () => {
       const newId = await app.registerTank(tank);
@@ -339,7 +350,15 @@ describe("app using fake repositories", () => {
   });
 
   describe("register feeding", () => {
-    const tank = new Tank("M-C2", "room 3", 34.5, 1200);
+    const specie = new FishSpecie(
+      "tilapia",
+      "flakes",
+      { min: 16.5, max: 30 },
+      { min: 10, max: 15 },
+      { min: 5, max: 8 }
+    );
+
+    const tank = new Tank(specie, "M-C2", "room 3", 34.5, 1200);
     const employee = new Employee(
       "david",
       "david@mail.com",
@@ -437,7 +456,15 @@ describe("app using fake repositories", () => {
   });
 
   describe("register medication", () => {
-    const tank = new Tank("M-C2", "room 3", 34.5, 1200);
+    const specie = new FishSpecie(
+      "tilapia",
+      "flakes",
+      { min: 16.5, max: 30 },
+      { min: 10, max: 15 },
+      { min: 5, max: 8 }
+    );
+
+    const tank = new Tank(specie, "M-C2", "room 3", 34.5, 1200);
     const employee = new Employee(
       "david",
       "david@mail.com",
@@ -545,7 +572,15 @@ describe("app using fake repositories", () => {
       "123"
     );
 
-    const tank = new Tank("L-A1", "room 2", 76, 2300);
+    const specie = new FishSpecie(
+      "tilapia",
+      "flakes",
+      { min: 16.5, max: 30 },
+      { min: 10, max: 15 },
+      { min: 5, max: 8 }
+    );
+
+    const tank = new Tank(specie, "L-A1", "room 2", 76, 2300);
 
     it("throws InvalidInputError when trying to register a verification with oxygen < 0 or ph < 0 or ph > 14", async () => {
       await app.registerEmployee(employee);
@@ -653,7 +688,15 @@ describe("app using fake repositories", () => {
       "123"
     );
 
-    const tank = new Tank("L-A1", "room 2", 76, 2300);
+    const specie = new FishSpecie(
+      "tilapia",
+      "flakes",
+      { min: 16.5, max: 30 },
+      { min: 10, max: 15 },
+      { min: 5, max: 8 }
+    );
+
+    const tank = new Tank(specie, "L-A1", "room 2", 76, 2300);
 
     const seller = new BusinessPartner(
       987,
@@ -1073,7 +1116,15 @@ describe("app using fake repositories", () => {
       "123"
     );
 
-    const tank = new Tank("L-A1", "room 2", 76, 2300);
+    const specie = new FishSpecie(
+      "tilapia",
+      "flakes",
+      { min: 16.5, max: 30 },
+      { min: 10, max: 15 },
+      { min: 5, max: 8 }
+    );
+
+    const tank = new Tank(specie, "L-A1", "room 2", 76, 2300);
 
     const seller = new BusinessPartner(
       987,
@@ -1546,6 +1597,44 @@ describe("app using fake repositories", () => {
       expect(filteredNoFood).toHaveLength(1);
       expect(filteredNoTreatment).toHaveLength(1);
       expect(filteredNoEquipment).toHaveLength(1);
+    });
+  });
+
+  describe("warnings", () => {
+    const employee = new Employee(
+      "david",
+      "david@mail.com",
+      "president",
+      "123"
+    );
+
+    const specie = new FishSpecie(
+      "tilapia",
+      "flakes",
+      { min: 16.5, max: 30 },
+      { min: 10, max: 15 },
+      { min: 5, max: 8 }
+    );
+
+    const tank = new Tank(specie, "L-A1", "room 2", 76, 2300);
+    it("creates a warning when registering a verification with metrics out of range", async () => {
+      const tankId = await app.registerTank(tank);
+      await app.registerEmployee(employee);
+
+      await app.registerVerification(tankId, employee.email, 42, 11, 7);
+
+      const retrievedWarnings = await app.listWarnings();
+
+      expect(retrievedWarnings).toHaveLength(1);
+      expect(
+        retrievedWarnings[0].details.verification?.temperatureOutOfRange
+      ).toBeTruthy();
+      expect(
+        retrievedWarnings[0].details.verification?.oxygenOutOfRange
+      ).toBeFalsy();
+      expect(
+        retrievedWarnings[0].details.verification?.phOutOfRange
+      ).toBeFalsy();
     });
   });
 });

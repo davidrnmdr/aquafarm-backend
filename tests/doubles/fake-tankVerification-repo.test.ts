@@ -1,5 +1,6 @@
 import { FakeTankVerificationRepo } from "../../src/doubles/fake-tankVerification-repo";
 import { Employee } from "../../src/entities/employee";
+import { FishSpecie } from "../../src/entities/fishSpecie";
 import { Tank } from "../../src/entities/tank";
 import { TankVerification } from "../../src/entities/tankVerification";
 
@@ -10,7 +11,15 @@ describe("fake tank verification repository", () => {
     fakeTankVerificationRepo = new FakeTankVerificationRepo();
   });
 
-  const tank = new Tank("M-B1", "room 2", 23.1, 1300);
+  const specie = new FishSpecie(
+    "tilapia",
+    "flakes",
+    { min: 16.5, max: 30 },
+    { min: 10, max: 15 },
+    { min: 5, max: 8 }
+  );
+
+  const tank = new Tank(specie, "M-B1", "room 2", 23.1, 1300);
   const employee = new Employee("david", "david@mail.com", "president", "123");
   const employee2 = new Employee("aaron", "aaron@mail.com", "president", "123");
 

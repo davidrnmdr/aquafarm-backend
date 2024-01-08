@@ -2,6 +2,7 @@ import { FakeFeedingRepo } from "../../src/doubles/fake-feeding-repo";
 import { BusinessPartner } from "../../src/entities/businessPartner";
 import { Employee } from "../../src/entities/employee";
 import { Feeding } from "../../src/entities/feeding";
+import { FishSpecie } from "../../src/entities/fishSpecie";
 import { Food } from "../../src/entities/food";
 import { Tank } from "../../src/entities/tank";
 
@@ -19,15 +20,22 @@ describe("fake feeding repository", () => {
     fakeFeedingRepo = new FakeFeedingRepo();
   });
 
+  const specie = new FishSpecie(
+    "tilapia",
+    "flakes",
+    { min: 16.5, max: 30 },
+    { min: 10, max: 15 },
+    { min: 5, max: 8 }
+  );
+
   const employee = new Employee("david", "david@mail.com", "president", "123");
   const employee2 = new Employee("aaron", "aaron@mail.com", "president", "123");
-  const tank = new Tank("LB-2", "room 3", 60, 1200);
+  const tank = new Tank(specie, "LB-2", "room 3", 60, 1200);
   const seller = new BusinessPartner(
     9982,
     "company@mail.com",
     "company llc",
-    "street 5",
- 
+    "street 5"
   );
   const food = new Food("flakes", 200, 1200.99, new Date("2024-12-12"), seller);
 

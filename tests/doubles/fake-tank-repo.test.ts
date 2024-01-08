@@ -1,4 +1,5 @@
 import { FakeTankRepo } from "../../src/doubles/fake-tank-repo";
+import { FishSpecie } from "../../src/entities/fishSpecie";
 import { Tank } from "../../src/entities/tank";
 
 let fakeTankRepo: FakeTankRepo;
@@ -8,8 +9,16 @@ describe("fake tank repository", () => {
     fakeTankRepo = new FakeTankRepo();
   });
 
+  const specie = new FishSpecie(
+    "tilapia",
+    "flakes",
+    { min: 16.5, max: 30 },
+    { min: 10, max: 15 },
+    { min: 5, max: 8 }
+  );
+
   it("adds a tank to the repository", async () => {
-    const tankToBeAdded = new Tank("L-B2", "room 6", 98, 2000);
+    const tankToBeAdded = new Tank(specie, "L-B2", "room 6", 98, 2000);
 
     const newId = await fakeTankRepo.add(tankToBeAdded);
 
@@ -18,7 +27,7 @@ describe("fake tank repository", () => {
   });
 
   it("finds a tank by id", async () => {
-    const tankToBeAdded = new Tank("L-B2", "room 6", 98, 2000);
+    const tankToBeAdded = new Tank(specie, "L-B2", "room 6", 98, 2000);
 
     const newId = await fakeTankRepo.add(tankToBeAdded);
 
@@ -29,7 +38,7 @@ describe("fake tank repository", () => {
   });
 
   it("finds a tank by a given attribute", async () => {
-    const tankToBeAdded = new Tank("L-B2", "room 6", 98, 2000);
+    const tankToBeAdded = new Tank(specie, "L-B2", "room 6", 98, 2000);
 
     const newId = await fakeTankRepo.add(tankToBeAdded);
 
@@ -52,7 +61,7 @@ describe("fake tank repository", () => {
   });
 
   it("updates the status of a given tank", async () => {
-    const tankToBeAdded = new Tank("L-B2", "room 6", 98, 2000);
+    const tankToBeAdded = new Tank(specie, "L-B2", "room 6", 98, 2000);
 
     const newId = await fakeTankRepo.add(tankToBeAdded);
 
@@ -63,10 +72,10 @@ describe("fake tank repository", () => {
   });
 
   it("removes a given tank from the repository", async () => {
-    const tankToBeAdded1 = new Tank("L-B2", "room 6", 98, 2000);
+    const tankToBeAdded1 = new Tank(specie, "L-B2", "room 6", 98, 2000);
     const newId1 = await fakeTankRepo.add(tankToBeAdded1);
 
-    const tankToBeAdded2 = new Tank("S-C2", "room 9", 98, 2000);
+    const tankToBeAdded2 = new Tank(specie, "S-C2", "room 9", 98, 2000);
     const newId2 = await fakeTankRepo.add(tankToBeAdded2);
 
     await fakeTankRepo.delete(newId1);

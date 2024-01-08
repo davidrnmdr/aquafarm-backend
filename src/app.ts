@@ -1,5 +1,6 @@
 import { SaleFilter } from "./types/transactionFilters";
 import { PurchaseFilter } from "./types/transactionFilters";
+import { Range } from "./types/range";
 
 import { BusinessPartner } from "./entities/businessPartner";
 import { Employee } from "./entities/employee";
@@ -44,6 +45,9 @@ import { TransactionRepo } from "./ports/transaction-repo";
 import { TreatmentRepo } from "./ports/treatment-repo";
 
 import { Crypt } from "./services/crypt";
+import { WarningRepo } from "./ports/warning-repo";
+import { Warning } from "./entities/warning";
+import { WarningDetails } from "./types/warningDetails";
 
 const superRoles = new Set(["president", "manager"]);
 
@@ -61,7 +65,8 @@ export class App {
     readonly tankVerificationRepo: TankVerificationRepo,
     readonly transactionRepo: TransactionRepo,
     readonly treatmentRepo: TreatmentRepo,
-    readonly medicationRepo: MedicationRepo
+    readonly medicationRepo: MedicationRepo,
+    readonly warningRepo: WarningRepo
   ) {}
 
   async registerEmployee(employee: Employee): Promise<string> {
@@ -214,6 +219,31 @@ export class App {
     const today = new Date();
     const tank = await this.findTank(tankId);
     const employee = await this.findEmployee(employeeEmail);
+
+    const details: WarningDetails = {
+      verification: {
+        temperatureOutOfRange: !isIn(
+          temperature,
+          tank.fishSpecie.temperatureRange
+        ),
+        oxygenOutOfRange: !isIn(oxygen, tank.fishSpecie.oxygenRange),
+        phOutOfRange: !isIn(ph, tank.fishSpecie.phRange),
+      },
+    };
+
+    if (
+      details.verification?.temperatureOutOfRange ||
+      details.verification?.oxygenOutOfRange ||
+      details.verification?.phOutOfRange
+    ) {
+      this.warningRepo.add(
+        new Warning(
+          tank,
+          `Verified Metric Out Of Range in Tank ${tankId}`,
+          details
+        )
+      );
+    }
 
     return await this.tankVerificationRepo.add(
       new TankVerification(tank, employee, temperature, oxygen, ph, today)
@@ -549,6 +579,10 @@ export class App {
 
     return filteredPurchases;
   }
+
+  async listWarnings(): Promise<Warning[]> {
+    return await this.warningRepo.list();
+  }
 }
 
 function isInRange(
@@ -557,4 +591,8 @@ function isInRange(
   max: number | Date = Infinity
 ): boolean {
   return value <= max && value >= min;
+}
+
+function isIn(value: number | Date, range: Range): boolean {
+  return value <= range.max && value >= range.min;
 }
