@@ -220,6 +220,8 @@ export class App {
     const tank = await this.findTank(tankId);
     const employee = await this.findEmployee(employeeEmail);
 
+    const oldWarnings = await this.findWarningsByTank(tankId);
+
     const details: WarningDetails = {
       verification: {
         temperatureOutOfRange: !isIn(
@@ -242,6 +244,10 @@ export class App {
           `Verified Metric Out Of Range in Tank ${tankId}`,
           details
         )
+      );
+    } else {
+      oldWarnings.forEach(
+        async (warning) => await this.warningRepo.delete(warning.id as string)
       );
     }
 
@@ -582,6 +588,12 @@ export class App {
 
   async listWarnings(): Promise<Warning[]> {
     return await this.warningRepo.list();
+  }
+
+  async findWarningsByTank(tankId: string): Promise<Warning[]> {
+    const allWarnings = await this.warningRepo.list();
+
+    return allWarnings.filter((warning) => warning.tank.id === tankId);
   }
 }
 

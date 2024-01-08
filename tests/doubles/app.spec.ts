@@ -1617,6 +1617,7 @@ describe("app using fake repositories", () => {
     );
 
     const tank = new Tank(specie, "L-A1", "room 2", 76, 2300);
+
     it("creates a warning when registering a verification with metrics out of range", async () => {
       const tankId = await app.registerTank(tank);
       await app.registerEmployee(employee);
@@ -1635,6 +1636,23 @@ describe("app using fake repositories", () => {
       expect(
         retrievedWarnings[0].details.verification?.phOutOfRange
       ).toBeFalsy();
+    });
+
+    it("removes warnings after the addition of a acceptable verification", async () => {
+      const tankId = await app.registerTank(tank);
+      await app.registerEmployee(employee);
+
+      await app.registerVerification(tankId, employee.email, 42, 11, 7);
+
+      const retrievedWarnings = await app.listWarnings();
+
+      expect(retrievedWarnings).toHaveLength(1);
+
+      await app.registerVerification(tankId, employee.email, 20, 11, 7);
+
+      const newRetrievedWarnings = await app.listWarnings();
+
+      expect(newRetrievedWarnings).toHaveLength(0);
     });
   });
 });
