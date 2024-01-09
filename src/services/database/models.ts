@@ -17,12 +17,13 @@ export const Employees = sequelize.define("Employee", {
   employeeId: { type: DataTypes.STRING, primaryKey: true },
 });
 
-const Equipments = sequelize.define("Equipment", {
+export const Equipments = sequelize.define("Equipment", {
   equipmentType: { type: DataTypes.STRING },
   equipmentStatus: { type: DataTypes.STRING },
   equipmentLocation: { type: DataTypes.STRING },
   equipmentSellerId: {
     type: DataTypes.STRING,
+    unique: true,
     references: {
       model: BusinessPartners,
       key: "partnerId",
