@@ -1,6 +1,3 @@
-import { Food } from "./food";
-import { Treatment } from "./treatment";
-
 export class BusinessPartner {
   constructor(
     public ein: number,
