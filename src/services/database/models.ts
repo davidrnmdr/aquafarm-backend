@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "./sequelize";
 
-const BusinessPartner = sequelize.define("BusinessPartner", {
+export const BusinessPartners = sequelize.define("BusinessPartner", {
   partnerEin: { type: DataTypes.STRING, unique: true },
   partnerEmail: { type: DataTypes.STRING },
   partnerName: { type: DataTypes.STRING },
@@ -9,7 +9,7 @@ const BusinessPartner = sequelize.define("BusinessPartner", {
   partnerId: { type: DataTypes.STRING, primaryKey: true },
 });
 
-const Employee = sequelize.define("Employee", {
+const Employees = sequelize.define("Employee", {
   employeeName: { type: DataTypes.STRING },
   employeeEmail: { type: DataTypes.STRING },
   employeeRole: { type: DataTypes.STRING },
@@ -17,14 +17,14 @@ const Employee = sequelize.define("Employee", {
   employeeId: { type: DataTypes.STRING, primaryKey: true },
 });
 
-const Equipment = sequelize.define("Equipment", {
+const Equipments = sequelize.define("Equipment", {
   equipmentType: { type: DataTypes.STRING },
   equipmentStatus: { type: DataTypes.STRING },
   equipmentLocation: { type: DataTypes.STRING },
   equipmentSellerId: {
     type: DataTypes.STRING,
     references: {
-      model: BusinessPartner,
+      model: BusinessPartners,
       key: "partnerId",
     },
   },
@@ -33,10 +33,10 @@ const Equipment = sequelize.define("Equipment", {
   equipmentQuantity: { type: DataTypes.INTEGER },
   equipmentId: { type: DataTypes.STRING, primaryKey: true },
 });
-BusinessPartner.hasMany(Equipment);
-Equipment.belongsTo(BusinessPartner);
+BusinessPartners.hasMany(Equipments);
+Equipments.belongsTo(BusinessPartners);
 
-const Tank = sequelize.define("Tank", {
+const Tanks = sequelize.define("Tank", {
   tankSpecieName: { type: DataTypes.STRING },
   tankSpecieFoodType: { type: DataTypes.STRING },
   tankMinTemperature: { type: DataTypes.FLOAT },
@@ -52,7 +52,7 @@ const Tank = sequelize.define("Tank", {
   tankId: { type: DataTypes.STRING, primaryKey: true },
 });
 
-const Food = sequelize.define("Food", {
+const Foods = sequelize.define("Food", {
   foodType: { type: DataTypes.STRING },
   foodQuantity: { type: DataTypes.FLOAT },
   foodCost: { type: DataTypes.FLOAT },
@@ -60,16 +60,16 @@ const Food = sequelize.define("Food", {
   foodSellerId: {
     type: DataTypes.STRING,
     references: {
-      model: BusinessPartner,
+      model: BusinessPartners,
       key: "partnerId",
     },
   },
   foodId: { type: DataTypes.STRING, primaryKey: true },
 });
-BusinessPartner.hasMany(Food);
-Food.belongsTo(BusinessPartner);
+BusinessPartners.hasMany(Foods);
+Foods.belongsTo(BusinessPartners);
 
-const Treatment = sequelize.define("Treatment", {
+const Treatments = sequelize.define("Treatment", {
   treatmentName: { type: DataTypes.STRING },
   treatmentQuantity: { type: DataTypes.FLOAT },
   treatmentCost: { type: DataTypes.FLOAT },
@@ -77,95 +77,95 @@ const Treatment = sequelize.define("Treatment", {
   treatmentSellerId: {
     type: DataTypes.STRING,
     references: {
-      model: BusinessPartner,
+      model: BusinessPartners,
       key: "partnerId",
     },
   },
   treatmentId: { type: DataTypes.STRING, primaryKey: true },
 });
-BusinessPartner.hasMany(Treatment);
-Treatment.belongsTo(BusinessPartner);
+BusinessPartners.hasMany(Treatments);
+Treatments.belongsTo(BusinessPartners);
 
-const Feeding = sequelize.define("Feeding", {
+const Feedings = sequelize.define("Feeding", {
   feedingEmployeeId: {
     type: DataTypes.STRING,
-    references: { model: Employee, key: "employeeId" },
+    references: { model: Employees, key: "employeeId" },
   },
   feedingTankId: {
     type: DataTypes.STRING,
-    references: { model: Tank, key: "tankId" },
+    references: { model: Tanks, key: "tankId" },
   },
   feedingFoodId: {
     type: DataTypes.STRING,
-    references: { model: Food, key: "foodId" },
+    references: { model: Foods, key: "foodId" },
   },
   feedingQuantity: { type: DataTypes.FLOAT },
   feedingDate: { type: DataTypes.DATE },
   feedingId: { type: DataTypes.STRING, primaryKey: true },
 });
-Employee.hasMany(Feeding);
-Tank.hasMany(Feeding);
-Food.hasMany(Feeding);
-Feeding.belongsTo(Employee);
-Feeding.belongsTo(Tank);
-Feeding.belongsTo(Food);
+Employees.hasMany(Feedings);
+Tanks.hasMany(Feedings);
+Foods.hasMany(Feedings);
+Feedings.belongsTo(Employees);
+Feedings.belongsTo(Tanks);
+Feedings.belongsTo(Foods);
 
-const Medication = sequelize.define("Medication", {
+const Medications = sequelize.define("Medication", {
   medicationEmployeeId: {
     type: DataTypes.STRING,
-    references: { model: Employee, key: "employeeId" },
+    references: { model: Employees, key: "employeeId" },
   },
   medicationTankId: {
     type: DataTypes.STRING,
-    references: { model: Tank, key: "tankId" },
+    references: { model: Tanks, key: "tankId" },
   },
   medicationTreatmentId: {
     type: DataTypes.STRING,
-    references: { model: Treatment, key: "treatmentId" },
+    references: { model: Treatments, key: "treatmentId" },
   },
   medicationQuantity: { type: DataTypes.FLOAT },
   medicationDate: { type: DataTypes.DATE },
   medicationId: { type: DataTypes.STRING, primaryKey: true },
 });
-Employee.hasMany(Medication);
-Tank.hasMany(Medication);
-Treatment.hasMany(Medication);
-Medication.belongsTo(Employee);
-Medication.belongsTo(Tank);
-Medication.belongsTo(Treatment);
+Employees.hasMany(Medications);
+Tanks.hasMany(Medications);
+Treatments.hasMany(Medications);
+Medications.belongsTo(Employees);
+Medications.belongsTo(Tanks);
+Medications.belongsTo(Treatments);
 
-const Maintenance = sequelize.define("Maintenance", {
+const Maintenances = sequelize.define("Maintenance", {
   maintenanceEmployeeId: {
     type: DataTypes.STRING,
-    references: { model: Employee, key: "employeeId" },
+    references: { model: Employees, key: "employeeId" },
   },
   maintenanceEquipmentId: {
     type: DataTypes.STRING,
-    references: { model: Equipment, key: "equipmentId" },
+    references: { model: Equipments, key: "equipmentId" },
   },
   maintenanceDate: { type: DataTypes.DATE },
   maintenanceCost: { type: DataTypes.FLOAT },
   maintenanceId: { type: DataTypes.STRING, primaryKey: true },
 });
-Employee.hasMany(Maintenance);
-Equipment.hasMany(Maintenance);
-Maintenance.belongsTo(Employee);
-Maintenance.belongsTo(Equipment);
+Employees.hasMany(Maintenances);
+Equipments.hasMany(Maintenances);
+Maintenances.belongsTo(Employees);
+Maintenances.belongsTo(Equipments);
 
-const Transaction = sequelize.define("Transaction", {
+const Transactions = sequelize.define("Transaction", {
   transactionType: { type: DataTypes.STRING },
   transactionValue: { type: DataTypes.FLOAT },
   transactionPartnerId: {
     type: DataTypes.STRING,
     references: {
-      model: BusinessPartner,
+      model: BusinessPartners,
       key: "partnerId",
     },
   },
   transactionEmployeeId: {
     type: DataTypes.STRING,
     references: {
-      model: Employee,
+      model: Employees,
       key: "employeeId",
     },
   },
@@ -173,42 +173,42 @@ const Transaction = sequelize.define("Transaction", {
   transactionPurchaseFoodId: {
     type: DataTypes.STRING,
     references: {
-      model: Food,
+      model: Foods,
       key: "foodId",
     },
   },
   transactionPurchaseTreatmentId: {
     type: DataTypes.STRING,
     references: {
-      model: Treatment,
+      model: Treatments,
       key: "treatmentId",
     },
   },
   transactionPurchaseEquipmentId: {
     type: DataTypes.STRING,
     references: {
-      model: Equipment,
+      model: Equipments,
       key: "equipmentId",
     },
   },
   transactionId: { type: DataTypes.STRING, primaryKey: true },
 });
-BusinessPartner.hasMany(Transaction);
-Transaction.belongsTo(BusinessPartner);
-Employee.hasMany(Transaction);
-Transaction.belongsTo(Employee);
-Food.hasOne(Transaction);
-Treatment.hasOne(Transaction);
-Equipment.hasOne(Transaction);
+BusinessPartners.hasMany(Transactions);
+Transactions.belongsTo(BusinessPartners);
+Employees.hasMany(Transactions);
+Transactions.belongsTo(Employees);
+Foods.hasOne(Transactions);
+Treatments.hasOne(Transactions);
+Equipments.hasOne(Transactions);
 
-const Verification = sequelize.define("Verification", {
+const Verifications = sequelize.define("Verification", {
   verificationEmployeeId: {
     type: DataTypes.STRING,
-    references: { model: Employee, key: "employeeId" },
+    references: { model: Employees, key: "employeeId" },
   },
   verificationTankId: {
     type: DataTypes.STRING,
-    references: { model: Tank, key: "tankId" },
+    references: { model: Tanks, key: "tankId" },
   },
   verificationTemperature: { type: DataTypes.FLOAT },
   verificationOxygen: { type: DataTypes.FLOAT },
@@ -216,15 +216,15 @@ const Verification = sequelize.define("Verification", {
   veriricationDate: { type: DataTypes.DATE },
   verificationId: { type: DataTypes.STRING, primaryKey: true },
 });
-Employee.hasMany(Verification);
-Verification.belongsTo(Employee);
-Tank.hasMany(Verification);
-Verification.belongsTo(Tank);
+Employees.hasMany(Verifications);
+Verifications.belongsTo(Employees);
+Tanks.hasMany(Verifications);
+Verifications.belongsTo(Tanks);
 
-const Warning = sequelize.define("Warning", {
+const Warnings = sequelize.define("Warning", {
   warningTankId: {
     type: DataTypes.STRING,
-    references: { model: Tank, key: "tankId" },
+    references: { model: Tanks, key: "tankId" },
   },
   warningMsg: { type: DataTypes.STRING },
   warningTemperature: { type: DataTypes.BOOLEAN },
@@ -232,11 +232,11 @@ const Warning = sequelize.define("Warning", {
   warningPh: { type: DataTypes.BOOLEAN },
   warningId: { type: DataTypes.STRING, primaryKey: true },
 });
-Tank.hasMany(Warning);
-Warning.belongsTo(Tank);
+Tanks.hasMany(Warnings);
+Warnings.belongsTo(Tanks);
 
-async function sync(): Promise<void> {
-  await sequelize.sync({ force: true });
-}
+// async function sync(): Promise<void> {
+//   await sequelize.sync({ force: true });
+// }
 
-sync();
+// sync();
