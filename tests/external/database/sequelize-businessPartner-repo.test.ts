@@ -1,7 +1,6 @@
 import { BusinessPartner } from "../../../src/entities/businessPartner";
 import { SequelizeBusinessPartnerRepo } from "../../../src/services/database/sequelize-businessPartner-repo";
 
-import { sequelize } from "../../../src/services/database/sequelize";
 import { BusinessPartners } from "../../../src/services/database/models";
 
 describe("sequelize business partner repository", () => {

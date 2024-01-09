@@ -9,9 +9,9 @@ export const BusinessPartners = sequelize.define("BusinessPartner", {
   partnerId: { type: DataTypes.STRING, primaryKey: true },
 });
 
-const Employees = sequelize.define("Employee", {
+export const Employees = sequelize.define("Employee", {
   employeeName: { type: DataTypes.STRING },
-  employeeEmail: { type: DataTypes.STRING },
+  employeeEmail: { type: DataTypes.STRING, unique: true },
   employeeRole: { type: DataTypes.STRING },
   employeePassword: { type: DataTypes.STRING },
   employeeId: { type: DataTypes.STRING, primaryKey: true },

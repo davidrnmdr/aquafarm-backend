@@ -9,7 +9,7 @@ export class SequelizeBusinessPartnerRepo implements BusinessPartnerRepo {
   async add(businessPartner: BusinessPartner): Promise<string> {
     const newId = crypto.randomUUID();
 
-    const partner = await BusinessPartners.create({
+    await BusinessPartners.create({
       partnerEin: businessPartner.ein,
       partnerEmail: businessPartner.email,
       partnerName: businessPartner.name,
@@ -24,8 +24,6 @@ export class SequelizeBusinessPartnerRepo implements BusinessPartnerRepo {
     const partner = await BusinessPartners.findOne({
       where: { partnerEin: `${ein}` },
     });
-
-    //console.log(partnerInstanceToObj(partner));
 
     return partner ? partnerInstanceToObj(partner) : undefined;
   }
