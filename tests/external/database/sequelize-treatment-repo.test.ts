@@ -4,7 +4,7 @@ import { SequelizeTreatmentRepo } from "../../../src/services/database/sequelize
 import { Treatments } from "../../../src/services/database/models";
 import { BusinessPartner } from "../../../src/entities/businessPartner";
 
-describe("sequelize foods repository", () => {
+describe("sequelize treatments repository", () => {
   const sequelizeTreatmentRepo = new SequelizeTreatmentRepo();
 
   beforeEach(async () => {
