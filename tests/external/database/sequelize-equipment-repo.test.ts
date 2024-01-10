@@ -42,7 +42,7 @@ describe("sequelize equipments repository", () => {
     1
   );
 
-  it("adds a equipment to the repository", async () => {
+  it("adds an equipment to the repository", async () => {
     const newId = await sequelizeEquipmentRepo.add(equipment);
 
     expect(newId).toBeTruthy();

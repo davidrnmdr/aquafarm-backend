@@ -53,13 +53,14 @@ const Tanks = sequelize.define("Tank", {
   tankId: { type: DataTypes.STRING, primaryKey: true },
 });
 
-const Foods = sequelize.define("Food", {
+export const Foods = sequelize.define("Food", {
   foodType: { type: DataTypes.STRING },
   foodQuantity: { type: DataTypes.FLOAT },
   foodCost: { type: DataTypes.FLOAT },
   foodExpirationDate: { type: DataTypes.DATE },
   foodSellerId: {
     type: DataTypes.STRING,
+    unique: true,
     references: {
       model: BusinessPartners,
       key: "partnerId",
@@ -70,7 +71,7 @@ const Foods = sequelize.define("Food", {
 BusinessPartners.hasMany(Foods);
 Foods.belongsTo(BusinessPartners);
 
-const Treatments = sequelize.define("Treatment", {
+export const Treatments = sequelize.define("Treatment", {
   treatmentName: { type: DataTypes.STRING },
   treatmentQuantity: { type: DataTypes.FLOAT },
   treatmentCost: { type: DataTypes.FLOAT },
