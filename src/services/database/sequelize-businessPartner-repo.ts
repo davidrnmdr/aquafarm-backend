@@ -44,7 +44,7 @@ export class SequelizeBusinessPartnerRepo implements BusinessPartnerRepo {
   }
 }
 
-function partnerInstanceToObj(instance: any): BusinessPartner {
+export function partnerInstanceToObj(instance: any): BusinessPartner {
   return new BusinessPartner(
     Number(instance.dataValues.partnerEin),
     instance.dataValues.partnerEmail,

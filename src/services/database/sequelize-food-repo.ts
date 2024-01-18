@@ -2,8 +2,9 @@ import { FoodRepo } from "../../ports/food-repo";
 
 import crypto from "crypto";
 
-import { Foods } from "./models";
+import { BusinessPartners, Foods } from "./models";
 import { Food } from "../../entities/food";
+import { partnerInstanceToObj } from "./sequelize-businessPartner-repo";
 
 export class SequelizeFoodRepo implements FoodRepo {
   async add(food: Food): Promise<string> {
@@ -23,7 +24,7 @@ export class SequelizeFoodRepo implements FoodRepo {
 
   async find(id: string): Promise<Food | undefined> {
     const food = await Foods.findOne({ where: { foodId: id } });
-    return food ? foodInstanceToObj(food) : undefined;
+    return food ? await foodInstanceToObj(food) : undefined;
   }
 
   async updateStorage(id: string, quantity: number): Promise<void> {
@@ -35,17 +36,28 @@ export class SequelizeFoodRepo implements FoodRepo {
   }
 
   async list(): Promise<Food[]> {
-    return (await Foods.findAll()).map(foodInstanceToObj);
+    const allFoodInstances = await Foods.findAll();
+    const allFoodObjects: Food[] = [];
+
+    for (let i = 0; i < allFoodInstances.length; i++) {
+      allFoodObjects.push(await foodInstanceToObj(allFoodInstances[i]));
+    }
+
+    return allFoodObjects;
   }
 }
 
-function foodInstanceToObj(instance: any): Food {
+export async function foodInstanceToObj(instance: any): Promise<Food> {
   return new Food(
     instance.dataValues.foodType,
     instance.dataValues.foodQuantity,
     instance.dataValues.foodCost,
     instance.dataValues.foodExpirationDate,
-    instance.dataValues.foodSellerId,
+    partnerInstanceToObj(
+      await BusinessPartners.findOne({
+        where: { partnerId: instance.dataValues.foodSellerId },
+      })
+    ),
     instance.dataValues.foodId
   );
 }

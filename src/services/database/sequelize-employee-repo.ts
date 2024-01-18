@@ -36,7 +36,7 @@ export class SequelizeEmployeeRepo implements EmployeeRepo {
   }
 }
 
-function employeeInstanceToObj(instance: any): Employee {
+export function employeeInstanceToObj(instance: any): Employee {
   return new Employee(
     instance.dataValues.employeeName,
     instance.dataValues.employeeEmail,

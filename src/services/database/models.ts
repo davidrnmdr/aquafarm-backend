@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "./sequelize";
 
 export const BusinessPartners = sequelize.define("BusinessPartner", {
@@ -37,15 +37,23 @@ export const Equipments = sequelize.define("Equipment", {
 BusinessPartners.hasMany(Equipments);
 Equipments.belongsTo(BusinessPartners);
 
-const Tanks = sequelize.define("Tank", {
-  tankSpecieName: { type: DataTypes.STRING },
-  tankSpecieFoodType: { type: DataTypes.STRING },
-  tankMinTemperature: { type: DataTypes.FLOAT },
-  tankMaxTemperature: { type: DataTypes.FLOAT },
-  tankMinOxygen: { type: DataTypes.FLOAT },
-  tankMaxOxygen: { type: DataTypes.FLOAT },
-  tankMinPh: { type: DataTypes.FLOAT },
-  tankMaxPh: { type: DataTypes.FLOAT },
+export const FishSpecies = sequelize.define("FishSpecie", {
+  specieName: { type: DataTypes.STRING },
+  specieFoodType: { type: DataTypes.STRING },
+  specieMinTemperature: { type: DataTypes.FLOAT },
+  specieMaxTemperature: { type: DataTypes.FLOAT },
+  specieMinOxygen: { type: DataTypes.FLOAT },
+  specieMaxOxygen: { type: DataTypes.FLOAT },
+  specieMinPh: { type: DataTypes.FLOAT },
+  specieMaxPh: { type: DataTypes.FLOAT },
+  specieId: { type: DataTypes.STRING, primaryKey: true },
+});
+
+export const Tanks = sequelize.define("Tank", {
+  tankSpecieId: {
+    type: DataTypes.STRING,
+    references: { model: FishSpecies, key: "specieId" },
+  },
   tankType: { type: DataTypes.STRING },
   tankLocation: { type: DataTypes.STRING },
   tankStatus: { type: DataTypes.FLOAT },
@@ -60,7 +68,6 @@ export const Foods = sequelize.define("Food", {
   foodExpirationDate: { type: DataTypes.DATE },
   foodSellerId: {
     type: DataTypes.STRING,
-    unique: true,
     references: {
       model: BusinessPartners,
       key: "partnerId",
@@ -88,17 +95,20 @@ export const Treatments = sequelize.define("Treatment", {
 BusinessPartners.hasMany(Treatments);
 Treatments.belongsTo(BusinessPartners);
 
-const Feedings = sequelize.define("Feeding", {
+export const Feedings = sequelize.define("Feeding", {
   feedingEmployeeId: {
     type: DataTypes.STRING,
+
     references: { model: Employees, key: "employeeId" },
   },
   feedingTankId: {
     type: DataTypes.STRING,
+
     references: { model: Tanks, key: "tankId" },
   },
   feedingFoodId: {
     type: DataTypes.STRING,
+
     references: { model: Foods, key: "foodId" },
   },
   feedingQuantity: { type: DataTypes.FLOAT },

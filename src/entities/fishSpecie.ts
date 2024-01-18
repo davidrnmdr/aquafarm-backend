@@ -6,6 +6,7 @@ export class FishSpecie {
     public foodType: string,
     public temperatureRange: Range,
     public oxygenRange: Range,
-    public phRange: Range
+    public phRange: Range,
+    public id?: string
   ) {}
 }
