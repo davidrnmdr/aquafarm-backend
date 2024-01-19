@@ -2,8 +2,9 @@ import { TreatmentRepo } from "../../ports/treatment-repo";
 
 import crypto from "crypto";
 
-import { Treatments } from "./models";
+import { BusinessPartners, Treatments } from "./models";
 import { Treatment } from "../../entities/treatment";
+import { partnerInstanceToObj } from "./sequelize-businessPartner-repo";
 
 export class SequelizeTreatmentRepo implements TreatmentRepo {
   async add(treatment: Treatment): Promise<string> {
@@ -38,17 +39,32 @@ export class SequelizeTreatmentRepo implements TreatmentRepo {
   }
 
   async list(): Promise<Treatment[]> {
-    return (await Treatments.findAll()).map(treatmentInstanceToObj);
+    const allTreatmentInstances = await Treatments.findAll();
+    const allTreatmentObjects: Treatment[] = [];
+
+    for (let i = 0; i < allTreatmentInstances.length; i++) {
+      allTreatmentObjects.push(
+        await treatmentInstanceToObj(allTreatmentInstances[i])
+      );
+    }
+
+    return allTreatmentObjects;
   }
 }
 
-function treatmentInstanceToObj(instance: any): Treatment {
+export async function treatmentInstanceToObj(
+  instance: any
+): Promise<Treatment> {
   return new Treatment(
     instance.dataValues.treatmentName,
     instance.dataValues.treatmentQuantity,
     instance.dataValues.treatmentCost,
     instance.dataValues.treatmentExpirationDate,
-    instance.dataValues.treatmentSellerId,
+    partnerInstanceToObj(
+      await BusinessPartners.findOne({
+        where: { partnerId: instance.dataValues.treatmentSellerId },
+      })
+    ),
     instance.dataValues.treatmentId
   );
 }

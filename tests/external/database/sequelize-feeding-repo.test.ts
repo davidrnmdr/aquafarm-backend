@@ -136,8 +136,6 @@ describe("sequelize feedings repository", () => {
       "president"
     );
 
-    console.log(feedingsByEmail);
-
     expect(JSON.stringify(feedingsByEmail[0])).toEqual(JSON.stringify(feeding));
     expect(feedingsByEmail[1]).toBeFalsy();
 

@@ -122,7 +122,7 @@ Feedings.belongsTo(Employees);
 Feedings.belongsTo(Tanks);
 Feedings.belongsTo(Foods);
 
-const Medications = sequelize.define("Medication", {
+export const Medications = sequelize.define("Medication", {
   medicationEmployeeId: {
     type: DataTypes.STRING,
     references: { model: Employees, key: "employeeId" },
