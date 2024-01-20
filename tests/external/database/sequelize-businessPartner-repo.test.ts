@@ -5,14 +5,8 @@ import { BusinessPartners } from "../../../src/services/database/models";
 
 describe("sequelize business partner repository", () => {
   const sequelizeBusinessPartnerRepo = new SequelizeBusinessPartnerRepo();
-
-  beforeEach(async () => {
-    await BusinessPartners.sync({ force: true });
-  }, 20000);
-
-  afterEach(async () => {
-    await BusinessPartners.sync({ force: true });
-  }, 20000);
+  let newId: string;
+  let newId2: string;
 
   const partner = new BusinessPartner(
     123,
@@ -28,20 +22,30 @@ describe("sequelize business partner repository", () => {
     "street 5, 342"
   );
 
-  it("adds a partner to the repository", async () => {
-    const newId = await sequelizeBusinessPartnerRepo.add(partner);
+  beforeEach(async () => {
+    await BusinessPartners.sync({ force: true });
 
+    newId = await sequelizeBusinessPartnerRepo.add(partner);
+    partner.id = newId;
+
+    newId2 = await sequelizeBusinessPartnerRepo.add(partner2);
+    partner2.id = newId2;
+  }, 20000);
+
+  afterAll(async () => {
+    await BusinessPartners.sync({ force: true });
+  }, 20000);
+
+  it("adds a partner to the repository", async () => {
     expect(newId).toBeTruthy();
   });
 
   it("finds a partner by ein", async () => {
-    const newId = await sequelizeBusinessPartnerRepo.add(partner);
-
     const retrievedPartner = await sequelizeBusinessPartnerRepo.find(
       partner.ein
     );
 
-    const shouldBeUndefined = await sequelizeBusinessPartnerRepo.find(321);
+    const shouldBeUndefined = await sequelizeBusinessPartnerRepo.find(322);
 
     expect(retrievedPartner).toBeInstanceOf(BusinessPartner);
     expect(retrievedPartner?.id).toEqual(newId);
@@ -49,8 +53,6 @@ describe("sequelize business partner repository", () => {
   });
 
   it("updates the email of a given partner", async () => {
-    const newId = await sequelizeBusinessPartnerRepo.add(partner);
-
     const newEmail = "company@mail.net";
 
     await sequelizeBusinessPartnerRepo.updateEmail(newId, newEmail);
@@ -63,8 +65,6 @@ describe("sequelize business partner repository", () => {
   });
 
   it("deletes a given partner", async () => {
-    const newId = await sequelizeBusinessPartnerRepo.add(partner);
-
     await sequelizeBusinessPartnerRepo.delete(newId);
 
     const shouldBeUndefined = await sequelizeBusinessPartnerRepo.find(
@@ -75,9 +75,6 @@ describe("sequelize business partner repository", () => {
   });
 
   it("lists all partners", async () => {
-    const newId = await sequelizeBusinessPartnerRepo.add(partner);
-    const newId2 = await sequelizeBusinessPartnerRepo.add(partner2);
-
     const partnersList = await sequelizeBusinessPartnerRepo.list();
 
     expect(partnersList[0]).toBeInstanceOf(BusinessPartner);

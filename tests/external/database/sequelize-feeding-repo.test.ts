@@ -97,7 +97,7 @@ describe("sequelize feedings repository", () => {
     feeding2.id = feedingId2;
   }, 20000);
 
-  afterEach(async () => {
+  afterAll(async () => {
     await Feedings.sync({ force: true });
     await Foods.sync({ force: true });
     await BusinessPartners.sync({ force: true });

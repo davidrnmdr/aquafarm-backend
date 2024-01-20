@@ -23,7 +23,6 @@ export const Equipments = sequelize.define("Equipment", {
   equipmentLocation: { type: DataTypes.STRING },
   equipmentSellerId: {
     type: DataTypes.STRING,
-    unique: true,
     references: {
       model: BusinessPartners,
       key: "partnerId",

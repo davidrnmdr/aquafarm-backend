@@ -4,22 +4,14 @@ import { SequelizeFoodRepo } from "../../../src/services/database/sequelize-food
 import { BusinessPartners, Foods } from "../../../src/services/database/models";
 import { BusinessPartner } from "../../../src/entities/businessPartner";
 
-import crypto from "crypto";
 import { SequelizeBusinessPartnerRepo } from "../../../src/services/database/sequelize-businessPartner-repo";
 
 describe("sequelize foods repository", () => {
   const sequelizeFoodRepo = new SequelizeFoodRepo();
   const sequelizePartnerRepo = new SequelizeBusinessPartnerRepo();
-
-  beforeEach(async () => {
-    await Foods.sync({ force: true });
-    await BusinessPartners.sync({ force: true });
-  }, 20000);
-
-  afterAll(async () => {
-    await Foods.sync({ force: true });
-    await BusinessPartners.sync({ force: true });
-  }, 20000);
+  let newId: string;
+  let newId2: string;
+  let sellerId: string;
 
   const seller = new BusinessPartner(
     123,
@@ -28,25 +20,32 @@ describe("sequelize foods repository", () => {
     "street 2, 987"
   );
 
-  it("adds a food to the repository", async () => {
-    const sellerId = await sequelizePartnerRepo.add(seller);
+  beforeEach(async () => {
+    await Foods.sync({ force: true });
+    await BusinessPartners.sync({ force: true });
 
+    sellerId = await sequelizePartnerRepo.add(seller);
     seller.id = sellerId;
 
-    const food = new Food("flakes", 20, 500.9, new Date("2025-10-10"), seller);
-    const newId = await sequelizeFoodRepo.add(food);
+    newId = await sequelizeFoodRepo.add(
+      new Food("flakes", 20, 500.9, new Date("2025-10-10"), seller)
+    );
 
+    newId2 = await sequelizeFoodRepo.add(
+      new Food("pallets", 10, 100, new Date("2025-10-10"), seller)
+    );
+  }, 20000);
+
+  afterAll(async () => {
+    await Foods.sync({ force: true });
+    await BusinessPartners.sync({ force: true });
+  }, 20000);
+
+  it("adds a food to the repository", async () => {
     expect(newId).toBeTruthy();
   });
 
   it("finds a food by id", async () => {
-    const sellerId = await sequelizePartnerRepo.add(seller);
-
-    seller.id = sellerId;
-
-    const food = new Food("flakes", 20, 500.9, new Date("2025-10-10"), seller);
-    const newId = await sequelizeFoodRepo.add(food);
-
     const retrievedFood = await sequelizeFoodRepo.find(newId);
 
     const shouldBeUndefined = await sequelizeFoodRepo.find("12345");
@@ -57,13 +56,6 @@ describe("sequelize foods repository", () => {
   });
 
   it("updates the storage of a given food", async () => {
-    const sellerId = await sequelizePartnerRepo.add(seller);
-
-    seller.id = sellerId;
-
-    const food = new Food("flakes", 20, 500.9, new Date("2025-10-10"), seller);
-    const newId = await sequelizeFoodRepo.add(food);
-
     const newStorage = 5;
     await sequelizeFoodRepo.updateStorage(newId, newStorage);
 
@@ -72,13 +64,6 @@ describe("sequelize foods repository", () => {
   });
 
   it("deletes a given food", async () => {
-    const sellerId = await sequelizePartnerRepo.add(seller);
-
-    seller.id = sellerId;
-
-    const food = new Food("flakes", 20, 500.9, new Date("2025-10-10"), seller);
-    const newId = await sequelizeFoodRepo.add(food);
-
     await sequelizeFoodRepo.delete(newId);
 
     const shouldBeUndefined = await sequelizeFoodRepo.find(newId);
@@ -87,15 +72,6 @@ describe("sequelize foods repository", () => {
   });
 
   it("lists all foods", async () => {
-    const sellerId = await sequelizePartnerRepo.add(seller);
-
-    seller.id = sellerId;
-
-    const food = new Food("flakes", 20, 500.9, new Date("2025-10-10"), seller);
-    const food2 = new Food("pallets", 10, 100, new Date("2025-10-10"), seller);
-    const newId = await sequelizeFoodRepo.add(food);
-    const newId2 = await sequelizeFoodRepo.add(food2);
-
     const foodList = await sequelizeFoodRepo.list();
 
     expect(foodList[0]).toBeInstanceOf(Food);

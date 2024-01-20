@@ -2,8 +2,9 @@ import { EquipmentRepo } from "../../ports/equipments-repo";
 
 import crypto from "crypto";
 
-import { Equipments } from "./models";
+import { BusinessPartners, Equipments } from "./models";
 import { Equipment } from "../../entities/equipment";
+import { partnerInstanceToObj } from "./sequelize-businessPartner-repo";
 
 export class SequelizeEquipmentRepo implements EquipmentRepo {
   async add(equipment: Equipment): Promise<string> {
@@ -47,16 +48,29 @@ export class SequelizeEquipmentRepo implements EquipmentRepo {
   }
 
   async list(): Promise<Equipment[]> {
-    return (await Equipments.findAll()).map(equipmentInstanceToObj);
+    const allEquipmentInstances = await Equipments.findAll();
+    const allEquipmentObjects: Equipment[] = [];
+
+    for (let i = 0; i < allEquipmentInstances.length; i++) {
+      allEquipmentObjects.push(
+        await equipmentInstanceToObj(allEquipmentInstances[i])
+      );
+    }
+
+    return allEquipmentObjects;
   }
 }
 
-function equipmentInstanceToObj(instance: any): Equipment {
+async function equipmentInstanceToObj(instance: any): Promise<Equipment> {
   return new Equipment(
     instance.dataValues.equipmentType,
     instance.dataValues.equipmentStatus,
     instance.dataValues.equipmentLocation,
-    instance.dataValues.equipmentSellerId,
+    partnerInstanceToObj(
+      await BusinessPartners.findOne({
+        where: { partnerId: instance.dataValues.equipmentSellerId },
+      })
+    ),
     instance.dataValues.equipmentMaintenanceCost,
     instance.dataValues.equipmentCost,
     instance.dataValues.equipmentQuantity,

@@ -1,19 +1,19 @@
 import { Equipment } from "../../../src/entities/equipment";
 import { SequelizeEquipmentRepo } from "../../../src/services/database/sequelize-equipment-repo";
 
-import { Equipments } from "../../../src/services/database/models";
+import {
+  BusinessPartners,
+  Equipments,
+} from "../../../src/services/database/models";
 import { BusinessPartner } from "../../../src/entities/businessPartner";
+import { SequelizeBusinessPartnerRepo } from "../../../src/services/database/sequelize-businessPartner-repo";
 
 describe("sequelize equipments repository", () => {
   const sequelizeEquipmentRepo = new SequelizeEquipmentRepo();
-
-  beforeEach(async () => {
-    await Equipments.sync({ force: true });
-  }, 20000);
-
-  afterEach(async () => {
-    await Equipments.sync({ force: true });
-  }, 20000);
+  const sequelizePartnerRepo = new SequelizeBusinessPartnerRepo();
+  let newId: string;
+  let newId2: string;
+  let sellerId: string;
 
   const seller = new BusinessPartner(
     123,
@@ -22,38 +22,35 @@ describe("sequelize equipments repository", () => {
     "street 2, 987"
   );
 
-  const equipment = new Equipment(
-    "oxygen bomb",
-    "new",
-    "room 4",
-    seller,
-    0,
-    1200,
-    2
-  );
+  beforeEach(async () => {
+    await BusinessPartners.sync({ force: true });
+    await Equipments.sync({ force: true });
 
-  const equipment2 = new Equipment(
-    "computer",
-    "new",
-    "office 2",
-    seller,
-    0,
-    400,
-    1
-  );
+    sellerId = await sequelizePartnerRepo.add(seller);
+    seller.id = sellerId;
+
+    newId = await sequelizeEquipmentRepo.add(
+      new Equipment("oxygen bomb", "new", "room 4", seller, 0, 1200, 2)
+    );
+
+    newId2 = await sequelizeEquipmentRepo.add(
+      new Equipment("computer", "new", "office 2", seller, 0, 400, 1)
+    );
+  }, 20000);
+
+  afterAll(async () => {
+    await BusinessPartners.sync({ force: true });
+    await Equipments.sync({ force: true });
+  }, 20000);
 
   it("adds an equipment to the repository", async () => {
-    const newId = await sequelizeEquipmentRepo.add(equipment);
-
     expect(newId).toBeTruthy();
   });
 
   it("finds an equipment by id", async () => {
-    const newId = await sequelizeEquipmentRepo.add(equipment);
-
     const retrievedEquipment = await sequelizeEquipmentRepo.find(newId);
 
-    const shouldBeUndefined = await sequelizeEquipmentRepo.find("12345");
+    const shouldBeUndefined = await sequelizeEquipmentRepo.find("123445");
 
     expect(retrievedEquipment).toBeInstanceOf(Equipment);
     expect(retrievedEquipment?.id).toEqual(newId);
@@ -61,8 +58,6 @@ describe("sequelize equipments repository", () => {
   });
 
   it("updades the status of a given equipment", async () => {
-    const newId = await sequelizeEquipmentRepo.add(equipment);
-
     const newStatus = "broken";
 
     await sequelizeEquipmentRepo.updateStatus(newId, newStatus);
@@ -73,8 +68,6 @@ describe("sequelize equipments repository", () => {
   });
 
   it("updates the maintenance cost of a given equipment", async () => {
-    const newId = await sequelizeEquipmentRepo.add(equipment);
-
     const newCost = 299.2;
     await sequelizeEquipmentRepo.updateMaintenanceCost(newId, newCost);
 
@@ -90,8 +83,6 @@ describe("sequelize equipments repository", () => {
   });
 
   it("deletes a given equipment", async () => {
-    const newId = await sequelizeEquipmentRepo.add(equipment);
-
     await sequelizeEquipmentRepo.delete(newId);
 
     const shouldBeUndefined = await sequelizeEquipmentRepo.find(newId);
@@ -100,9 +91,6 @@ describe("sequelize equipments repository", () => {
   });
 
   it("lists all equipments", async () => {
-    const newId = await sequelizeEquipmentRepo.add(equipment);
-    const newId2 = await sequelizeEquipmentRepo.add(equipment2);
-
     const equipmentList = await sequelizeEquipmentRepo.list();
 
     expect(equipmentList[0]).toBeInstanceOf(Equipment);

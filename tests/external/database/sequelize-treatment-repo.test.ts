@@ -1,19 +1,20 @@
 import { Treatment } from "../../../src/entities/treatment";
 import { SequelizeTreatmentRepo } from "../../../src/services/database/sequelize-treatment-repo";
 
-import { Treatments } from "../../../src/services/database/models";
+import {
+  BusinessPartners,
+  Treatments,
+} from "../../../src/services/database/models";
 import { BusinessPartner } from "../../../src/entities/businessPartner";
 
-describe("sequelize treatments repository", () => {
+import { SequelizeBusinessPartnerRepo } from "../../../src/services/database/sequelize-businessPartner-repo";
+
+describe("sequelize foods repository", () => {
   const sequelizeTreatmentRepo = new SequelizeTreatmentRepo();
-
-  beforeEach(async () => {
-    await Treatments.sync({ force: true });
-  }, 20000);
-
-  afterEach(async () => {
-    await Treatments.sync({ force: true });
-  }, 20000);
+  const sequelizePartnerRepo = new SequelizeBusinessPartnerRepo();
+  let newId: string;
+  let newId2: string;
+  let sellerId: string;
 
   const seller = new BusinessPartner(
     123,
@@ -22,30 +23,32 @@ describe("sequelize treatments repository", () => {
     "street 2, 987"
   );
 
-  const treatment = new Treatment(
-    "skin med",
-    20,
-    500.9,
-    new Date("2025-10-10"),
-    seller
-  );
-  const treatment2 = new Treatment(
-    "respiratory med",
-    10,
-    100,
-    new Date("2025-10-10"),
-    seller
-  );
+  beforeEach(async () => {
+    await Treatments.sync({ force: true });
+    await BusinessPartners.sync({ force: true });
+
+    sellerId = await sequelizePartnerRepo.add(seller);
+    seller.id = sellerId;
+
+    newId = await sequelizeTreatmentRepo.add(
+      new Treatment("skin med", 20, 500.9, new Date("2025-10-10"), seller)
+    );
+
+    newId2 = await sequelizeTreatmentRepo.add(
+      new Treatment("skin med 2", 10, 100, new Date("2025-10-10"), seller)
+    );
+  }, 20000);
+
+  afterAll(async () => {
+    await Treatments.sync({ force: true });
+    await BusinessPartners.sync({ force: true });
+  }, 20000);
 
   it("adds a treatment to the repository", async () => {
-    const newId = await sequelizeTreatmentRepo.add(treatment);
-
     expect(newId).toBeTruthy();
   });
 
   it("finds a treatment by id", async () => {
-    const newId = await sequelizeTreatmentRepo.add(treatment);
-
     const retrievedTreatment = await sequelizeTreatmentRepo.find(newId);
 
     const shouldBeUndefined = await sequelizeTreatmentRepo.find("12345");
@@ -56,18 +59,14 @@ describe("sequelize treatments repository", () => {
   });
 
   it("updates the storage of a given treatment", async () => {
-    const newId = await sequelizeTreatmentRepo.add(treatment);
-
     const newStorage = 5;
     await sequelizeTreatmentRepo.updateStorage(newId, newStorage);
 
-    const retrievedTreatment = await sequelizeTreatmentRepo.find(newId);
-    expect(retrievedTreatment?.quantity).toEqual(newStorage);
+    const retrievedFood = await sequelizeTreatmentRepo.find(newId);
+    expect(retrievedFood?.quantity).toEqual(newStorage);
   });
 
   it("deletes a given treatment", async () => {
-    const newId = await sequelizeTreatmentRepo.add(treatment);
-
     await sequelizeTreatmentRepo.delete(newId);
 
     const shouldBeUndefined = await sequelizeTreatmentRepo.find(newId);
@@ -75,14 +74,11 @@ describe("sequelize treatments repository", () => {
     expect(shouldBeUndefined).toBeUndefined();
   });
 
-  it("lists all treatments", async () => {
-    const newId = await sequelizeTreatmentRepo.add(treatment);
-    const newId2 = await sequelizeTreatmentRepo.add(treatment2);
+  it("lists all foods", async () => {
+    const foodList = await sequelizeTreatmentRepo.list();
 
-    const treatmentList = await sequelizeTreatmentRepo.list();
-
-    expect(treatmentList[0]).toBeInstanceOf(Treatment);
-    expect(treatmentList[0].id).toEqual(newId);
-    expect(treatmentList[1].id).toEqual(newId2);
+    expect(foodList[0]).toBeInstanceOf(Treatment);
+    expect(foodList[0].id).toEqual(newId);
+    expect(foodList[1].id).toEqual(newId2);
   });
 });

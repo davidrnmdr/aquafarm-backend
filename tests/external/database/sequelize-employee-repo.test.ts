@@ -5,31 +5,35 @@ import { Employees } from "../../../src/services/database/models";
 
 describe("sequelize employees repository", () => {
   const sequelizeEmployeeRepo = new SequelizeEmployeeRepo();
+  let newId: string;
+  let newId2: string;
+
+  const employee = new Employee("david", "david@mail.com", "president", "123");
+  const employee2 = new Employee("aaron", "aaron@mail.com", "manager", "321");
 
   beforeEach(async () => {
     await Employees.sync({ force: true });
+
+    newId = await sequelizeEmployeeRepo.add(employee);
+    employee.id = newId;
+
+    newId2 = await sequelizeEmployeeRepo.add(employee2);
+    employee2.id = newId2;
   }, 20000);
 
   afterEach(async () => {
     await Employees.sync({ force: true });
   }, 20000);
 
-  const employee = new Employee("david", "david@mail.com", "president", "123");
-  const employee2 = new Employee("aaron", "aaron@mail.com", "manager", "321");
-
   it("adds a employee to the repository", async () => {
-    const newId = await sequelizeEmployeeRepo.add(employee);
-
     expect(newId).toBeTruthy();
   });
 
   it("finds a employee by email", async () => {
-    const newId = await sequelizeEmployeeRepo.add(employee);
-
     const retrievedEmployee = await sequelizeEmployeeRepo.find(employee.email);
 
     const shouldBeUndefined = await sequelizeEmployeeRepo.find(
-      "aaron@mail.com"
+      "aaron2@mail.com"
     );
 
     expect(retrievedEmployee).toBeInstanceOf(Employee);
@@ -38,8 +42,6 @@ describe("sequelize employees repository", () => {
   });
 
   it("deletes a given employee", async () => {
-    const newId = await sequelizeEmployeeRepo.add(employee);
-
     await sequelizeEmployeeRepo.delete(newId);
 
     const shouldBeUndefined = await sequelizeEmployeeRepo.find(employee.email);
@@ -48,9 +50,6 @@ describe("sequelize employees repository", () => {
   });
 
   it("lists all employees", async () => {
-    const newId = await sequelizeEmployeeRepo.add(employee);
-    const newId2 = await sequelizeEmployeeRepo.add(employee2);
-
     const employeeList = await sequelizeEmployeeRepo.list();
 
     expect(employeeList[0]).toBeInstanceOf(Employee);
