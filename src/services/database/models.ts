@@ -59,6 +59,8 @@ export const Tanks = sequelize.define("Tank", {
   tankCapacity: { type: DataTypes.INTEGER },
   tankId: { type: DataTypes.STRING, primaryKey: true },
 });
+FishSpecies.hasMany(Tanks);
+Tanks.belongsTo(FishSpecies);
 
 export const Foods = sequelize.define("Food", {
   foodType: { type: DataTypes.STRING },
