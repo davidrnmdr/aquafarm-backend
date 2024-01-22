@@ -234,7 +234,7 @@ Verifications.belongsTo(Employees);
 Tanks.hasMany(Verifications);
 Verifications.belongsTo(Tanks);
 
-const Warnings = sequelize.define("Warning", {
+export const Warnings = sequelize.define("Warning", {
   warningTankId: {
     type: DataTypes.STRING,
     references: { model: Tanks, key: "tankId" },
