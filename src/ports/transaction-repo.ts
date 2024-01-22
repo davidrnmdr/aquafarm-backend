@@ -12,5 +12,5 @@ export interface TransactionRepo {
     attribute: "name" | "email" | "role",
     value: string
   ): Promise<Sale[] | Purchase[]>;
-  list(type?: "sale" | "purchase"): Promise<Sale[] | Purchase[]>;
+  list(type: "sale" | "purchase"): Promise<Sale[] | Purchase[]>;
 }

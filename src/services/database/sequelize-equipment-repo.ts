@@ -61,7 +61,9 @@ export class SequelizeEquipmentRepo implements EquipmentRepo {
   }
 }
 
-async function equipmentInstanceToObj(instance: any): Promise<Equipment> {
+export async function equipmentInstanceToObj(
+  instance: any
+): Promise<Equipment> {
   return new Equipment(
     instance.dataValues.equipmentType,
     instance.dataValues.equipmentStatus,

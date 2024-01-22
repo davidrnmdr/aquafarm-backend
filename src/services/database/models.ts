@@ -165,7 +165,7 @@ Equipments.hasMany(Maintenances);
 Maintenances.belongsTo(Employees);
 Maintenances.belongsTo(Equipments);
 
-const Transactions = sequelize.define("Transaction", {
+export const Transactions = sequelize.define("Transaction", {
   transactionType: { type: DataTypes.STRING },
   transactionValue: { type: DataTypes.FLOAT },
   transactionPartnerId: {
@@ -204,6 +204,7 @@ const Transactions = sequelize.define("Transaction", {
       key: "equipmentId",
     },
   },
+  transactionDate: { type: DataTypes.DATE },
   transactionId: { type: DataTypes.STRING, primaryKey: true },
 });
 BusinessPartners.hasMany(Transactions);
