@@ -215,7 +215,7 @@ Foods.hasOne(Transactions);
 Treatments.hasOne(Transactions);
 Equipments.hasOne(Transactions);
 
-const Verifications = sequelize.define("Verification", {
+export const Verifications = sequelize.define("Verification", {
   verificationEmployeeId: {
     type: DataTypes.STRING,
     references: { model: Employees, key: "employeeId" },
@@ -227,7 +227,7 @@ const Verifications = sequelize.define("Verification", {
   verificationTemperature: { type: DataTypes.FLOAT },
   verificationOxygen: { type: DataTypes.FLOAT },
   verificationPh: { type: DataTypes.FLOAT },
-  veriricationDate: { type: DataTypes.DATE },
+  verificationDate: { type: DataTypes.DATE },
   verificationId: { type: DataTypes.STRING, primaryKey: true },
 });
 Employees.hasMany(Verifications);
