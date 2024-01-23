@@ -21,6 +21,8 @@ export class SequelizeEquipmentRepo implements EquipmentRepo {
       equipmentId: newId,
     });
 
+    equipment.id = newId;
+
     return newId;
   }
 

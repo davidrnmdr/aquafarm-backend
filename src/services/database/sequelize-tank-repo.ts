@@ -19,6 +19,8 @@ export class SequelizeTankRepo implements TankRepo {
       tankId: newId,
     });
 
+    tank.id = newId;
+
     return newId;
   }
 

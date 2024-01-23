@@ -28,7 +28,6 @@ describe("sequelize foods repository", () => {
     await BusinessPartners.sync({ force: true });
 
     sellerId = await sequelizePartnerRepo.add(seller);
-    seller.id = sellerId;
 
     newId = await sequelizeTreatmentRepo.add(
       new Treatment("skin med", 20, 500.9, new Date("2025-10-10"), seller)

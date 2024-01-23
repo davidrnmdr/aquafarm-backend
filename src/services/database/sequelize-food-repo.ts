@@ -19,6 +19,8 @@ export class SequelizeFoodRepo implements FoodRepo {
       foodId: newId,
     });
 
+    food.id = newId;
+
     return newId;
   }
 

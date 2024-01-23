@@ -17,6 +17,8 @@ export class SequelizeEmployeeRepo implements EmployeeRepo {
       employeeId: newId,
     });
 
+    employee.id = newId;
+
     return newId;
   }
 

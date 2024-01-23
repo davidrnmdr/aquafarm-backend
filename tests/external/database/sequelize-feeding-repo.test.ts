@@ -69,32 +69,24 @@ describe("sequelize feedings repository", () => {
     await Employees.sync({ force: true });
 
     employeeId = await sequelizeEmployeeRepo.add(employee);
-    employee.id = employeeId;
 
     employeeId2 = await sequelizeEmployeeRepo.add(employee2);
-    employee2.id = employeeId2;
 
     specieId = await sequelizeSpecieRepo.add(specie);
-    specie.id = specieId;
 
     tankId = await sequelizeTankRepo.add(tank);
-    tank.id = tankId;
 
     sellerId = await sequelizePartnerRepo.add(seller);
-    seller.id = sellerId;
 
     foodId = await sequelizeFoodRepo.add(food);
-    food.id = foodId;
 
     feedingId = await sequelizeFeedingRepo.add(
       (feeding = new Feeding(employee, tank, food, 10, new Date()))
     );
-    feeding.id = feedingId;
 
     feedingId2 = await sequelizeFeedingRepo.add(
       (feeding2 = new Feeding(employee2, tank, food, 11, new Date()))
     );
-    feeding2.id = feedingId2;
   }, 20000);
 
   afterAll(async () => {

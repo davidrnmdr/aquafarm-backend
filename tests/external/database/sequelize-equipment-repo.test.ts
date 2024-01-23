@@ -27,7 +27,6 @@ describe("sequelize equipments repository", () => {
     await Equipments.sync({ force: true });
 
     sellerId = await sequelizePartnerRepo.add(seller);
-    seller.id = sellerId;
 
     newId = await sequelizeEquipmentRepo.add(
       new Equipment("oxygen bomb", "new", "room 4", seller, 0, 1200, 2)

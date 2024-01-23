@@ -20,6 +20,8 @@ export class SequelizeFishSpecieRepo implements FishSpecieRepo {
       specieId: newId,
     });
 
+    specie.id = newId;
+
     return newId;
   }
 

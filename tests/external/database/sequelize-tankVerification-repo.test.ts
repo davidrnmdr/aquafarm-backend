@@ -46,22 +46,18 @@ describe("sequelize tank verification repository", () => {
         { min: 5, max: 8 }
       ))
     );
-    specie.id = specieId;
 
     tankId = await sequelizeTankRepo.add(
       (tank = new Tank(specie, "M-2B", "room 1", 40, 900))
     );
-    tank.id = tankId;
 
     employeeId = await sequelizeEmployeeRepo.add(
       (employee = new Employee("david", "david@mail.com", "president", "123"))
     );
-    employee.id = employeeId;
 
     employeeId2 = await sequelizeEmployeeRepo.add(
       (employee2 = new Employee("aaron", "aaron@mail.com", "president", "321"))
     );
-    employee2.id = employeeId2;
 
     newId = await sequelizeVerificationRepo.add(
       (verification = new TankVerification(
@@ -73,7 +69,6 @@ describe("sequelize tank verification repository", () => {
         new Date()
       ))
     );
-    verification.id = newId;
 
     newId2 = await sequelizeVerificationRepo.add(
       (verification2 = new TankVerification(
@@ -85,7 +80,6 @@ describe("sequelize tank verification repository", () => {
         new Date()
       ))
     );
-    verification2.id = newId2;
   }, 20000);
 
   afterAll(async () => {

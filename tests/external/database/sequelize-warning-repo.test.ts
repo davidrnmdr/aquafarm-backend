@@ -34,12 +34,10 @@ describe("sequelize warning repository", () => {
     await Warnings.sync({ force: true });
 
     specieId = await sequelizeFishSpecieRepo.add(specie);
-    specie.id = specieId;
 
     tankId = await sequelizeTankRepo.add(
       (tank = new Tank(specie, "L-1A", "room 2", 10, 1000))
     );
-    tank.id = tankId;
 
     newId = await sequelizeWarningRepo.add(
       new Warning(tank, "low oxygen", {

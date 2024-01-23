@@ -28,6 +28,8 @@ export class SequelizeMedicationRepo implements MedicationRepo {
       medicationId: newId,
     });
 
+    medication.id = newId;
+
     return newId;
   }
 

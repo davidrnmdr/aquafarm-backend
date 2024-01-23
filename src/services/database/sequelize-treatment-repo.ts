@@ -19,6 +19,8 @@ export class SequelizeTreatmentRepo implements TreatmentRepo {
       treatmentId: newId,
     });
 
+    treatment.id = newId;
+
     return newId;
   }
 

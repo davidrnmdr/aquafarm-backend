@@ -19,6 +19,8 @@ export class SequelizeMaintenanceRepo implements MaintenanceRepo {
       maintenanceId: newId,
     });
 
+    maintenance.id = newId;
+
     return newId;
   }
 

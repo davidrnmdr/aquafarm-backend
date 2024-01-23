@@ -28,6 +28,8 @@ export class SequelizeFeedingRepo implements FeedingRepo {
       feedingId: newId,
     });
 
+    feeding.id = newId;
+
     return newId;
   }
 

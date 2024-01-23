@@ -17,6 +17,8 @@ export class SequelizeBusinessPartnerRepo implements BusinessPartnerRepo {
       partnerId: newId,
     });
 
+    businessPartner.id = newId;
+
     return newId;
   }
 

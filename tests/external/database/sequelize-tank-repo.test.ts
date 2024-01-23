@@ -26,17 +26,14 @@ describe("sequelize tank repository", () => {
     await FishSpecies.sync({ force: true });
 
     specieId = await sequelizeFishSpecieRepo.add(specie);
-    specie.id = specieId;
 
     newId = await sequelizeTankRepo.add(
       (tank = new Tank(specie, "L-2B", "room 2", 45, 1200))
     );
-    tank.id = newId;
 
     newId2 = await sequelizeTankRepo.add(
       (tank2 = new Tank(specie, "M-1B", "room 2", 50, 700))
     );
-    tank2.id = newId2;
   });
 
   afterAll(async () => {

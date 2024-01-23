@@ -15,10 +15,8 @@ describe("sequelize employees repository", () => {
     await Employees.sync({ force: true });
 
     newId = await sequelizeEmployeeRepo.add(employee);
-    employee.id = newId;
 
     newId2 = await sequelizeEmployeeRepo.add(employee2);
-    employee2.id = newId2;
   }, 20000);
 
   afterEach(async () => {

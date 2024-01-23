@@ -75,35 +75,27 @@ describe("sequelize medications repository", () => {
     await Employees.sync({ force: true });
 
     employeeId = await sequelizeEmployeeRepo.add(employee);
-    employee.id = employeeId;
 
     employeeId2 = await sequelizeEmployeeRepo.add(employee2);
-    employee2.id = employeeId2;
 
     specieId = await sequelizeSpecieRepo.add(specie);
-    specie.id = specieId;
 
     tankId = await sequelizeTankRepo.add(tank);
-    tank.id = tankId;
 
     sellerId = await sequelizePartnerRepo.add(seller);
-    seller.id = sellerId;
 
     treatmentId = await sequelizeTreatmentRepo.add(treatment);
-    treatment.id = treatmentId;
 
     medicationId = await sequelizeMedicationRepo.add(
       (medication = new Medication(employee, tank, treatment, 10, new Date()))
     );
-    medication.id = medicationId;
 
     medicationId2 = await sequelizeMedicationRepo.add(
       (medication2 = new Medication(employee2, tank, treatment, 11, new Date()))
     );
-    medication2.id = medicationId2;
   }, 20000);
 
-  afterEach(async () => {
+  afterAll(async () => {
     await Medications.sync({ force: true });
     await Treatments.sync({ force: true });
     await BusinessPartners.sync({ force: true });

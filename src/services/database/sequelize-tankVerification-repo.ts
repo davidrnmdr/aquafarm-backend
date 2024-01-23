@@ -21,6 +21,8 @@ export class SequelizeTankVerificationRepo implements TankVerificationRepo {
       verificationId: newId,
     });
 
+    tankVerification.id = newId;
+
     return newId;
   }
 

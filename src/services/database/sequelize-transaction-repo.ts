@@ -47,6 +47,9 @@ export class SequelizeTransactionRepo implements TransactionRepo {
         transactionId: newId,
       });
     }
+
+    transaction.id = newId;
+
     return newId;
   }
 
@@ -171,13 +174,6 @@ async function saleInstanceToObj(instance: any): Promise<Sale> {
 }
 
 async function purchaseInstanceToObj(instance: any): Promise<Purchase> {
-  console.log(
-    await Foods.findOne({
-      where: { foodId: instance.dataValues.transactionPurchaseFoodId },
-    }),
-    instance.dataValues.transactionType
-  );
-
   return new Purchase(
     instance.dataValues.transactionValue,
     partnerInstanceToObj(

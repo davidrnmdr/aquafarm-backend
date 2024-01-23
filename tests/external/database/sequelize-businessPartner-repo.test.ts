@@ -26,10 +26,8 @@ describe("sequelize business partner repository", () => {
     await BusinessPartners.sync({ force: true });
 
     newId = await sequelizeBusinessPartnerRepo.add(partner);
-    partner.id = newId;
 
     newId2 = await sequelizeBusinessPartnerRepo.add(partner2);
-    partner2.id = newId2;
   }, 20000);
 
   afterAll(async () => {

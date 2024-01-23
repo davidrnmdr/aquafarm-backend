@@ -18,6 +18,8 @@ export class SequelizeWarningRepo implements WarningRepo {
       warningId: newId,
     });
 
+    warning.id = newId;
+
     return newId;
   }
 

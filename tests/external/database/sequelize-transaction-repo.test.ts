@@ -53,7 +53,6 @@ describe("sequelize transaction repository", () => {
     employeeId = await sequelizeEmployeeRepo.add(
       (employee = new Employee("david", "david@mail.com", "president", "123"))
     );
-    employee.id = employeeId;
 
     sellerId = await sequelizePartnerRepo.add(
       (seller = new BusinessPartner(
@@ -63,12 +62,10 @@ describe("sequelize transaction repository", () => {
         "street 2, 988"
       ))
     );
-    seller.id = sellerId;
 
     foodId = await sequelizeFoodRepo.add(
       (food = new Food("flakes", 200, 1400.99, new Date("2028-11-11"), seller))
     );
-    food.id = foodId;
 
     treatmentId = await sequelizeTreatmentRepo.add(
       (treatment = new Treatment(
@@ -79,7 +76,6 @@ describe("sequelize transaction repository", () => {
         seller
       ))
     );
-    treatment.id = treatmentId;
 
     equipmentId = await sequelizeEquipmentRepo.add(
       (equipment = new Equipment(
@@ -92,7 +88,6 @@ describe("sequelize transaction repository", () => {
         2
       ))
     );
-    equipment.id = equipmentId;
 
     newId = await sequelizeTransactionRepo.add(
       (purchase = new Purchase(
@@ -105,12 +100,10 @@ describe("sequelize transaction repository", () => {
         employee
       ))
     );
-    purchase.id = newId;
 
     newId2 = await sequelizeTransactionRepo.add(
       (sale = new Sale(2000, seller, new Date(), 300, employee))
     );
-    sale.id = newId2;
   }, 20000);
 
   afterAll(async () => {

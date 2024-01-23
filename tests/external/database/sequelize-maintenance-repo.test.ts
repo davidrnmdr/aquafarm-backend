@@ -45,32 +45,26 @@ describe("sequelize maintenance repository", () => {
         "street 7, 433"
       ))
     );
-    seller.id = sellerId;
 
     equipmentId = await sequelizeEquipmentRepo.add(
       (equipment = new Equipment("heater", "new", "room 6", seller, 0, 1900, 2))
     );
-    equipment.id = equipmentId;
 
     employeeId = await sequelizeEmployeeRepo.add(
       (employee = new Employee("david", "david@mail.com", "president", "123"))
     );
-    employee.id = employeeId;
 
     employeeId2 = await sequelizeEmployeeRepo.add(
       (employee2 = new Employee("aaron", "aaron@mail.com", "president", "321"))
     );
-    employee2.id = employeeId2;
 
     newId = await sequelizeMaintenanceRepo.add(
       (maintenance = new Maintenance(equipment, employee, new Date(), 100))
     );
-    maintenance.id = newId;
 
     newId2 = await sequelizeMaintenanceRepo.add(
       (maintenance2 = new Maintenance(equipment, employee2, new Date(), 200))
     );
-    maintenance2.id = newId2;
   }, 20000);
 
   afterAll(async () => {
