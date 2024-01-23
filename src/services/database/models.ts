@@ -147,7 +147,7 @@ Medications.belongsTo(Employees);
 Medications.belongsTo(Tanks);
 Medications.belongsTo(Treatments);
 
-const Maintenances = sequelize.define("Maintenance", {
+export const Maintenances = sequelize.define("Maintenance", {
   maintenanceEmployeeId: {
     type: DataTypes.STRING,
     references: { model: Employees, key: "employeeId" },
