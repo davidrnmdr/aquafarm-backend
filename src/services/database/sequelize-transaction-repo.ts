@@ -174,6 +174,14 @@ async function saleInstanceToObj(instance: any): Promise<Sale> {
 }
 
 async function purchaseInstanceToObj(instance: any): Promise<Purchase> {
+  // console.log(instance);
+
+  // console.log(
+  //   await Foods.findOne({
+  //     where: { foodId: instance.dataValues.transactionPurchaseFoodId },
+  //   })
+  // );
+
   return new Purchase(
     instance.dataValues.transactionValue,
     partnerInstanceToObj(
@@ -182,25 +190,31 @@ async function purchaseInstanceToObj(instance: any): Promise<Purchase> {
       })
     ),
     instance.dataValues.transactionDate,
-    await foodInstanceToObj(
-      await Foods.findOne({
-        where: { foodId: instance.dataValues.transactionPurchaseFoodId },
-      })
-    ),
-    await treatmentInstanceToObj(
-      await Treatments.findOne({
-        where: {
-          treatmentId: instance.dataValues.transactionPurchaseTreatmentId,
-        },
-      })
-    ),
-    await equipmentInstanceToObj(
-      await Equipments.findOne({
-        where: {
-          equipmentId: instance.dataValues.transactionPurchaseEquipmentId,
-        },
-      })
-    ),
+    instance.dataValues.transactionPurchaseFoodId
+      ? await foodInstanceToObj(
+          await Foods.findOne({
+            where: { foodId: instance.dataValues.transactionPurchaseFoodId },
+          })
+        )
+      : null,
+    instance.dataValues.transactionPurchaseTreatmentId
+      ? await treatmentInstanceToObj(
+          await Treatments.findOne({
+            where: {
+              treatmentId: instance.dataValues.transactionPurchaseTreatmentId,
+            },
+          })
+        )
+      : null,
+    instance.dataValues.transactionPurchaseEquipmentId
+      ? await equipmentInstanceToObj(
+          await Equipments.findOne({
+            where: {
+              equipmentId: instance.dataValues.transactionPurchaseEquipmentId,
+            },
+          })
+        )
+      : null,
     employeeInstanceToObj(
       await Employees.findOne({
         where: { employeeId: instance.dataValues.transactionEmployeeId },

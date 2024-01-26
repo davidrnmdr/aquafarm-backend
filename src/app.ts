@@ -48,6 +48,8 @@ import { Crypt } from "./services/crypt";
 import { WarningRepo } from "./ports/warning-repo";
 import { Warning } from "./entities/warning";
 import { WarningDetails } from "./types/warningDetails";
+import { FishSpecieRepo } from "./ports/fishSpecie-repo";
+import { FishSpecie } from "./entities/fishSpecie";
 
 const superRoles = new Set(["president", "manager"]);
 
@@ -66,7 +68,8 @@ export class App {
     readonly transactionRepo: TransactionRepo,
     readonly treatmentRepo: TreatmentRepo,
     readonly medicationRepo: MedicationRepo,
-    readonly warningRepo: WarningRepo
+    readonly warningRepo: WarningRepo,
+    readonly fishSpecieRepo: FishSpecieRepo
   ) {}
 
   async registerEmployee(employee: Employee): Promise<string> {
@@ -86,6 +89,10 @@ export class App {
     if (!retrievedEmployee) throw new EmployeeNotFoundError();
 
     return retrievedEmployee;
+  }
+
+  async registerSpecie(specie: FishSpecie): Promise<string> {
+    return await this.fishSpecieRepo.add(specie);
   }
 
   async registerTank(tank: Tank): Promise<string> {
@@ -133,6 +140,8 @@ export class App {
   }
 
   async findEquipment(id: string): Promise<Equipment> {
+    if (!id) throw new InvalidInputError();
+
     const retrievedEquipment = await this.equipmentRepo.find(id);
 
     if (!retrievedEquipment) throw new EquipmentNotFoundError();
@@ -154,6 +163,8 @@ export class App {
   }
 
   async findFood(id: string): Promise<Food> {
+    if (!id) throw new InvalidInputError();
+
     const retrievedFood = await this.foodRepo.find(id);
 
     if (!retrievedFood) throw new FoodNotFoundError();
@@ -178,6 +189,8 @@ export class App {
   }
 
   async findTreatment(id: string): Promise<Treatment> {
+    if (!id) throw new InvalidInputError();
+
     const retrievedTreatment = await this.treatmentRepo.find(id);
 
     if (!retrievedTreatment) throw new FoodNotFoundError();
@@ -285,9 +298,7 @@ export class App {
     if (food.quantity < quantity) throw new InsuficientFoodError();
     if (food.expirationDate < today) throw new ExpiredFoodError();
 
-    food.quantity - quantity === 0
-      ? await this.removeFood(foodId)
-      : await this.foodRepo.updateStorage(foodId, food.quantity - quantity);
+    await this.foodRepo.updateStorage(foodId, food.quantity - quantity);
 
     return this.feedingRepo.add(
       new Feeding(employee, tank, food, quantity, today)
@@ -368,25 +379,30 @@ export class App {
     let equipment = null;
     let equipmentQuantity: number = 0;
 
-    totalValue =
-      equipmentId &&
-      (equipmentQuantity = (equipment = await this.findEquipment(equipmentId))
-        .quantity) > 0
-        ? totalValue + equipment.cost
-        : totalValue;
+    if (equipmentId) {
+      totalValue =
+        equipmentId &&
+        (equipmentQuantity = (equipment = await this.findEquipment(equipmentId))
+          .quantity) > 0
+          ? totalValue + equipment.cost
+          : totalValue;
+    }
+    if (foodId) {
+      totalValue =
+        foodId &&
+        (foodQuantity = (food = await this.findFood(foodId)).quantity) > 0
+          ? totalValue + food.cost
+          : totalValue;
+    }
 
-    totalValue =
-      foodId &&
-      (foodQuantity = (food = await this.findFood(foodId)).quantity) > 0
-        ? totalValue + food.cost
-        : totalValue;
-
-    totalValue =
-      treatmentId &&
-      (treatmentQuantity = (treatment = await this.findTreatment(treatmentId))
-        .quantity) > 0
-        ? totalValue + treatment.cost
-        : totalValue;
+    if (treatmentId) {
+      totalValue =
+        treatmentId &&
+        (treatmentQuantity = (treatment = await this.findTreatment(treatmentId))
+          .quantity) > 0
+          ? totalValue + treatment.cost
+          : totalValue;
+    }
 
     if (
       value < 0 ||
@@ -404,10 +420,16 @@ export class App {
       throw new InsuficientPermissionError();
     }
 
-    const today = new Date();
-
     return await this.transactionRepo.add(
-      new Purchase(value, partner, today, food, treatment, equipment, employee)
+      new Purchase(
+        value,
+        partner,
+        new Date(),
+        food,
+        treatment,
+        equipment,
+        employee
+      )
     );
   }
 
@@ -443,12 +465,10 @@ export class App {
     if (treatment.quantity < quantity) throw new InsuficientTreatmentError();
     if (treatment.expirationDate < today) throw new ExpiredTreatmentError();
 
-    treatment.quantity - quantity === 0
-      ? await this.removeTreatment(treatmentId)
-      : await this.treatmentRepo.updateStorage(
-          treatmentId,
-          treatment.quantity - quantity
-        );
+    await this.treatmentRepo.updateStorage(
+      treatmentId,
+      treatment.quantity - quantity
+    );
 
     return this.medicationRepo.add(
       new Medication(employee, tank, treatment, quantity, today)

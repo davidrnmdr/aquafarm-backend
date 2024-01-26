@@ -182,9 +182,10 @@ export const Transactions = sequelize.define("Transaction", {
       key: "employeeId",
     },
   },
-  transactionSaleQuantity: { type: DataTypes.INTEGER },
+  transactionSaleQuantity: { type: DataTypes.INTEGER, allowNull: true },
   transactionPurchaseFoodId: {
     type: DataTypes.STRING,
+    allowNull: true,
     references: {
       model: Foods,
       key: "foodId",
@@ -192,6 +193,7 @@ export const Transactions = sequelize.define("Transaction", {
   },
   transactionPurchaseTreatmentId: {
     type: DataTypes.STRING,
+    allowNull: true,
     references: {
       model: Treatments,
       key: "treatmentId",
@@ -199,6 +201,7 @@ export const Transactions = sequelize.define("Transaction", {
   },
   transactionPurchaseEquipmentId: {
     type: DataTypes.STRING,
+    allowNull: true,
     references: {
       model: Equipments,
       key: "equipmentId",

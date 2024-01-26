@@ -14,6 +14,8 @@ import { FakeTankRepo } from "../../src/doubles/fake-tank-repo";
 import { FakeTankVerificationRepo } from "../../src/doubles/fake-tankVerification-repo";
 import { FakeTransactionRepo } from "../../src/doubles/fake-transaction-repo";
 import { FakeTreatmentRepo } from "../../src/doubles/fake-treatment-repo";
+import { FakeFishSpecieRepo } from "../../src/doubles/fake-fishSpecie-repo";
+
 import { BusinessPartner } from "../../src/entities/businessPartner";
 import { Employee } from "../../src/entities/employee";
 import { Equipment } from "../../src/entities/equipment";
@@ -58,7 +60,8 @@ describe("app using fake repositories", () => {
       new FakeTransactionRepo(),
       new FakeTreatmentRepo(),
       new FakeMedicationRepo(),
-      new FakeWarningRepo()
+      new FakeWarningRepo(),
+      new FakeFishSpecieRepo()
     );
 
     clock.restore();
@@ -375,7 +378,7 @@ describe("app using fake repositories", () => {
       "flakes",
       200,
       999.35,
-      new Date("2024-07-16"),
+      new Date("2027-07-16"),
       partner
     );
     it("registers a feeding", async () => {
@@ -417,6 +420,7 @@ describe("app using fake repositories", () => {
       const tankId = await app.registerTank(tank);
       await app.registerEmployee(employee);
       await app.registerBusinessPartner(partner);
+      food.quantity = 50;
       const foodId = await app.registerFood(food);
 
       await expect(
@@ -441,17 +445,6 @@ describe("app using fake repositories", () => {
       await expect(
         app.registerFeeding(tankId, employee.email, foodId, 100)
       ).rejects.toThrow(ExpiredFoodError);
-    });
-
-    it("deletes the food if the quantity hits 0", async () => {
-      const tankId = await app.registerTank(tank);
-      await app.registerEmployee(employee);
-      await app.registerBusinessPartner(partner);
-      const foodId = await app.registerFood(food);
-
-      await app.registerFeeding(tankId, employee.email, foodId, 100);
-
-      await expect(app.findFood(foodId)).rejects.toThrow(FoodNotFoundError);
     });
   });
 
@@ -541,19 +534,6 @@ describe("app using fake repositories", () => {
       await expect(
         app.registerMedication(tankId, employee.email, TreatmentId, 100)
       ).rejects.toThrow(ExpiredTreatmentError);
-    });
-
-    it("deletes the treatment if the quantity hits 0", async () => {
-      const tankId = await app.registerTank(tank);
-      await app.registerEmployee(employee);
-      await app.registerBusinessPartner(partner);
-      const treatmentId = await app.registerTreatment(treatment);
-
-      await app.registerMedication(tankId, employee.email, treatmentId, 280);
-
-      await expect(app.findTreatment(treatmentId)).rejects.toThrow(
-        FoodNotFoundError
-      );
     });
   });
 
