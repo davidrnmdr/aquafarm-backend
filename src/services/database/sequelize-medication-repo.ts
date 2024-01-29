@@ -1,6 +1,7 @@
 import { MedicationRepo } from "../../ports/medication-repo";
 
-import crypto from "crypto";
+import * as crypto from "crypto";
+
 
 import { Employees } from "./models";
 import { Tanks } from "./models";

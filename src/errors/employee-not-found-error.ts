@@ -3,5 +3,6 @@ export class EmployeeNotFoundError extends Error {
 
   constructor() {
     super("Employee Not Found.");
+    Object.setPrototypeOf(this, EmployeeNotFoundError.prototype);
   }
 }

@@ -3,5 +3,6 @@ export class UnableToFindError extends Error {
 
   constructor() {
     super("Unable To Find The Requested Informations.");
+    Object.setPrototypeOf(this, UnableToFindError.prototype);
   }
 }

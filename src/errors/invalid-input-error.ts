@@ -3,5 +3,6 @@ export class InvalidInputError extends Error {
 
   constructor() {
     super("The Provided Input Does Not Have A Valid Value.");
+    Object.setPrototypeOf(this, InvalidInputError.prototype);
   }
 }

@@ -1,7 +1,8 @@
 import { TankVerification } from "../../entities/tankVerification";
 import { TankVerificationRepo } from "../../ports/tankVerification-repo";
 
-import crypto from "crypto";
+import * as crypto from "crypto";
+
 import { Employees, Tanks, Verifications } from "./models";
 import { tankInstanceToObj } from "./sequelize-tank-repo";
 import { employeeInstanceToObj } from "./sequelize-employee-repo";

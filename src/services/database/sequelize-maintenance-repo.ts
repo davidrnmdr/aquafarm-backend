@@ -5,7 +5,7 @@ import { Employees, Equipments, Maintenances } from "./models";
 import { employeeInstanceToObj } from "./sequelize-employee-repo";
 import { equipmentInstanceToObj } from "./sequelize-equipment-repo";
 
-import crypto from "crypto";
+import * as crypto from "crypto";
 
 export class SequelizeMaintenanceRepo implements MaintenanceRepo {
   async add(maintenance: Maintenance): Promise<string> {

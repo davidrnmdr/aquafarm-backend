@@ -3,5 +3,6 @@ export class FoodSellerError extends Error {
 
   constructor() {
     super("The Specified Business Partner Does Not Sells This Particular Food");
+    Object.setPrototypeOf(this, FoodSellerError.prototype);
   }
 }

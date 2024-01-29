@@ -3,5 +3,6 @@ export class ExpiredTreatmentError extends Error {
 
   constructor() {
     super("Treatment Expiration Date Already Passed.");
+    Object.setPrototypeOf(this, ExpiredTreatmentError.prototype);
   }
 }

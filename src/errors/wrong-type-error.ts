@@ -3,5 +3,6 @@ export class WrongTypeError extends Error {
 
   constructor() {
     super("The passed argument is not of the right type for this call.");
+    Object.setPrototypeOf(this, WrongTypeError.prototype);
   }
 }

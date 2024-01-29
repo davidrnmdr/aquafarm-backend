@@ -3,5 +3,6 @@ export class FoodNotFoundError extends Error {
 
   constructor() {
     super("Food Not Found.");
+    Object.setPrototypeOf(this, FoodNotFoundError.prototype);
   }
 }

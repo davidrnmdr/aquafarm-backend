@@ -1,6 +1,7 @@
 import { TreatmentRepo } from "../../ports/treatment-repo";
 
-import crypto from "crypto";
+import * as crypto from "crypto";
+
 
 import { BusinessPartners, Treatments } from "./models";
 import { Treatment } from "../../entities/treatment";

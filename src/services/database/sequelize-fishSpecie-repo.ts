@@ -1,7 +1,8 @@
 import { FishSpecie } from "../../entities/fishSpecie";
 import { FishSpecieRepo } from "../../ports/fishSpecie-repo";
 
-import crypto from "crypto";
+import * as crypto from "crypto";
+
 import { FishSpecies } from "./models";
 
 export class SequelizeFishSpecieRepo implements FishSpecieRepo {

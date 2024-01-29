@@ -3,5 +3,6 @@ export class FeedingNotFoundError extends Error {
 
   constructor() {
     super("Feeding Not Found.");
+    Object.setPrototypeOf(this, FeedingNotFoundError.prototype);
   }
 }

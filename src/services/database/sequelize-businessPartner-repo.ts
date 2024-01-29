@@ -1,6 +1,7 @@
 import { BusinessPartnerRepo } from "../../ports/businessPartner-repo";
 
-import crypto from "crypto";
+import * as crypto from "crypto";
+
 
 import { BusinessPartners } from "./models";
 import { BusinessPartner } from "../../entities/businessPartner";

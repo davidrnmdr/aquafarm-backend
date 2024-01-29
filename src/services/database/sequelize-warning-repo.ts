@@ -1,7 +1,8 @@
 import { Warning } from "../../entities/warning";
 import { WarningRepo } from "../../ports/warning-repo";
 
-import crypto from "crypto";
+import * as crypto from "crypto";
+
 import { Tanks, Warnings } from "./models";
 import { tankInstanceToObj } from "./sequelize-tank-repo";
 

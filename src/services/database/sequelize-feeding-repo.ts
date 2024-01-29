@@ -1,6 +1,7 @@
 import { FeedingRepo } from "../../ports/feeding-repo";
 
-import crypto from "crypto";
+import * as crypto from "crypto";
+
 
 import { Employees } from "./models";
 import { Tanks } from "./models";

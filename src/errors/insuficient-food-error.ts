@@ -3,5 +3,6 @@ export class InsuficientFoodError extends Error {
 
   constructor() {
     super("Insuficient Food.");
+    Object.setPrototypeOf(this, InsuficientFoodError.prototype);
   }
 }

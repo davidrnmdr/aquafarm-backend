@@ -3,5 +3,6 @@ export class InsuficientPermissionError extends Error {
 
   constructor() {
     super("Current User Has Insuficient Permission To This Operation.");
+    Object.setPrototypeOf(this, InsuficientPermissionError.prototype);
   }
 }

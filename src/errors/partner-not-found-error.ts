@@ -3,5 +3,6 @@ export class PartnerNotFoundError extends Error {
 
   constructor() {
     super("Business Partner Not Found.");
+    Object.setPrototypeOf(this, PartnerNotFoundError.prototype);
   }
 }

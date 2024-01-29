@@ -3,5 +3,6 @@ export class EquipmentNotFoundError extends Error {
 
   constructor() {
     super("Equipment Not Found.");
+    Object.setPrototypeOf(this, EquipmentNotFoundError.prototype);
   }
 }

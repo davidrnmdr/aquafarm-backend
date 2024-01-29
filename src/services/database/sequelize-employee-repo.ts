@@ -1,6 +1,6 @@
 import { EmployeeRepo } from "../../ports/employee-repo";
 
-import crypto from "crypto";
+import * as crypto from "crypto";
 
 import { Employees } from "./models";
 import { Employee } from "../../entities/employee";

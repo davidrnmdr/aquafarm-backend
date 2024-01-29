@@ -3,5 +3,6 @@ export class DuplicatePartnerError extends Error {
 
   constructor() {
     super("Duplicate Business Partner.");
+    Object.setPrototypeOf(this, DuplicatePartnerError.prototype);
   }
 }

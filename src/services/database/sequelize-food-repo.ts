@@ -1,6 +1,7 @@
 import { FoodRepo } from "../../ports/food-repo";
 
-import crypto from "crypto";
+import * as crypto from "crypto";
+
 
 import { BusinessPartners, Foods } from "./models";
 import { Food } from "../../entities/food";

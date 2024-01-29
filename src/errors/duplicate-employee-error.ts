@@ -3,5 +3,6 @@ export class DuplicatedEmployeeError extends Error {
 
   constructor() {
     super("Duplicate Employee.");
+    Object.setPrototypeOf(this, DuplicatedEmployeeError.prototype);
   }
 }

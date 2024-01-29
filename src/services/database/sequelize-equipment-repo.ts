@@ -1,6 +1,7 @@
 import { EquipmentRepo } from "../../ports/equipments-repo";
 
-import crypto from "crypto";
+import * as crypto from "crypto";
+
 
 import { BusinessPartners, Equipments } from "./models";
 import { Equipment } from "../../entities/equipment";

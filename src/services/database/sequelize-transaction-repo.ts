@@ -2,7 +2,8 @@ import { Purchase } from "../../entities/purchase";
 import { Sale } from "../../entities/sale";
 import { TransactionRepo } from "../../ports/transaction-repo";
 
-import crypto from "crypto";
+import * as crypto from "crypto";
+
 import {
   BusinessPartners,
   Employees,
@@ -174,14 +175,6 @@ async function saleInstanceToObj(instance: any): Promise<Sale> {
 }
 
 async function purchaseInstanceToObj(instance: any): Promise<Purchase> {
-  // console.log(instance);
-
-  // console.log(
-  //   await Foods.findOne({
-  //     where: { foodId: instance.dataValues.transactionPurchaseFoodId },
-  //   })
-  // );
-
   return new Purchase(
     instance.dataValues.transactionValue,
     partnerInstanceToObj(

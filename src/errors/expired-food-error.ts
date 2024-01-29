@@ -3,5 +3,6 @@ export class ExpiredFoodError extends Error {
 
   constructor() {
     super("Food Expiration Date Already Passed.");
+    Object.setPrototypeOf(this, ExpiredFoodError.prototype);
   }
 }

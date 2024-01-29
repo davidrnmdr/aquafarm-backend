@@ -4,7 +4,8 @@ import { TankRepo } from "../../ports/tank-repo";
 import { FishSpecies, Tanks } from "./models";
 import { specieInstanceToObj } from "./sequelize-fishSpecie-repo";
 
-import crypto from "crypto";
+import * as crypto from "crypto";
+
 
 export class SequelizeTankRepo implements TankRepo {
   async add(tank: Tank): Promise<string> {
