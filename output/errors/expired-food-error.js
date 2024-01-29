@@ -21,6 +21,7 @@ var ExpiredFoodError = /** @class */ (function (_super) {
     function ExpiredFoodError() {
         var _this = _super.call(this, "Food Expiration Date Already Passed.") || this;
         _this.name = "ExpiredFoodError";
+        Object.setPrototypeOf(_this, ExpiredFoodError.prototype);
         return _this;
     }
     return ExpiredFoodError;

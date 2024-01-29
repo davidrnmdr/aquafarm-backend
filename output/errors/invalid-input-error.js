@@ -21,6 +21,7 @@ var InvalidInputError = /** @class */ (function (_super) {
     function InvalidInputError() {
         var _this = _super.call(this, "The Provided Input Does Not Have A Valid Value.") || this;
         _this.name = "InvalidInputError";
+        Object.setPrototypeOf(_this, InvalidInputError.prototype);
         return _this;
     }
     return InvalidInputError;

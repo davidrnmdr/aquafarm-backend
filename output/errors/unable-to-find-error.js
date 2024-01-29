@@ -21,6 +21,7 @@ var UnableToFindError = /** @class */ (function (_super) {
     function UnableToFindError() {
         var _this = _super.call(this, "Unable To Find The Requested Informations.") || this;
         _this.name = "UnableToFindError";
+        Object.setPrototypeOf(_this, UnableToFindError.prototype);
         return _this;
     }
     return UnableToFindError;

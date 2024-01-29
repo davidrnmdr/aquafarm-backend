@@ -21,6 +21,7 @@ var TankNotFoundError = /** @class */ (function (_super) {
     function TankNotFoundError() {
         var _this = _super.call(this, "Tank Not Found.") || this;
         _this.name = "TankNotFoundError";
+        Object.setPrototypeOf(_this, TankNotFoundError.prototype);
         return _this;
     }
     return TankNotFoundError;

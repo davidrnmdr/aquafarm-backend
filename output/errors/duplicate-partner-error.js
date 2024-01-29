@@ -21,6 +21,7 @@ var DuplicatePartnerError = /** @class */ (function (_super) {
     function DuplicatePartnerError() {
         var _this = _super.call(this, "Duplicate Business Partner.") || this;
         _this.name = "DuplicatePartnerError";
+        Object.setPrototypeOf(_this, DuplicatePartnerError.prototype);
         return _this;
     }
     return DuplicatePartnerError;

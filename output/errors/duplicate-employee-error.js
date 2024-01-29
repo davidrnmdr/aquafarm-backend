@@ -21,6 +21,7 @@ var DuplicatedEmployeeError = /** @class */ (function (_super) {
     function DuplicatedEmployeeError() {
         var _this = _super.call(this, "Duplicate Employee.") || this;
         _this.name = "DuplicatedEmployeeError";
+        Object.setPrototypeOf(_this, DuplicatedEmployeeError.prototype);
         return _this;
     }
     return DuplicatedEmployeeError;

@@ -60,7 +60,7 @@ function findEmployeeController(req, res) {
                         return [2 /*return*/];
                     }
                     res.status(500).json({
-                        message: "Internal server error. ".concat(e_1),
+                        message: "Internal server error.",
                     });
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];

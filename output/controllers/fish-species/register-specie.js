@@ -36,36 +36,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerEmployeeController = void 0;
-var duplicate_employee_error_1 = require("../../errors/duplicate-employee-error");
+exports.registerSpecieController = void 0;
 var app_factory_1 = require("../../app-factory");
-function registerEmployeeController(req, res) {
+function registerSpecieController(req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var id, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, app_factory_1.default.registerEmployee(req.body)];
+                    return [4 /*yield*/, app_factory_1.default.registerSpecie(req.body)];
                 case 1:
                     id = _a.sent();
                     res.status(201).json({ id: id });
                     return [3 /*break*/, 3];
                 case 2:
                     e_1 = _a.sent();
-                    if (e_1 instanceof duplicate_employee_error_1.DuplicatedEmployeeError) {
-                        res.status(400).json({
-                            message: "Could not register employee.",
-                        });
-                        return [2 /*return*/];
-                    }
                     res.status(500).json({
-                        message: "Internal server error.",
+                        message: "Could not register fish specie.",
                     });
-                    return [3 /*break*/, 3];
+                    return [2 /*return*/];
                 case 3: return [2 /*return*/];
             }
         });
     });
 }
-exports.registerEmployeeController = registerEmployeeController;
+exports.registerSpecieController = registerSpecieController;

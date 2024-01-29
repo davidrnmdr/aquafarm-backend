@@ -21,6 +21,7 @@ var InsuficientPermissionError = /** @class */ (function (_super) {
     function InsuficientPermissionError() {
         var _this = _super.call(this, "Current User Has Insuficient Permission To This Operation.") || this;
         _this.name = "InsuficientPermissionError()";
+        Object.setPrototypeOf(_this, InsuficientPermissionError.prototype);
         return _this;
     }
     return InsuficientPermissionError;

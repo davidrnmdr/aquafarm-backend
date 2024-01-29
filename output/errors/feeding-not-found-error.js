@@ -21,6 +21,7 @@ var FeedingNotFoundError = /** @class */ (function (_super) {
     function FeedingNotFoundError() {
         var _this = _super.call(this, "Feeding Not Found.") || this;
         _this.name = "FeedingNotFoundError";
+        Object.setPrototypeOf(_this, FeedingNotFoundError.prototype);
         return _this;
     }
     return FeedingNotFoundError;

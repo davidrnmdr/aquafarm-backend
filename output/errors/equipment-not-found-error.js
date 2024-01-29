@@ -21,6 +21,7 @@ var EquipmentNotFoundError = /** @class */ (function (_super) {
     function EquipmentNotFoundError() {
         var _this = _super.call(this, "Equipment Not Found.") || this;
         _this.name = "EquipmentNotFoundError";
+        Object.setPrototypeOf(_this, EquipmentNotFoundError.prototype);
         return _this;
     }
     return EquipmentNotFoundError;

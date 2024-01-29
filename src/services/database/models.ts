@@ -37,7 +37,7 @@ BusinessPartners.hasMany(Equipments);
 Equipments.belongsTo(BusinessPartners);
 
 export const FishSpecies = sequelize.define("FishSpecie", {
-  specieName: { type: DataTypes.STRING },
+  specieName: { type: DataTypes.STRING, unique: true },
   specieFoodType: { type: DataTypes.STRING },
   specieMinTemperature: { type: DataTypes.FLOAT },
   specieMaxTemperature: { type: DataTypes.FLOAT },

@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import { Request, Response, NextFunction } from "express";
 import { registerEmployeeController } from "./controllers/employees/register-employee";
 import { findEmployeeController } from "./controllers/employees/find-employee";
+import { registerSpecieController } from "./controllers/fish-species/register-specie";
 
 const cors = (req: Request, res: Response, next: NextFunction): void => {
   res.set("access-control-allow-origin", "*");
@@ -24,6 +25,8 @@ server.use(contentType);
 // routes:
 server.post("/api/employees", registerEmployeeController);
 server.get("/api/employees", findEmployeeController);
+
+server.post("/api/fishSpecies", registerSpecieController);
 
 const port = 3000;
 const serverApp = server.listen(port, () => {

@@ -21,6 +21,7 @@ var PartnerNotFoundError = /** @class */ (function (_super) {
     function PartnerNotFoundError() {
         var _this = _super.call(this, "Business Partner Not Found.") || this;
         _this.name = "PartnerNotFoundError";
+        Object.setPrototypeOf(_this, PartnerNotFoundError.prototype);
         return _this;
     }
     return PartnerNotFoundError;

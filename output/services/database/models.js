@@ -36,7 +36,7 @@ exports.Equipments = sequelize_2.sequelize.define("Equipment", {
 exports.BusinessPartners.hasMany(exports.Equipments);
 exports.Equipments.belongsTo(exports.BusinessPartners);
 exports.FishSpecies = sequelize_2.sequelize.define("FishSpecie", {
-    specieName: { type: sequelize_1.DataTypes.STRING },
+    specieName: { type: sequelize_1.DataTypes.STRING, unique: true },
     specieFoodType: { type: sequelize_1.DataTypes.STRING },
     specieMinTemperature: { type: sequelize_1.DataTypes.FLOAT },
     specieMaxTemperature: { type: sequelize_1.DataTypes.FLOAT },

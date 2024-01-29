@@ -21,6 +21,7 @@ var InsuficientTreatmentError = /** @class */ (function (_super) {
     function InsuficientTreatmentError() {
         var _this = _super.call(this, "Insuficient Treatment.") || this;
         _this.name = "InsuficientTreatmentError";
+        Object.setPrototypeOf(_this, InsuficientTreatmentError.prototype);
         return _this;
     }
     return InsuficientTreatmentError;

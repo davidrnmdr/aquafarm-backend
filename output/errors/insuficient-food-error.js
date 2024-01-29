@@ -21,6 +21,7 @@ var InsuficientFoodError = /** @class */ (function (_super) {
     function InsuficientFoodError() {
         var _this = _super.call(this, "Insuficient Food.") || this;
         _this.name = "InsuficientFoodError";
+        Object.setPrototypeOf(_this, InsuficientFoodError.prototype);
         return _this;
     }
     return InsuficientFoodError;

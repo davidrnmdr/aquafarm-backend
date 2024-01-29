@@ -21,6 +21,7 @@ var FoodNotFoundError = /** @class */ (function (_super) {
     function FoodNotFoundError() {
         var _this = _super.call(this, "Food Not Found.") || this;
         _this.name = "FoodNotFoundError";
+        Object.setPrototypeOf(_this, FoodNotFoundError.prototype);
         return _this;
     }
     return FoodNotFoundError;

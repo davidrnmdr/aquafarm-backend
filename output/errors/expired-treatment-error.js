@@ -21,6 +21,7 @@ var ExpiredTreatmentError = /** @class */ (function (_super) {
     function ExpiredTreatmentError() {
         var _this = _super.call(this, "Treatment Expiration Date Already Passed.") || this;
         _this.name = "ExpiredTreatmentError";
+        Object.setPrototypeOf(_this, ExpiredTreatmentError.prototype);
         return _this;
     }
     return ExpiredTreatmentError;

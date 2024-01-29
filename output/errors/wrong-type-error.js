@@ -21,6 +21,7 @@ var WrongTypeError = /** @class */ (function (_super) {
     function WrongTypeError() {
         var _this = _super.call(this, "The passed argument is not of the right type for this call.") || this;
         _this.name = "WrongTypeError";
+        Object.setPrototypeOf(_this, WrongTypeError.prototype);
         return _this;
     }
     return WrongTypeError;
