@@ -204,20 +204,20 @@ export class App {
     await this.treatmentRepo.delete(id);
   }
 
-  async findBusinessPartner(ein: number): Promise<BusinessPartner> {
-    const retrievedPartner = await this.businessPartnerRepo.find(ein);
-
-    if (!retrievedPartner) throw new PartnerNotFoundError();
-
-    return retrievedPartner;
-  }
-
   async registerBusinessPartner(partner: BusinessPartner): Promise<string> {
     if (await this.businessPartnerRepo.find(partner.ein)) {
       throw new DuplicatePartnerError();
     }
 
     return this.businessPartnerRepo.add(partner);
+  }
+
+  async findBusinessPartner(ein: number): Promise<BusinessPartner> {
+    const retrievedPartner = await this.businessPartnerRepo.find(ein);
+
+    if (!retrievedPartner) throw new PartnerNotFoundError();
+
+    return retrievedPartner;
   }
 
   async registerVerification(

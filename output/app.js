@@ -308,6 +308,20 @@ var App = /** @class */ (function () {
             });
         });
     };
+    App.prototype.registerBusinessPartner = function (partner) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.businessPartnerRepo.find(partner.ein)];
+                    case 1:
+                        if (_a.sent()) {
+                            throw new duplicate_partner_error_1.DuplicatePartnerError();
+                        }
+                        return [2 /*return*/, this.businessPartnerRepo.add(partner)];
+                }
+            });
+        });
+    };
     App.prototype.findBusinessPartner = function (ein) {
         return __awaiter(this, void 0, void 0, function () {
             var retrievedPartner;
@@ -319,20 +333,6 @@ var App = /** @class */ (function () {
                         if (!retrievedPartner)
                             throw new partner_not_found_error_1.PartnerNotFoundError();
                         return [2 /*return*/, retrievedPartner];
-                }
-            });
-        });
-    };
-    App.prototype.registerBusinessPartner = function (partner) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.businessPartnerRepo.find(partner.ein)];
-                    case 1:
-                        if (_a.sent()) {
-                            throw new duplicate_partner_error_1.DuplicatePartnerError();
-                        }
-                        return [2 /*return*/, this.businessPartnerRepo.add(partner)];
                 }
             });
         });
