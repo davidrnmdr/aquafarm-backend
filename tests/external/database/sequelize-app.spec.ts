@@ -76,6 +76,10 @@ describe("app using sequelize repositories", () => {
     await sequelize.sync({ force: true });
   }, 50000);
 
+  describe("reset db", () => {
+    it("resets the entire database", async () => {});
+  });
+
   describe("register employee", () => {
     const employee = new Employee(
       "david",

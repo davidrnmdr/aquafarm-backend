@@ -36,26 +36,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findEmployeeByEmailController = void 0;
-var employee_not_found_error_1 = require("../../errors/employee-not-found-error");
+exports.registerTankController = void 0;
+var invalid_input_error_1 = require("../../errors/invalid-input-error");
 var app_factory_1 = require("../../app-factory");
-function findEmployeeByEmailController(req, res) {
+function registerTankController(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var retrievedEmployee, e_1;
+        var id, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, app_factory_1.default.findEmployee(req.body.email)];
+                    return [4 /*yield*/, app_factory_1.default.registerTank(req.body)];
                 case 1:
-                    retrievedEmployee = _a.sent();
-                    res.status(200).json({ retrievedEmployee: retrievedEmployee });
+                    id = _a.sent();
+                    res.status(201).json({ id: id });
                     return [3 /*break*/, 3];
                 case 2:
                     e_1 = _a.sent();
-                    if (e_1 instanceof employee_not_found_error_1.EmployeeNotFoundError) {
-                        res.status(404).json({
-                            message: "Could not find employee.",
+                    if (e_1 instanceof invalid_input_error_1.InvalidInputError) {
+                        res.status(400).json({
+                            message: e_1.message,
                         });
                         return [2 /*return*/];
                     }
@@ -68,4 +68,4 @@ function findEmployeeByEmailController(req, res) {
         });
     });
 }
-exports.findEmployeeByEmailController = findEmployeeByEmailController;
+exports.registerTankController = registerTankController;

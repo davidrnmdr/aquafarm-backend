@@ -33,8 +33,8 @@ export const Equipments = sequelize.define("Equipment", {
   equipmentQuantity: { type: DataTypes.INTEGER },
   equipmentId: { type: DataTypes.STRING, primaryKey: true },
 });
-BusinessPartners.hasMany(Equipments);
-Equipments.belongsTo(BusinessPartners);
+// BusinessPartners.hasMany(Equipments);
+// Equipments.belongsTo(BusinessPartners);
 
 export const FishSpecies = sequelize.define("FishSpecie", {
   specieName: { type: DataTypes.STRING, unique: true },
@@ -51,6 +51,7 @@ export const FishSpecies = sequelize.define("FishSpecie", {
 export const Tanks = sequelize.define("Tank", {
   tankSpecieId: {
     type: DataTypes.STRING,
+    allowNull: false,
     references: { model: FishSpecies, key: "specieId" },
   },
   tankType: { type: DataTypes.STRING },
@@ -59,8 +60,8 @@ export const Tanks = sequelize.define("Tank", {
   tankCapacity: { type: DataTypes.INTEGER },
   tankId: { type: DataTypes.STRING, primaryKey: true },
 });
-FishSpecies.hasMany(Tanks);
-Tanks.belongsTo(FishSpecies);
+//FishSpecies.hasMany(Tanks);
+//Tanks.belongsTo(FishSpecies);
 
 export const Foods = sequelize.define("Food", {
   foodType: { type: DataTypes.STRING },
@@ -76,8 +77,8 @@ export const Foods = sequelize.define("Food", {
   },
   foodId: { type: DataTypes.STRING, primaryKey: true },
 });
-BusinessPartners.hasMany(Foods);
-Foods.belongsTo(BusinessPartners);
+// BusinessPartners.hasMany(Foods);
+// Foods.belongsTo(BusinessPartners);
 
 export const Treatments = sequelize.define("Treatment", {
   treatmentName: { type: DataTypes.STRING },
@@ -93,8 +94,8 @@ export const Treatments = sequelize.define("Treatment", {
   },
   treatmentId: { type: DataTypes.STRING, primaryKey: true },
 });
-BusinessPartners.hasMany(Treatments);
-Treatments.belongsTo(BusinessPartners);
+// BusinessPartners.hasMany(Treatments);
+// Treatments.belongsTo(BusinessPartners);
 
 export const Feedings = sequelize.define("Feeding", {
   feedingEmployeeId: {
@@ -116,12 +117,12 @@ export const Feedings = sequelize.define("Feeding", {
   feedingDate: { type: DataTypes.DATE },
   feedingId: { type: DataTypes.STRING, primaryKey: true },
 });
-Employees.hasMany(Feedings);
-Tanks.hasMany(Feedings);
-Foods.hasMany(Feedings);
-Feedings.belongsTo(Employees);
-Feedings.belongsTo(Tanks);
-Feedings.belongsTo(Foods);
+// Employees.hasMany(Feedings);
+// Tanks.hasMany(Feedings);
+// Foods.hasMany(Feedings);
+// Feedings.belongsTo(Employees);
+// Feedings.belongsTo(Tanks);
+// Feedings.belongsTo(Foods);
 
 export const Medications = sequelize.define("Medication", {
   medicationEmployeeId: {
@@ -140,12 +141,12 @@ export const Medications = sequelize.define("Medication", {
   medicationDate: { type: DataTypes.DATE },
   medicationId: { type: DataTypes.STRING, primaryKey: true },
 });
-Employees.hasMany(Medications);
-Tanks.hasMany(Medications);
-Treatments.hasMany(Medications);
-Medications.belongsTo(Employees);
-Medications.belongsTo(Tanks);
-Medications.belongsTo(Treatments);
+// Employees.hasMany(Medications);
+// Tanks.hasMany(Medications);
+// Treatments.hasMany(Medications);
+// Medications.belongsTo(Employees);
+// Medications.belongsTo(Tanks);
+// Medications.belongsTo(Treatments);
 
 export const Maintenances = sequelize.define("Maintenance", {
   maintenanceEmployeeId: {
@@ -160,10 +161,10 @@ export const Maintenances = sequelize.define("Maintenance", {
   maintenanceCost: { type: DataTypes.FLOAT },
   maintenanceId: { type: DataTypes.STRING, primaryKey: true },
 });
-Employees.hasMany(Maintenances);
-Equipments.hasMany(Maintenances);
-Maintenances.belongsTo(Employees);
-Maintenances.belongsTo(Equipments);
+// Employees.hasMany(Maintenances);
+// Equipments.hasMany(Maintenances);
+// Maintenances.belongsTo(Employees);
+// Maintenances.belongsTo(Equipments);
 
 export const Transactions = sequelize.define("Transaction", {
   transactionType: { type: DataTypes.STRING },
@@ -210,13 +211,13 @@ export const Transactions = sequelize.define("Transaction", {
   transactionDate: { type: DataTypes.DATE },
   transactionId: { type: DataTypes.STRING, primaryKey: true },
 });
-BusinessPartners.hasMany(Transactions);
-Transactions.belongsTo(BusinessPartners);
-Employees.hasMany(Transactions);
-Transactions.belongsTo(Employees);
-Foods.hasOne(Transactions);
-Treatments.hasOne(Transactions);
-Equipments.hasOne(Transactions);
+// BusinessPartners.hasMany(Transactions);
+// Transactions.belongsTo(BusinessPartners);
+// Employees.hasMany(Transactions);
+// Transactions.belongsTo(Employees);
+// Foods.hasOne(Transactions);
+// Treatments.hasOne(Transactions);
+// Equipments.hasOne(Transactions);
 
 export const Verifications = sequelize.define("Verification", {
   verificationEmployeeId: {
@@ -233,10 +234,10 @@ export const Verifications = sequelize.define("Verification", {
   verificationDate: { type: DataTypes.DATE },
   verificationId: { type: DataTypes.STRING, primaryKey: true },
 });
-Employees.hasMany(Verifications);
-Verifications.belongsTo(Employees);
-Tanks.hasMany(Verifications);
-Verifications.belongsTo(Tanks);
+// Employees.hasMany(Verifications);
+// Verifications.belongsTo(Employees);
+// Tanks.hasMany(Verifications);
+// Verifications.belongsTo(Tanks);
 
 export const Warnings = sequelize.define("Warning", {
   warningTankId: {
@@ -249,8 +250,8 @@ export const Warnings = sequelize.define("Warning", {
   warningPh: { type: DataTypes.BOOLEAN },
   warningId: { type: DataTypes.STRING, primaryKey: true },
 });
-Tanks.hasMany(Warnings);
-Warnings.belongsTo(Tanks);
+// Tanks.hasMany(Warnings);
+// Warnings.belongsTo(Tanks);
 
 // async function sync(): Promise<void> {
 //   await sequelize.sync({ force: true });

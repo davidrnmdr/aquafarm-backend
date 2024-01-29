@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 import { EmployeeNotFoundError } from "../../errors/employee-not-found-error";
 import app from "../../app-factory";
 
-export async function findEmployeeController(req: Request, res: Response) {
+export async function findEmployeeByEmailController(
+  req: Request,
+  res: Response
+) {
   try {
     const retrievedEmployee = await app.findEmployee(req.body.email);
     res.status(200).json({ retrievedEmployee });

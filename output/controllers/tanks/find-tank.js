@@ -36,36 +36,44 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findEmployeeByEmailController = void 0;
-var employee_not_found_error_1 = require("../../errors/employee-not-found-error");
+exports.findTankByController = void 0;
+var tank_not_found_error_1 = require("../../errors/tank-not-found-error");
 var app_factory_1 = require("../../app-factory");
-function findEmployeeByEmailController(req, res) {
+function findTankByController(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var retrievedEmployee, e_1;
+        var retrieved, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, app_factory_1.default.findEmployee(req.body.email)];
+                    _a.trys.push([0, 5, , 6]);
+                    retrieved = void 0;
+                    if (!(req.body.by == "id")) return [3 /*break*/, 2];
+                    return [4 /*yield*/, app_factory_1.default.findTank(req.body.value)];
                 case 1:
-                    retrievedEmployee = _a.sent();
-                    res.status(200).json({ retrievedEmployee: retrievedEmployee });
-                    return [3 /*break*/, 3];
-                case 2:
+                    retrieved = _a.sent();
+                    return [3 /*break*/, 4];
+                case 2: return [4 /*yield*/, app_factory_1.default.findTanksBy(req.body.by, req.body.value)];
+                case 3:
+                    retrieved = _a.sent();
+                    _a.label = 4;
+                case 4:
+                    res.status(200).json({ retrieved: retrieved });
+                    return [3 /*break*/, 6];
+                case 5:
                     e_1 = _a.sent();
-                    if (e_1 instanceof employee_not_found_error_1.EmployeeNotFoundError) {
-                        res.status(404).json({
-                            message: "Could not find employee.",
+                    if (e_1 instanceof tank_not_found_error_1.TankNotFoundError) {
+                        res.status(400).json({
+                            message: e_1.message,
                         });
                         return [2 /*return*/];
                     }
                     res.status(500).json({
-                        message: "Internal server error.",
+                        message: "Could not find tank.",
                     });
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     });
 }
-exports.findEmployeeByEmailController = findEmployeeByEmailController;
+exports.findTankByController = findTankByController;

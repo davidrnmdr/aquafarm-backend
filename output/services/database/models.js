@@ -33,8 +33,8 @@ exports.Equipments = sequelize_2.sequelize.define("Equipment", {
     equipmentQuantity: { type: sequelize_1.DataTypes.INTEGER },
     equipmentId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
-exports.BusinessPartners.hasMany(exports.Equipments);
-exports.Equipments.belongsTo(exports.BusinessPartners);
+// BusinessPartners.hasMany(Equipments);
+// Equipments.belongsTo(BusinessPartners);
 exports.FishSpecies = sequelize_2.sequelize.define("FishSpecie", {
     specieName: { type: sequelize_1.DataTypes.STRING, unique: true },
     specieFoodType: { type: sequelize_1.DataTypes.STRING },
@@ -49,6 +49,7 @@ exports.FishSpecies = sequelize_2.sequelize.define("FishSpecie", {
 exports.Tanks = sequelize_2.sequelize.define("Tank", {
     tankSpecieId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: { model: exports.FishSpecies, key: "specieId" },
     },
     tankType: { type: sequelize_1.DataTypes.STRING },
@@ -57,8 +58,8 @@ exports.Tanks = sequelize_2.sequelize.define("Tank", {
     tankCapacity: { type: sequelize_1.DataTypes.INTEGER },
     tankId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
-exports.FishSpecies.hasMany(exports.Tanks);
-exports.Tanks.belongsTo(exports.FishSpecies);
+//FishSpecies.hasMany(Tanks);
+//Tanks.belongsTo(FishSpecies);
 exports.Foods = sequelize_2.sequelize.define("Food", {
     foodType: { type: sequelize_1.DataTypes.STRING },
     foodQuantity: { type: sequelize_1.DataTypes.FLOAT },
@@ -73,8 +74,8 @@ exports.Foods = sequelize_2.sequelize.define("Food", {
     },
     foodId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
-exports.BusinessPartners.hasMany(exports.Foods);
-exports.Foods.belongsTo(exports.BusinessPartners);
+// BusinessPartners.hasMany(Foods);
+// Foods.belongsTo(BusinessPartners);
 exports.Treatments = sequelize_2.sequelize.define("Treatment", {
     treatmentName: { type: sequelize_1.DataTypes.STRING },
     treatmentQuantity: { type: sequelize_1.DataTypes.FLOAT },
@@ -89,8 +90,8 @@ exports.Treatments = sequelize_2.sequelize.define("Treatment", {
     },
     treatmentId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
-exports.BusinessPartners.hasMany(exports.Treatments);
-exports.Treatments.belongsTo(exports.BusinessPartners);
+// BusinessPartners.hasMany(Treatments);
+// Treatments.belongsTo(BusinessPartners);
 exports.Feedings = sequelize_2.sequelize.define("Feeding", {
     feedingEmployeeId: {
         type: sequelize_1.DataTypes.STRING,
@@ -108,12 +109,12 @@ exports.Feedings = sequelize_2.sequelize.define("Feeding", {
     feedingDate: { type: sequelize_1.DataTypes.DATE },
     feedingId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
-exports.Employees.hasMany(exports.Feedings);
-exports.Tanks.hasMany(exports.Feedings);
-exports.Foods.hasMany(exports.Feedings);
-exports.Feedings.belongsTo(exports.Employees);
-exports.Feedings.belongsTo(exports.Tanks);
-exports.Feedings.belongsTo(exports.Foods);
+// Employees.hasMany(Feedings);
+// Tanks.hasMany(Feedings);
+// Foods.hasMany(Feedings);
+// Feedings.belongsTo(Employees);
+// Feedings.belongsTo(Tanks);
+// Feedings.belongsTo(Foods);
 exports.Medications = sequelize_2.sequelize.define("Medication", {
     medicationEmployeeId: {
         type: sequelize_1.DataTypes.STRING,
@@ -131,12 +132,12 @@ exports.Medications = sequelize_2.sequelize.define("Medication", {
     medicationDate: { type: sequelize_1.DataTypes.DATE },
     medicationId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
-exports.Employees.hasMany(exports.Medications);
-exports.Tanks.hasMany(exports.Medications);
-exports.Treatments.hasMany(exports.Medications);
-exports.Medications.belongsTo(exports.Employees);
-exports.Medications.belongsTo(exports.Tanks);
-exports.Medications.belongsTo(exports.Treatments);
+// Employees.hasMany(Medications);
+// Tanks.hasMany(Medications);
+// Treatments.hasMany(Medications);
+// Medications.belongsTo(Employees);
+// Medications.belongsTo(Tanks);
+// Medications.belongsTo(Treatments);
 exports.Maintenances = sequelize_2.sequelize.define("Maintenance", {
     maintenanceEmployeeId: {
         type: sequelize_1.DataTypes.STRING,
@@ -150,10 +151,10 @@ exports.Maintenances = sequelize_2.sequelize.define("Maintenance", {
     maintenanceCost: { type: sequelize_1.DataTypes.FLOAT },
     maintenanceId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
-exports.Employees.hasMany(exports.Maintenances);
-exports.Equipments.hasMany(exports.Maintenances);
-exports.Maintenances.belongsTo(exports.Employees);
-exports.Maintenances.belongsTo(exports.Equipments);
+// Employees.hasMany(Maintenances);
+// Equipments.hasMany(Maintenances);
+// Maintenances.belongsTo(Employees);
+// Maintenances.belongsTo(Equipments);
 exports.Transactions = sequelize_2.sequelize.define("Transaction", {
     transactionType: { type: sequelize_1.DataTypes.STRING },
     transactionValue: { type: sequelize_1.DataTypes.FLOAT },
@@ -199,13 +200,13 @@ exports.Transactions = sequelize_2.sequelize.define("Transaction", {
     transactionDate: { type: sequelize_1.DataTypes.DATE },
     transactionId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
-exports.BusinessPartners.hasMany(exports.Transactions);
-exports.Transactions.belongsTo(exports.BusinessPartners);
-exports.Employees.hasMany(exports.Transactions);
-exports.Transactions.belongsTo(exports.Employees);
-exports.Foods.hasOne(exports.Transactions);
-exports.Treatments.hasOne(exports.Transactions);
-exports.Equipments.hasOne(exports.Transactions);
+// BusinessPartners.hasMany(Transactions);
+// Transactions.belongsTo(BusinessPartners);
+// Employees.hasMany(Transactions);
+// Transactions.belongsTo(Employees);
+// Foods.hasOne(Transactions);
+// Treatments.hasOne(Transactions);
+// Equipments.hasOne(Transactions);
 exports.Verifications = sequelize_2.sequelize.define("Verification", {
     verificationEmployeeId: {
         type: sequelize_1.DataTypes.STRING,
@@ -221,10 +222,10 @@ exports.Verifications = sequelize_2.sequelize.define("Verification", {
     verificationDate: { type: sequelize_1.DataTypes.DATE },
     verificationId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
-exports.Employees.hasMany(exports.Verifications);
-exports.Verifications.belongsTo(exports.Employees);
-exports.Tanks.hasMany(exports.Verifications);
-exports.Verifications.belongsTo(exports.Tanks);
+// Employees.hasMany(Verifications);
+// Verifications.belongsTo(Employees);
+// Tanks.hasMany(Verifications);
+// Verifications.belongsTo(Tanks);
 exports.Warnings = sequelize_2.sequelize.define("Warning", {
     warningTankId: {
         type: sequelize_1.DataTypes.STRING,
@@ -236,8 +237,8 @@ exports.Warnings = sequelize_2.sequelize.define("Warning", {
     warningPh: { type: sequelize_1.DataTypes.BOOLEAN },
     warningId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
-exports.Tanks.hasMany(exports.Warnings);
-exports.Warnings.belongsTo(exports.Tanks);
+// Tanks.hasMany(Warnings);
+// Warnings.belongsTo(Tanks);
 // async function sync(): Promise<void> {
 //   await sequelize.sync({ force: true });
 // }

@@ -2,8 +2,10 @@ import express from "express";
 import bodyParser from "body-parser";
 import { Request, Response, NextFunction } from "express";
 import { registerEmployeeController } from "./controllers/employees/register-employee";
-import { findEmployeeController } from "./controllers/employees/find-employee";
+import { findEmployeeByEmailController } from "./controllers/employees/find-employee";
 import { registerSpecieController } from "./controllers/fish-species/register-specie";
+import { registerTankController } from "./controllers/tanks/register-tank";
+import { findTankByController } from "./controllers/tanks/find-tank";
 
 const cors = (req: Request, res: Response, next: NextFunction): void => {
   res.set("access-control-allow-origin", "*");
@@ -22,11 +24,16 @@ server.use(bodyParser.json());
 server.use(cors);
 server.use(contentType);
 
-// routes:
+// employees
 server.post("/api/employees", registerEmployeeController);
-server.get("/api/employees", findEmployeeController);
+server.get("/api/employees", findEmployeeByEmailController);
 
-server.post("/api/fishSpecies", registerSpecieController);
+// fish-species
+server.post("/api/fish-species", registerSpecieController);
+
+// tanks
+server.post("/api/tanks", registerTankController);
+server.get("/api/tanks", findTankByController);
 
 const port = 3000;
 const serverApp = server.listen(port, () => {
