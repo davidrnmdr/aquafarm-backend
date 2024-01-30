@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { Request, Response, NextFunction } from "express";
+
 import { registerEmployeeController } from "./controllers/employees/register-employee";
 import { findEmployeeByEmailController } from "./controllers/employees/find-employee";
 import { registerSpecieController } from "./controllers/fish-species/register-specie";
@@ -10,6 +11,8 @@ import { registerPartnerController } from "./controllers/business-partners/regis
 import { findPartnerByEinController } from "./controllers/business-partners/find-partner";
 import { registerEquipmentController } from "./controllers/equipments/register-equipment";
 import { findEquipmentByIdController } from "./controllers/equipments/find-equipment";
+import { registerFoodController } from "./controllers/foods/register-food";
+import { findFoodByIdController } from "./controllers/foods/find-food";
 
 const cors = (req: Request, res: Response, next: NextFunction): void => {
   res.set("access-control-allow-origin", "*");
@@ -46,6 +49,10 @@ server.get("/api/business-partners", findPartnerByEinController);
 // equipments
 server.post("/api/equipments", registerEquipmentController);
 server.get("/api/equipments", findEquipmentByIdController);
+
+// foods
+server.post("/api/foods", registerFoodController);
+server.get("/api/foods", findFoodByIdController);
 
 const port = 3000;
 const serverApp = server.listen(port, () => {

@@ -11,6 +11,8 @@ var register_partner_1 = require("./controllers/business-partners/register-partn
 var find_partner_1 = require("./controllers/business-partners/find-partner");
 var register_equipment_1 = require("./controllers/equipments/register-equipment");
 var find_equipment_1 = require("./controllers/equipments/find-equipment");
+var register_food_1 = require("./controllers/foods/register-food");
+var find_food_1 = require("./controllers/foods/find-food");
 var cors = function (req, res, next) {
     res.set("access-control-allow-origin", "*");
     res.set("access-control-allow-headers", "*");
@@ -39,6 +41,9 @@ server.get("/api/business-partners", find_partner_1.findPartnerByEinController);
 // equipments
 server.post("/api/equipments", register_equipment_1.registerEquipmentController);
 server.get("/api/equipments", find_equipment_1.findEquipmentByIdController);
+// foods
+server.post("/api/foods", register_food_1.registerFoodController);
+server.get("/api/foods", find_food_1.findFoodByIdController);
 var port = 3000;
 var serverApp = server.listen(port, function () {
     console.log("Server listening on port ".concat(port));
