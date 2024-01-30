@@ -14,7 +14,7 @@ export async function registerEmployeeController(req: Request, res: Response) {
       return;
     }
     res.status(500).json({
-      message: `Internal server error.`,
+      message: `Could not register employee.`,
     });
   }
 }

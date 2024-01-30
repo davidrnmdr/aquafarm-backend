@@ -1,18 +1,17 @@
 import { Request, Response } from "express";
-import { TreatmentNotFoundError } from "../../errors/treatment-not-found-error";
 import app from "../../app-factory";
 import { UnableToFindError } from "../../errors/unable-to-find-error";
 
-export async function findVerificationsByEmployeeController(
+export async function findFeedingsByEmployeeController(
   req: Request,
   res: Response
 ) {
   try {
-    const retrievedVerifications = await app.findVerificationsByEmployee(
+    const retrievedFeedings = await app.findFeedingsByEmployee(
       req.body.attribute,
       req.body.value
     );
-    res.status(200).json({ retrievedVerifications });
+    res.status(200).json({ retrievedFeedings });
   } catch (e) {
     if (e instanceof UnableToFindError) {
       res.status(404).json({

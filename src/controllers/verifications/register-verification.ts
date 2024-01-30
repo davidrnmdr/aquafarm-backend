@@ -29,7 +29,7 @@ export async function registerVerificationController(
       return;
     }
     res.status(500).json({
-      message: `Could not register food.`,
+      message: `Could not register verification.`,
     });
   }
 }

@@ -18,7 +18,9 @@ import { registerTreatmentController } from "./controllers/treatments/register-t
 import { findTreatmentByIdController } from "./controllers/treatments/find-treatment";
 import { removeTreatmentController } from "./controllers/treatments/remove-treatment";
 import { registerVerificationController } from "./controllers/verifications/register-verification";
-import { findVerificationsByEmployeeController } from "./controllers/verifications/find-verification-by-employee";
+import { findVerificationsByEmployeeController } from "./controllers/verifications/find-verifications-by-employee";
+import { registerFeedingController } from "./controllers/feedings/register-feeding";
+import { findFeedingsByEmployeeController } from "./controllers/feedings/find-feedings-by-employee";
 
 const cors = (req: Request, res: Response, next: NextFunction): void => {
   res.set("access-control-allow-origin", "*");
@@ -69,6 +71,10 @@ server.delete("/api/treatments", removeTreatmentController);
 // verifications
 server.post("/api/verifications", registerVerificationController);
 server.get("/api/verifications", findVerificationsByEmployeeController);
+
+// feedings - need to be tested
+server.post("/api/feedings", registerFeedingController);
+server.get("/api/feedings", findFeedingsByEmployeeController);
 
 const port = 3000;
 const serverApp = server.listen(port, () => {
