@@ -4,46 +4,47 @@ exports.Warnings = exports.Verifications = exports.Transactions = exports.Mainte
 var sequelize_1 = require("sequelize");
 var sequelize_2 = require("./sequelize");
 exports.BusinessPartners = sequelize_2.sequelize.define("BusinessPartner", {
-    partnerEin: { type: sequelize_1.DataTypes.STRING, unique: true },
-    partnerEmail: { type: sequelize_1.DataTypes.STRING },
-    partnerName: { type: sequelize_1.DataTypes.STRING },
-    partnerAddress: { type: sequelize_1.DataTypes.STRING },
+    partnerEin: { type: sequelize_1.DataTypes.STRING, unique: true, allowNull: false },
+    partnerEmail: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    partnerName: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    partnerAddress: { type: sequelize_1.DataTypes.STRING, allowNull: false },
     partnerId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
 exports.Employees = sequelize_2.sequelize.define("Employee", {
-    employeeName: { type: sequelize_1.DataTypes.STRING },
-    employeeEmail: { type: sequelize_1.DataTypes.STRING, unique: true },
-    employeeRole: { type: sequelize_1.DataTypes.STRING },
-    employeePassword: { type: sequelize_1.DataTypes.STRING },
+    employeeName: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    employeeEmail: { type: sequelize_1.DataTypes.STRING, unique: true, allowNull: false },
+    employeeRole: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    employeePassword: { type: sequelize_1.DataTypes.STRING, allowNull: false },
     employeeId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
 exports.Equipments = sequelize_2.sequelize.define("Equipment", {
-    equipmentType: { type: sequelize_1.DataTypes.STRING },
-    equipmentStatus: { type: sequelize_1.DataTypes.STRING },
-    equipmentLocation: { type: sequelize_1.DataTypes.STRING },
+    equipmentType: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    equipmentStatus: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    equipmentLocation: { type: sequelize_1.DataTypes.STRING, allowNull: false },
     equipmentSellerId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: {
             model: exports.BusinessPartners,
             key: "partnerId",
         },
     },
-    equipmentMaintenanceCost: { type: sequelize_1.DataTypes.FLOAT },
-    equipmentCost: { type: sequelize_1.DataTypes.FLOAT },
-    equipmentQuantity: { type: sequelize_1.DataTypes.INTEGER },
+    equipmentMaintenanceCost: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    equipmentCost: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    equipmentQuantity: { type: sequelize_1.DataTypes.INTEGER, allowNull: false },
     equipmentId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
 // BusinessPartners.hasMany(Equipments);
 // Equipments.belongsTo(BusinessPartners);
 exports.FishSpecies = sequelize_2.sequelize.define("FishSpecie", {
-    specieName: { type: sequelize_1.DataTypes.STRING, unique: true },
-    specieFoodType: { type: sequelize_1.DataTypes.STRING },
-    specieMinTemperature: { type: sequelize_1.DataTypes.FLOAT },
-    specieMaxTemperature: { type: sequelize_1.DataTypes.FLOAT },
-    specieMinOxygen: { type: sequelize_1.DataTypes.FLOAT },
-    specieMaxOxygen: { type: sequelize_1.DataTypes.FLOAT },
-    specieMinPh: { type: sequelize_1.DataTypes.FLOAT },
-    specieMaxPh: { type: sequelize_1.DataTypes.FLOAT },
+    specieName: { type: sequelize_1.DataTypes.STRING, unique: true, allowNull: false },
+    specieFoodType: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    specieMinTemperature: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    specieMaxTemperature: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    specieMinOxygen: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    specieMaxOxygen: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    specieMinPh: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    specieMaxPh: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
     specieId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
 exports.Tanks = sequelize_2.sequelize.define("Tank", {
@@ -52,10 +53,10 @@ exports.Tanks = sequelize_2.sequelize.define("Tank", {
         allowNull: false,
         references: { model: exports.FishSpecies, key: "specieId" },
     },
-    tankType: { type: sequelize_1.DataTypes.STRING },
-    tankLocation: { type: sequelize_1.DataTypes.STRING },
-    tankStatus: { type: sequelize_1.DataTypes.FLOAT },
-    tankCapacity: { type: sequelize_1.DataTypes.INTEGER },
+    tankType: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    tankLocation: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    tankStatus: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    tankCapacity: { type: sequelize_1.DataTypes.INTEGER, allowNull: false },
     tankId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
 //FishSpecies.hasMany(Tanks);
@@ -67,6 +68,7 @@ exports.Foods = sequelize_2.sequelize.define("Food", {
     foodExpirationDate: { type: sequelize_1.DataTypes.DATE },
     foodSellerId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: {
             model: exports.BusinessPartners,
             key: "partnerId",
@@ -77,12 +79,13 @@ exports.Foods = sequelize_2.sequelize.define("Food", {
 // BusinessPartners.hasMany(Foods);
 // Foods.belongsTo(BusinessPartners);
 exports.Treatments = sequelize_2.sequelize.define("Treatment", {
-    treatmentName: { type: sequelize_1.DataTypes.STRING },
-    treatmentQuantity: { type: sequelize_1.DataTypes.FLOAT },
-    treatmentCost: { type: sequelize_1.DataTypes.FLOAT },
-    treatmentExpirationDate: { type: sequelize_1.DataTypes.DATE },
+    treatmentName: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    treatmentQuantity: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    treatmentCost: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    treatmentExpirationDate: { type: sequelize_1.DataTypes.DATE, allowNull: false },
     treatmentSellerId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: {
             model: exports.BusinessPartners,
             key: "partnerId",
@@ -95,18 +98,21 @@ exports.Treatments = sequelize_2.sequelize.define("Treatment", {
 exports.Feedings = sequelize_2.sequelize.define("Feeding", {
     feedingEmployeeId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: { model: exports.Employees, key: "employeeId" },
     },
     feedingTankId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: { model: exports.Tanks, key: "tankId" },
     },
     feedingFoodId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: { model: exports.Foods, key: "foodId" },
     },
-    feedingQuantity: { type: sequelize_1.DataTypes.FLOAT },
-    feedingDate: { type: sequelize_1.DataTypes.DATE },
+    feedingQuantity: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    feedingDate: { type: sequelize_1.DataTypes.DATE, allowNull: false },
     feedingId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
 // Employees.hasMany(Feedings);
@@ -118,18 +124,21 @@ exports.Feedings = sequelize_2.sequelize.define("Feeding", {
 exports.Medications = sequelize_2.sequelize.define("Medication", {
     medicationEmployeeId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: { model: exports.Employees, key: "employeeId" },
     },
     medicationTankId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: { model: exports.Tanks, key: "tankId" },
     },
     medicationTreatmentId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: { model: exports.Treatments, key: "treatmentId" },
     },
-    medicationQuantity: { type: sequelize_1.DataTypes.FLOAT },
-    medicationDate: { type: sequelize_1.DataTypes.DATE },
+    medicationQuantity: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    medicationDate: { type: sequelize_1.DataTypes.DATE, allowNull: false },
     medicationId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
 // Employees.hasMany(Medications);
@@ -141,14 +150,16 @@ exports.Medications = sequelize_2.sequelize.define("Medication", {
 exports.Maintenances = sequelize_2.sequelize.define("Maintenance", {
     maintenanceEmployeeId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: { model: exports.Employees, key: "employeeId" },
     },
     maintenanceEquipmentId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: { model: exports.Equipments, key: "equipmentId" },
     },
-    maintenanceDate: { type: sequelize_1.DataTypes.DATE },
-    maintenanceCost: { type: sequelize_1.DataTypes.FLOAT },
+    maintenanceDate: { type: sequelize_1.DataTypes.DATE, allowNull: false },
+    maintenanceCost: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
     maintenanceId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
 // Employees.hasMany(Maintenances);
@@ -156,10 +167,11 @@ exports.Maintenances = sequelize_2.sequelize.define("Maintenance", {
 // Maintenances.belongsTo(Employees);
 // Maintenances.belongsTo(Equipments);
 exports.Transactions = sequelize_2.sequelize.define("Transaction", {
-    transactionType: { type: sequelize_1.DataTypes.STRING },
-    transactionValue: { type: sequelize_1.DataTypes.FLOAT },
+    transactionType: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    transactionValue: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
     transactionPartnerId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: {
             model: exports.BusinessPartners,
             key: "partnerId",
@@ -167,6 +179,7 @@ exports.Transactions = sequelize_2.sequelize.define("Transaction", {
     },
     transactionEmployeeId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: {
             model: exports.Employees,
             key: "employeeId",
@@ -197,7 +210,7 @@ exports.Transactions = sequelize_2.sequelize.define("Transaction", {
             key: "equipmentId",
         },
     },
-    transactionDate: { type: sequelize_1.DataTypes.DATE },
+    transactionDate: { type: sequelize_1.DataTypes.DATE, allowNull: false },
     transactionId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
 // BusinessPartners.hasMany(Transactions);
@@ -210,16 +223,18 @@ exports.Transactions = sequelize_2.sequelize.define("Transaction", {
 exports.Verifications = sequelize_2.sequelize.define("Verification", {
     verificationEmployeeId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: { model: exports.Employees, key: "employeeId" },
     },
     verificationTankId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: { model: exports.Tanks, key: "tankId" },
     },
-    verificationTemperature: { type: sequelize_1.DataTypes.FLOAT },
-    verificationOxygen: { type: sequelize_1.DataTypes.FLOAT },
-    verificationPh: { type: sequelize_1.DataTypes.FLOAT },
-    verificationDate: { type: sequelize_1.DataTypes.DATE },
+    verificationTemperature: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    verificationOxygen: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    verificationPh: { type: sequelize_1.DataTypes.FLOAT, allowNull: false },
+    verificationDate: { type: sequelize_1.DataTypes.DATE, allowNull: false },
     verificationId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
 // Employees.hasMany(Verifications);
@@ -229,12 +244,13 @@ exports.Verifications = sequelize_2.sequelize.define("Verification", {
 exports.Warnings = sequelize_2.sequelize.define("Warning", {
     warningTankId: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
         references: { model: exports.Tanks, key: "tankId" },
     },
-    warningMsg: { type: sequelize_1.DataTypes.STRING },
-    warningTemperature: { type: sequelize_1.DataTypes.BOOLEAN },
-    warningOxygen: { type: sequelize_1.DataTypes.BOOLEAN },
-    warningPh: { type: sequelize_1.DataTypes.BOOLEAN },
+    warningMsg: { type: sequelize_1.DataTypes.STRING, allowNull: false },
+    warningTemperature: { type: sequelize_1.DataTypes.BOOLEAN, allowNull: false },
+    warningOxygen: { type: sequelize_1.DataTypes.BOOLEAN, allowNull: false },
+    warningPh: { type: sequelize_1.DataTypes.BOOLEAN, allowNull: false },
     warningId: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
 });
 // Tanks.hasMany(Warnings);

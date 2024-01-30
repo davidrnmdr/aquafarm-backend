@@ -8,6 +8,8 @@ import { registerTankController } from "./controllers/tanks/register-tank";
 import { findTankByController } from "./controllers/tanks/find-tank";
 import { registerPartnerController } from "./controllers/business-partners/register-partner";
 import { findPartnerByEinController } from "./controllers/business-partners/find-partner";
+import { registerEquipmentController } from "./controllers/equipments/register-equipment";
+import { findEquipmentByIdController } from "./controllers/equipments/find-equipment";
 
 const cors = (req: Request, res: Response, next: NextFunction): void => {
   res.set("access-control-allow-origin", "*");
@@ -40,6 +42,10 @@ server.get("/api/tanks", findTankByController);
 // business-partners
 server.post("/api/business-partners", registerPartnerController);
 server.get("/api/business-partners", findPartnerByEinController);
+
+// equipments
+server.post("/api/equipments", registerEquipmentController);
+server.get("/api/equipments", findEquipmentByIdController);
 
 const port = 3000;
 const serverApp = server.listen(port, () => {
