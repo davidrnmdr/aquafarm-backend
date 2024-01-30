@@ -32,7 +32,6 @@ import { DuplicatePartnerError } from "../../../src/errors/duplicate-partner-err
 import { EmployeeNotFoundError } from "../../../src/errors/employee-not-found-error";
 import { ExpiredFoodError } from "../../../src/errors/expired-food-error";
 import { ExpiredTreatmentError } from "../../../src/errors/expired-treatment-error";
-import { FoodNotFoundError } from "../../../src/errors/food-not-found-error";
 import { InsuficientFoodError } from "../../../src/errors/insuficient-food-error";
 import { InsuficientPermissionError } from "../../../src/errors/insuficient-permission-error";
 import { InsuficientTreatmentError } from "../../../src/errors/insuficient-treatment-error";

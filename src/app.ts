@@ -50,6 +50,7 @@ import { Warning } from "./entities/warning";
 import { WarningDetails } from "./types/warningDetails";
 import { FishSpecieRepo } from "./ports/fishSpecie-repo";
 import { FishSpecie } from "./entities/fishSpecie";
+import { TreatmentNotFoundError } from "./errors/treatment-not-found-error";
 
 const superRoles = new Set(["president", "manager"]);
 
@@ -193,7 +194,7 @@ export class App {
 
     const retrievedTreatment = await this.treatmentRepo.find(id);
 
-    if (!retrievedTreatment) throw new FoodNotFoundError();
+    if (!retrievedTreatment) throw new TreatmentNotFoundError();
 
     return retrievedTreatment;
   }
