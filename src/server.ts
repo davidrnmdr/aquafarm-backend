@@ -29,6 +29,8 @@ import { registerMedicationController } from "./controllers/medications/register
 import { findMedicationsByEmployeeController } from "./controllers/medications/find-medications-by-employee";
 import { registerMaintenanceController } from "./controllers/maintenances/register-maintenance";
 import { findMaintenancesByEmployeeController } from "./controllers/maintenances/find-maintenances-by-employee";
+import { filterSalesController } from "./controllers/sales/filter-sales";
+import { filterPurchasesController } from "./controllers/purchases/filter-purchases";
 
 const cors = (req: Request, res: Response, next: NextFunction): void => {
   res.set("access-control-allow-origin", "*");
@@ -87,8 +89,10 @@ server.get("/api/feedings", findFeedingsByEmployeeController);
 // transactions
 server.post("/api/sales", registerSaleController);
 server.get("/api/sales", findSalesByEmployeeController);
+server.get("/api/sales/filter", filterSalesController);
 server.post("/api/purchases", registerPurchaseController);
 server.get("/api/purchases", findPurchasesByEmployeeController);
+server.get("/api/purchases/filter", filterPurchasesController);
 
 // medications
 server.post("/api/medications", registerMedicationController);
