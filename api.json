@@ -1,0 +1,16 @@
+{
+  "title": "AquaFarm",
+  "summary": "A fish farm system.",
+  "description": "This is a sample server for fish farm business.",
+  "termsOfService": "",
+  "contact": {
+    "name": "API Support",
+    "url": "",
+    "email": "davidrnmdr@gmail.com"
+  },
+  "license": {
+    "name": "Apache 2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+  },
+  "version": "1.0.0"
+}
