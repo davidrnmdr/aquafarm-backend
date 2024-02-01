@@ -21,6 +21,10 @@ import { registerVerificationController } from "./controllers/verifications/regi
 import { findVerificationsByEmployeeController } from "./controllers/verifications/find-verifications-by-employee";
 import { registerFeedingController } from "./controllers/feedings/register-feeding";
 import { findFeedingsByEmployeeController } from "./controllers/feedings/find-feedings-by-employee";
+import { registerSaleController } from "./controllers/sales/register-sale";
+import { findSalesByEmployeeController } from "./controllers/sales/find-sales-by-employee";
+import { registerPurchaseController } from "./controllers/purchases/register-purchase";
+import { findPurchasesByEmployeeController } from "./controllers/purchases/find-purchases-by-employee";
 
 const cors = (req: Request, res: Response, next: NextFunction): void => {
   res.set("access-control-allow-origin", "*");
@@ -72,9 +76,15 @@ server.delete("/api/treatments", removeTreatmentController);
 server.post("/api/verifications", registerVerificationController);
 server.get("/api/verifications", findVerificationsByEmployeeController);
 
-// feedings - need to be tested
+// feedings
 server.post("/api/feedings", registerFeedingController);
 server.get("/api/feedings", findFeedingsByEmployeeController);
+
+// transactions
+server.post("/api/sales", registerSaleController);
+server.get("/api/sales", findSalesByEmployeeController);
+server.post("/api/purchases", registerPurchaseController);
+server.get("/api/purchases", findPurchasesByEmployeeController);
 
 const port = 3000;
 const serverApp = server.listen(port, () => {
