@@ -27,6 +27,8 @@ import { registerPurchaseController } from "./controllers/purchases/register-pur
 import { findPurchasesByEmployeeController } from "./controllers/purchases/find-purchases-by-employee";
 import { registerMedicationController } from "./controllers/medications/register-medication";
 import { findMedicationsByEmployeeController } from "./controllers/medications/find-medications-by-employee";
+import { registerMaintenanceController } from "./controllers/maintenances/register-maintenance";
+import { findMaintenancesByEmployeeController } from "./controllers/maintenances/find-maintenances-by-employee";
 
 const cors = (req: Request, res: Response, next: NextFunction): void => {
   res.set("access-control-allow-origin", "*");
@@ -88,9 +90,13 @@ server.get("/api/sales", findSalesByEmployeeController);
 server.post("/api/purchases", registerPurchaseController);
 server.get("/api/purchases", findPurchasesByEmployeeController);
 
-//medications
+// medications
 server.post("/api/medications", registerMedicationController);
 server.get("/api/medications", findMedicationsByEmployeeController);
+
+// maintenances
+server.post("/api/maintenances", registerMaintenanceController);
+server.get("/api/maintenances", findMaintenancesByEmployeeController);
 
 const port = 3000;
 const serverApp = server.listen(port, () => {
