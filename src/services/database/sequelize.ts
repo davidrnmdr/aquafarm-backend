@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize";
 require("dotenv/config");
 
 export const sequelize = new Sequelize({
-  logging: false,
+  logging: true,
   database: "aquafarm",
   username: "postgres",
   password: "aquafarm",
