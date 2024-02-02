@@ -9,9 +9,9 @@ export const sequelize = new Sequelize({
   host: "postgresql.cf4yiym6abpi.us-east-2.rds.amazonaws.com",
   port: 5432,
   dialect: "postgres",
+  ssl: false,
   dialectOptions: {
     ssl: {
-      require: true,
       rejectUnauthorized: false,
     },
   },
